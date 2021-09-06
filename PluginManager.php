@@ -11,18 +11,18 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment;
+namespace Plugin\UnivaPayForECCUBE4;
 
 use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
 use Eccube\Repository\PaymentRepository;
-use Plugin\SamplePayment\Entity\Config;
-use Plugin\SamplePayment\Entity\PaymentStatus;
-use Plugin\SamplePayment\Entity\CvsPaymentStatus;
-use Plugin\SamplePayment\Entity\CvsType;
-use Plugin\SamplePayment\Service\Method\LinkCreditCard;
-use Plugin\SamplePayment\Service\Method\Convenience;
-use Plugin\SamplePayment\Service\Method\CreditCard;
+use Plugin\UnivaPayForECCUBE4\Entity\Config;
+use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
+use Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus;
+use Plugin\UnivaPayForECCUBE4\Entity\CvsType;
+use Plugin\UnivaPayForECCUBE4\Service\Method\LinkCreditCard;
+use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
+use Plugin\UnivaPayForECCUBE4\Service\Method\CreditCard;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
