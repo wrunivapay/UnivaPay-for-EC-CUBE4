@@ -36,7 +36,7 @@ class PaymentCompanyController extends AbstractController
 
         if ('POST' === $request->getMethod()) {
             // EC-CUBEの決済完了受付リンク
-            $url = '/sample_payment_complete';
+            $url = '/univapay_complete';
 
             // 注文番号を付与
             $url .= '?no='.$orderNo;

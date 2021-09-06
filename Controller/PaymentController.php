@@ -106,7 +106,7 @@ class PaymentController extends AbstractController
     }
 
     /**
-     * @Route("/sample_payment_back", name="sample_payment_back")
+     * @Route("/univapay_back", name="univapay_back")
      *
      * @param Request $request
      *
@@ -144,7 +144,7 @@ class PaymentController extends AbstractController
     /**
      * 完了画面へ遷移する.
      *
-     * @Route("/sample_payment_complete", name="sample_payment_complete")
+     * @Route("/univapay_complete", name="univapay_complete")
      */
     public function complete(Request $request)
     {
@@ -173,7 +173,7 @@ class PaymentController extends AbstractController
     /**
      * 結果通知URLを受け取る.
      *
-     * @Route("/sample_payment_receive_complete", name="sample_payment_receive_complete")
+     * @Route("/univapay_receive_complete", name="univapay_receive_complete")
      */
     public function receiveComplete(Request $request)
     {
@@ -207,7 +207,7 @@ class PaymentController extends AbstractController
     /**
      * 結果通知URLを受け取る(コンビニ決済).
      *
-     * @Route("/sample_payment_receive_cvs_status", name="sample_payment_receive_cvs_status")
+     * @Route("/univapay_receive_cvs_status", name="univapay_receive_cvs_status")
      */
     public function receiveCvsStatus(Request $request)
     {

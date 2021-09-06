@@ -27,5 +27,5 @@ trait CustomerTrait
      * @var string
      * @ORM\Column(type="smallint", nullable=true)
      */
-    public $sample_payment_cards;
+    public $univapay_cards;
 }

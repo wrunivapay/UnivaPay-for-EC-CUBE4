@@ -74,8 +74,8 @@ class PaymentStatusController extends AbstractController
     /**
      * 決済状況一覧画面
      *
-     * @Route("/%eccube_admin_route%/sample_payment/payment_status", name="sample_payment_admin_payment_status")
-     * @Route("/%eccube_admin_route%/sample_payment/payment_status/{page_no}", requirements={"page_no" = "\d+"}, name="sample_payment_admin_payment_status_pageno")
+     * @Route("/%eccube_admin_route%/univapay/payment_status", name="univapay_admin_payment_status")
+     * @Route("/%eccube_admin_route%/univapay/payment_status/{page_no}", requirements={"page_no" = "\d+"}, name="univapay_admin_payment_status_pageno")
      * @Template("@UnivaPayForECCUBE4/admin/payment_status.twig")
      */
     public function index(Request $request, $page_no = null, PaginatorInterface $paginator)
@@ -89,7 +89,7 @@ class PaymentStatusController extends AbstractController
          * - デフォルト値
          * また, セッションに保存する際は mtb_page_maxと照合し, 一致した場合のみ保存する.
          **/
-        $page_count = $this->session->get('sample_payment.admin.payment_status.search.page_count',
+        $page_count = $this->session->get('univapay.admin.payment_status.search.page_count',
             $this->eccubeConfig->get('eccube_default_page_count'));
 
         $page_count_param = (int) $request->get('page_count');
@@ -99,7 +99,7 @@ class PaymentStatusController extends AbstractController
             foreach ($pageMaxis as $pageMax) {
                 if ($page_count_param == $pageMax->getName()) {
                     $page_count = $pageMax->getName();
-                    $this->session->set('sample_payment.admin.payment_status.search.page_count', $page_count);
+                    $this->session->set('univapay.admin.payment_status.search.page_count', $page_count);
                     break;
                 }
             }
@@ -117,8 +117,8 @@ class PaymentStatusController extends AbstractController
                 $searchData = $searchForm->getData();
 
                 // 検索条件, ページ番号をセッションに保持.
-                $this->session->set('sample_payment.admin.payment_status.search', FormUtil::getViewData($searchForm));
-                $this->session->set('sample_payment.admin.payment_status.search.page_no', $page_no);
+                $this->session->set('univapay.admin.payment_status.search', FormUtil::getViewData($searchForm));
+                $this->session->set('univapay.admin.payment_status.search.page_no', $page_no);
             } else {
                 // 検索エラーの際は, 詳細検索枠を開いてエラー表示する.
                 return [
@@ -137,12 +137,12 @@ class PaymentStatusController extends AbstractController
                  */
                 if ($page_no) {
                     // ページ送りで遷移した場合.
-                    $this->session->set('sample_payment.admin.payment_status.search.page_no', (int) $page_no);
+                    $this->session->set('univapay.admin.payment_status.search.page_no', (int) $page_no);
                 } else {
                     // 他画面から遷移した場合.
-                    $page_no = $this->session->get('sample_payment.admin.payment_status.search.page_no', 1);
+                    $page_no = $this->session->get('univapay.admin.payment_status.search.page_no', 1);
                 }
-                $viewData = $this->session->get('sample_payment.admin.payment_status.search', []);
+                $viewData = $this->session->get('univapay.admin.payment_status.search', []);
                 $searchData = FormUtil::submitAndGetData($searchForm, $viewData);
             } else {
                 /**
@@ -152,8 +152,8 @@ class PaymentStatusController extends AbstractController
                 $searchData = [];
 
                 // セッション中の検索条件, ページ番号を初期化.
-                $this->session->set('sample_payment.admin.payment_status.search', $searchData);
-                $this->session->set('sample_payment.admin.payment_status.search.page_no', $page_no);
+                $this->session->set('univapay.admin.payment_status.search', $searchData);
+                $this->session->set('univapay.admin.payment_status.search.page_no', $page_no);
             }
         }
 
@@ -179,7 +179,7 @@ class PaymentStatusController extends AbstractController
      * 一括処理.
      *
      * @Method("POST")
-     * @Route("/%eccube_admin_route%/sample_payment/payment_status/bulk_action/{id}", requirements={"id" = "\d+"}, name="sample_payment_admin_payment_status_bulk_action")
+     * @Route("/%eccube_admin_route%/univapay/payment_status/bulk_action/{id}", requirements={"id" = "\d+"}, name="univapay_admin_payment_status_bulk_action")
      */
     public function bulkAction(Request $request, $id)
     {
@@ -215,10 +215,10 @@ class PaymentStatusController extends AbstractController
             $count++;
         }
 
-        $this->addSuccess(trans('sample_payment.admin.payment_status.bulk_action.success', ['%count%' => $count]),
+        $this->addSuccess(trans('univapay.admin.payment_status.bulk_action.success', ['%count%' => $count]),
             'admin');
 
-        return $this->redirectToRoute('sample_payment_admin_payment_status_pageno', ['resume' => Constant::ENABLED]);
+        return $this->redirectToRoute('univapay_admin_payment_status_pageno', ['resume' => Constant::ENABLED]);
     }
 
     private function createQueryBuilder(array $searchData)

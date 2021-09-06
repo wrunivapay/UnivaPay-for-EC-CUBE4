@@ -24,12 +24,12 @@ trait OrderTrait
     /**
      * トークンを保持するカラム.
      *
-     * dtb_order.sample_payment_token
+     * dtb_order.univapay_token
      *
      * @var string
      * @ORM\Column(type="string", nullable=true)
      */
-    private $sample_payment_token;
+    private $univapay_token;
 
     /**
      * クレジットカード番号の末尾4桁.
@@ -37,17 +37,17 @@ trait OrderTrait
      *
      * @var string
      */
-    private $sample_payment_card_no_last4;
+    private $univapay_card_no_last4;
 
     /**
      * コンビニ用種別を保持するカラム.
      *
-     * dtb_order.sample_payment_cvs_type_id
+     * dtb_order.univapay_cvs_type_id
      *
      * @var CvsType
      * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\CvsType")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="sample_payment_cvs_type_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="univapay_cvs_type_id", referencedColumnName="id")
      * })
      */
     private $UnivaPayForECCUBE4CvsType;
@@ -56,12 +56,12 @@ trait OrderTrait
     /**
      * 決済ステータスを保持するカラム.
      *
-     * dtb_order.sample_payment_payment_status_id
+     * dtb_order.univapay_payment_status_id
      *
      * @var UnivaPayForECCUBE4PaymentStatus
      * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="sample_payment_payment_status_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="univapay_payment_status_id", referencedColumnName="id")
      * })
      */
     private $UnivaPayForECCUBE4PaymentStatus;
@@ -69,12 +69,12 @@ trait OrderTrait
     /**
      * コンビニ用決済ステータスを保持するカラム.
      *
-     * dtb_order.sample_payment_payment_status_id
+     * dtb_order.univapay_payment_status_id
      *
      * @var UnivaPayForECCUBE4CvsPaymentStatus
      * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus")
      * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="sample_payment_cvs_payment_status_id", referencedColumnName="id")
+     *   @ORM\JoinColumn(name="univapay_cvs_payment_status_id", referencedColumnName="id")
      * })
      */
     private $UnivaPayForECCUBE4CvsPaymentStatus;
@@ -82,19 +82,19 @@ trait OrderTrait
     /**
      * @return string
      */
-    public function getUnivaPayForECCUBE4Token()
+    public function getUnivapayToken()
     {
-        return $this->sample_payment_token;
+        return $this->univapay_token;
     }
 
     /**
-     * @param string $sample_payment_token
+     * @param string $univapay_token
      *
      * @return $this
      */
-    public function setUnivaPayForECCUBE4Token($sample_payment_token)
+    public function setUnivapayToken($univapay_token)
     {
-        $this->sample_payment_token = $sample_payment_token;
+        $this->univapay_token = $univapay_token;
 
         return $this;
     }
@@ -102,17 +102,17 @@ trait OrderTrait
     /**
      * @return string
      */
-    public function getUnivaPayForECCUBE4CardNoLast4()
+    public function getUnivapayNoLast4()
     {
-        return $this->sample_payment_card_no_last4;
+        return $this->univapay_card_no_last4;
     }
 
     /**
-     * @param string $sample_payment_card_no_last4
+     * @param string $univapay_card_no_last4
      */
-    public function setUnivaPayForECCUBE4CardNoLast4($sample_payment_card_no_last4)
+    public function setUnivapayCardNoLast4($univapay_card_no_last4)
     {
-        $this->sample_payment_card_no_last4 = $sample_payment_card_no_last4;
+        $this->univapay_card_no_last4 = $univapay_card_no_last4;
     }
 
     /**

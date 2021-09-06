@@ -149,7 +149,7 @@ class Convenience implements PaymentMethodInterface
             $result->setSuccess(false);
             $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::FAILURE);
             $this->Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus); // 決済失敗
-            $result->setErrors([trans('sample_payment.shopping.cvs.error')]);
+            $result->setErrors([trans('univapay.shopping.cvs.error')]);
 
             // 失敗時はpurchaseFlow::rollbackを呼び出す.
             $this->purchaseFlow->rollback($this->Order, new PurchaseContext());

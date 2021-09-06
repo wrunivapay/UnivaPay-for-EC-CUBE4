@@ -19,7 +19,7 @@ use Eccube\Entity\Master\AbstractMasterEntity;
 /**
  * CvsPaymentStatus
  *
- * @ORM\Table(name="plg_sample_payment_cvs_payment_status")
+ * @ORM\Table(name="plg_univapay_cvs_payment_status")
  * @ORM\Entity(repositoryClass="Plugin\UnivaPayForECCUBE4\Repository\CvsPaymentStatusRepository")
  */
 class CvsPaymentStatus extends AbstractMasterEntity

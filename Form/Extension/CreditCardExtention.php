@@ -51,7 +51,7 @@ class CreditCardExtention extends AbstractTypeExtension
             $form = $event->getForm();
 
             // 支払い方法が一致する場合
-            $form->add('sample_payment_token', HiddenType::class, [
+            $form->add('univapay_token', HiddenType::class, [
                 'required' => false,
                 'mapped' => true, // Orderエンティティに追加したカラムなので、mappedはtrue
             ]);

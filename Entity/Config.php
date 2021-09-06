@@ -18,7 +18,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Config
  *
- * @ORM\Table(name="plg_sample_payment_config")
+ * @ORM\Table(name="plg_univapay_config")
  * @ORM\Entity(repositoryClass="Plugin\UnivaPayForECCUBE4\Repository\ConfigRepository")
  */
 class Config

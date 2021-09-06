@@ -25,9 +25,9 @@ class UnivaPayForECCUBE4Nav implements EccubeNav
         return [
             'order' => [
                 'children' => [
-                    'sample_payment_admin_payment_status' => [
-                        'name' => 'sample_payment.admin.nav.payment_list',
-                        'url' => 'sample_payment_admin_payment_status',
+                    'univapay_admin_payment_status' => [
+                        'name' => 'univapay.admin.nav.payment_list',
+                        'url' => 'univapay_admin_payment_status',
                     ],
                 ],
             ],

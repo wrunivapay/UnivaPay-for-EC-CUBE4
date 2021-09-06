@@ -38,7 +38,7 @@ class ConfigController extends AbstractController
     }
 
     /**
-     * @Route("/%eccube_admin_route%/sample_payment/config", name="sample_payment_admin_config")
+     * @Route("/%eccube_admin_route%/univapay/config", name="univapay_admin_config")
      * @Template("@UnivaPayForECCUBE4/admin/config.twig")
      */
     public function index(Request $request)
@@ -52,9 +52,9 @@ class ConfigController extends AbstractController
             $this->entityManager->persist($Config);
             $this->entityManager->flush($Config);
 
-            $this->addSuccess('sample_payment.admin.save.success', 'admin');
+            $this->addSuccess('univapay.admin.save.success', 'admin');
 
-            return $this->redirectToRoute('sample_payment_admin_config');
+            return $this->redirectToRoute('univapay_admin_config');
         }
 
         return [

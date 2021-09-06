@@ -94,7 +94,7 @@ class CreditCard implements PaymentMethodInterface
         } else {
             $result = new PaymentResult();
             $result->setSuccess(false);
-            $result->setErrors([trans('sample_payment.shopping.verify.error')]);
+            $result->setErrors([trans('univapay.shopping.verify.error')]);
         }
 
         return $result;
@@ -168,7 +168,7 @@ class CreditCard implements PaymentMethodInterface
 
             $result = new PaymentResult();
             $result->setSuccess(false);
-            $result->setErrors([trans('sample_payment.shopping.checkout.error')]);
+            $result->setErrors([trans('univapay.shopping.checkout.error')]);
         }
 
         return $result;

@@ -19,7 +19,7 @@ use Eccube\Entity\Master\AbstractMasterEntity;
 /**
  * コンビニ種別
  *
- * @ORM\Table(name="plg_sample_payment_cvs_type")
+ * @ORM\Table(name="plg_univapay_cvs_type")
  * @ORM\Entity(repositoryClass="Plugin\UnivaPayForECCUBE4\Repository\CvsTypeRepository")
  */
 class CvsType extends AbstractMasterEntity
