@@ -90,7 +90,7 @@ class CreditCard implements PaymentMethodInterface
         if (true) {
             $result = new PaymentResult();
             $result->setSuccess(true);
-            $this->Order->setUnivaPayForECCUBE4CardNoLast4('****-*****-****-1234');
+            $this->Order->setUnivapayCardNoLast4('****-*****-****-1234');
         } else {
             $result = new PaymentResult();
             $result->setSuccess(false);
@@ -134,7 +134,7 @@ class CreditCard implements PaymentMethodInterface
         // 決済サーバに仮売上のリクエスト送る(設定等によって送るリクエストは異なる)
         // ...
         //
-        $token = $this->Order->getUnivaPayForECCUBE4Token();
+        $token = $this->Order->getUnivapayToken();
 
         if (true) {
             // 受注ステータスを新規受付へ変更
