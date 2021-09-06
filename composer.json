@@ -1,10 +1,10 @@
 {
-  "name": "ec-cube/SamplePayment",
+  "name": "UnivaPay/UnivaPay-for-EC-CUBE4",
   "version": "0.9.0",
-  "description": "EC-CUBE Payment Sample Plugin",
+  "description": "UnivaPay for EC-CUBE4",
   "type": "eccube-plugin",
   "extra": {
-    "code": "SamplePayment"
+    "code": "UnivaPay-for-EC-CUBE4"
   },
   "require": {
     "ec-cube/plugin-installer": "~0.0.4"
