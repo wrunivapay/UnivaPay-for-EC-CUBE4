@@ -11,10 +11,10 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment\Repository;
+namespace Plugin\UnivaPayForECCUBE4\Repository;
 
 use Eccube\Repository\AbstractRepository;
-use Plugin\SamplePayment\Entity\PaymentStatus;
+use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PaymentStatusRepository extends AbstractRepository

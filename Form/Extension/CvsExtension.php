@@ -11,15 +11,15 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment\Form\Extension;
+namespace Plugin\UnivaPayForECCUBE4\Form\Extension;
 
 use Doctrine\ORM\EntityRepository;
 use Eccube\Entity\Order;
 use Eccube\Form\Type\Shopping\OrderType;
 use Eccube\Repository\PaymentRepository;
-use Plugin\SamplePayment\Entity\CvsType;
-use Plugin\SamplePayment\Repository\CvsTypeRepository;
-use Plugin\SamplePayment\Service\Method\Convenience;
+use Plugin\UnivaPayForECCUBE4\Entity\CvsType;
+use Plugin\UnivaPayForECCUBE4\Repository\CvsTypeRepository;
+use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -62,7 +62,7 @@ class CvsExtension extends AbstractTypeExtension
             $data = $event->getData();
             $form = $event->getForm();
 
-            $form->add('SamplePaymentCvsType', EntityType::class, [
+            $form->add('UnivaPayForECCUBE4CvsType', EntityType::class, [
                 'class' => CvsType::class,
                 'query_builder' => function (EntityRepository $er) {
                     return $er->createQueryBuilder('p')

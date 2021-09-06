@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment;
+namespace Plugin\UnivaPayForECCUBE4;
 
 use Eccube\Common\EccubeTwigBlock;
 
-class SamplePaymentTwigBlock implements EccubeTwigBlock
+class UnivaPayForECCUBE4TwigBlock implements EccubeTwigBlock
 {
     /**
      * @return array
@@ -23,8 +23,8 @@ class SamplePaymentTwigBlock implements EccubeTwigBlock
     public static function getTwigBlock()
     {
         return [
-            '@SamplePayment/credit.twig',
-            '@SamplePayment/credit_confirm.twig',
+            '@UnivaPayForECCUBE4/credit.twig',
+            '@UnivaPayForECCUBE4/credit_confirm.twig',
         ];
     }
 }

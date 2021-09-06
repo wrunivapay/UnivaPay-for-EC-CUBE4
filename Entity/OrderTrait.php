@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment\Entity;
+namespace Plugin\UnivaPayForECCUBE4\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Annotation\EntityExtension;
@@ -45,12 +45,12 @@ trait OrderTrait
      * dtb_order.sample_payment_cvs_type_id
      *
      * @var CvsType
-     * @ORM\ManyToOne(targetEntity="Plugin\SamplePayment\Entity\CvsType")
+     * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\CvsType")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="sample_payment_cvs_type_id", referencedColumnName="id")
      * })
      */
-    private $SamplePaymentCvsType;
+    private $UnivaPayForECCUBE4CvsType;
 
 
     /**
@@ -58,31 +58,31 @@ trait OrderTrait
      *
      * dtb_order.sample_payment_payment_status_id
      *
-     * @var SamplePaymentPaymentStatus
-     * @ORM\ManyToOne(targetEntity="Plugin\SamplePayment\Entity\PaymentStatus")
+     * @var UnivaPayForECCUBE4PaymentStatus
+     * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="sample_payment_payment_status_id", referencedColumnName="id")
      * })
      */
-    private $SamplePaymentPaymentStatus;
+    private $UnivaPayForECCUBE4PaymentStatus;
 
     /**
      * コンビニ用決済ステータスを保持するカラム.
      *
      * dtb_order.sample_payment_payment_status_id
      *
-     * @var SamplePaymentCvsPaymentStatus
-     * @ORM\ManyToOne(targetEntity="Plugin\SamplePayment\Entity\CvsPaymentStatus")
+     * @var UnivaPayForECCUBE4CvsPaymentStatus
+     * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="sample_payment_cvs_payment_status_id", referencedColumnName="id")
      * })
      */
-    private $SamplePaymentCvsPaymentStatus;
+    private $UnivaPayForECCUBE4CvsPaymentStatus;
 
     /**
      * @return string
      */
-    public function getSamplePaymentToken()
+    public function getUnivaPayForECCUBE4Token()
     {
         return $this->sample_payment_token;
     }
@@ -92,7 +92,7 @@ trait OrderTrait
      *
      * @return $this
      */
-    public function setSamplePaymentToken($sample_payment_token)
+    public function setUnivaPayForECCUBE4Token($sample_payment_token)
     {
         $this->sample_payment_token = $sample_payment_token;
 
@@ -102,7 +102,7 @@ trait OrderTrait
     /**
      * @return string
      */
-    public function getSamplePaymentCardNoLast4()
+    public function getUnivaPayForECCUBE4CardNoLast4()
     {
         return $this->sample_payment_card_no_last4;
     }
@@ -110,7 +110,7 @@ trait OrderTrait
     /**
      * @param string $sample_payment_card_no_last4
      */
-    public function setSamplePaymentCardNoLast4($sample_payment_card_no_last4)
+    public function setUnivaPayForECCUBE4CardNoLast4($sample_payment_card_no_last4)
     {
         $this->sample_payment_card_no_last4 = $sample_payment_card_no_last4;
     }
@@ -118,48 +118,48 @@ trait OrderTrait
     /**
      * @return CvsType
      */
-    public function getSamplePaymentCvsType()
+    public function getUnivaPayForECCUBE4CvsType()
     {
-        return $this->SamplePaymentCvsType;
+        return $this->UnivaPayForECCUBE4CvsType;
     }
 
     /**
-     * @param CvsType $SamplePaymentCvsType
+     * @param CvsType $UnivaPayForECCUBE4CvsType
      */
-    public function setSamplePaymentCvsType(CvsType $SamplePaymentCvsType)
+    public function setUnivaPayForECCUBE4CvsType(CvsType $UnivaPayForECCUBE4CvsType)
     {
-        $this->SamplePaymentCvsType = $SamplePaymentCvsType;
+        $this->UnivaPayForECCUBE4CvsType = $UnivaPayForECCUBE4CvsType;
     }
 
     /**
      * @return PaymentStatus
      */
-    public function getSamplePaymentPaymentStatus()
+    public function getUnivaPayForECCUBE4PaymentStatus()
     {
-        return $this->SamplePaymentPaymentStatus;
+        return $this->UnivaPayForECCUBE4PaymentStatus;
     }
 
     /**
-     * @param PaymentStatus $SamplePaymentPaymentStatus|null
+     * @param PaymentStatus $UnivaPayForECCUBE4PaymentStatus|null
      */
-    public function setSamplePaymentPaymentStatus(PaymentStatus $SamplePaymentPaymentStatus = null)
+    public function setUnivaPayForECCUBE4PaymentStatus(PaymentStatus $UnivaPayForECCUBE4PaymentStatus = null)
     {
-        $this->SamplePaymentPaymentStatus = $SamplePaymentPaymentStatus;
+        $this->UnivaPayForECCUBE4PaymentStatus = $UnivaPayForECCUBE4PaymentStatus;
     }
 
     /**
      * @return CvsPaymentStatus
      */
-    public function getSamplePaymentCvsPaymentStatus()
+    public function getUnivaPayForECCUBE4CvsPaymentStatus()
     {
-        return $this->SamplePaymentCvsPaymentStatus;
+        return $this->UnivaPayForECCUBE4CvsPaymentStatus;
     }
 
     /**
-     * @param CvsPaymentStatus $SamplePaymentCvsPaymentStatus|null
+     * @param CvsPaymentStatus $UnivaPayForECCUBE4CvsPaymentStatus|null
      */
-    public function setSamplePaymentCvsPaymentStatus(CvsPaymentStatus $SamplePaymentCvsPaymentStatus = null)
+    public function setUnivaPayForECCUBE4CvsPaymentStatus(CvsPaymentStatus $UnivaPayForECCUBE4CvsPaymentStatus = null)
     {
-        $this->SamplePaymentCvsPaymentStatus = $SamplePaymentCvsPaymentStatus;
+        $this->UnivaPayForECCUBE4CvsPaymentStatus = $UnivaPayForECCUBE4CvsPaymentStatus;
     }
 }

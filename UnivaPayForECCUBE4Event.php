@@ -11,12 +11,12 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment;
+namespace Plugin\UnivaPayForECCUBE4;
 
 use Eccube\Event\TemplateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SamplePaymentEvent implements EventSubscriberInterface
+class UnivaPayForECCUBE4Event implements EventSubscriberInterface
 {
     /**
      * リッスンしたいサブスクライバのイベント名の配列を返します。
@@ -42,6 +42,6 @@ class SamplePaymentEvent implements EventSubscriberInterface
 
     public function onAdminOrderEditTwig(TemplateEvent $event)
     {
-        $event->addSnippet('@SamplePayment/admin/order_edit.twig');
+        $event->addSnippet('@UnivaPayForECCUBE4/admin/order_edit.twig');
     }
 }

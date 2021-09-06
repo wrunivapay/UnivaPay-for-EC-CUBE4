@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment\Controller;
+namespace Plugin\UnivaPayForECCUBE4\Controller;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\OrderStatus;
@@ -23,11 +23,11 @@ use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Eccube\Service\ShoppingService;
 use Eccube\Service\OrderStateMachine;
-use Plugin\SamplePayment\Entity\PaymentStatus;
-use Plugin\SamplePayment\Entity\CvsPaymentStatus;
-use Plugin\SamplePayment\Repository\PaymentStatusRepository;
-use Plugin\SamplePayment\Repository\CvsPaymentStatusRepository;
-use Plugin\SamplePayment\Service\Method\Convenience;
+use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
+use Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus;
+use Plugin\UnivaPayForECCUBE4\Repository\PaymentStatusRepository;
+use Plugin\UnivaPayForECCUBE4\Repository\CvsPaymentStatusRepository;
+use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -131,7 +131,7 @@ class PaymentController extends AbstractController
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $Order->setSamplePaymentPaymentStatus($PaymentStatus);
+        $Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
 
         // purchaseFlow::rollbackを呼び出し, 購入処理をロールバックする.
         $this->purchaseFlow->rollback($Order, new PurchaseContext());
@@ -191,7 +191,7 @@ class PaymentController extends AbstractController
 
         // 決済ステータスを仮売上へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
-        $Order->setSamplePaymentPaymentStatus($PaymentStatus);
+        $Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
 
         // 注文完了メールにメッセージを追加
         $Order->appendCompleteMailMessage('');
@@ -238,7 +238,7 @@ class PaymentController extends AbstractController
 
                     // 決済ステータスを決済失敗へ変更
                     $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::FAILURE);
-                    $Order->setSamplePaymentCvsPaymentStatus($PaymentStatus);
+                    $Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
                 } else {
                     throw new BadRequestHttpException();
                 }
@@ -253,7 +253,7 @@ class PaymentController extends AbstractController
 
                     // 決済ステータスを期限切れへ変更
                     $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::EXPIRED);
-                    $Order->setSamplePaymentCvsPaymentStatus($PaymentStatus);
+                    $Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
                 } else {
                     throw new BadRequestHttpException();
                 }
@@ -269,7 +269,7 @@ class PaymentController extends AbstractController
 
                     // 決済ステータスを決済完了へ変更
                     $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::COMPLETE);
-                    $Order->setSamplePaymentCvsPaymentStatus($PaymentStatus);
+                    $Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
                 } else {
                     throw new BadRequestHttpException();
                 }
@@ -298,7 +298,7 @@ class PaymentController extends AbstractController
         $Order = $this->orderRepository->findOneBy([
             'order_no' => $orderNo,
             'OrderStatus' => $pendingOrderStatus,
-            'SamplePaymentPaymentStatus' => $outstandingPaymentStatus,
+            'UnivaPayForECCUBE4PaymentStatus' => $outstandingPaymentStatus,
         ]);
 
         return $Order;

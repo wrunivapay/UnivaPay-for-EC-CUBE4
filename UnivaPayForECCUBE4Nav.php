@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment;
+namespace Plugin\UnivaPayForECCUBE4;
 
 use Eccube\Common\EccubeNav;
 
-class SamplePaymentNav implements EccubeNav
+class UnivaPayForECCUBE4Nav implements EccubeNav
 {
     /**
      * @return array

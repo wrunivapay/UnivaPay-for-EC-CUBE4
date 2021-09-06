@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\SamplePayment\Service\Method;
+namespace Plugin\UnivaPayForECCUBE4\Service\Method;
 
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
@@ -22,8 +22,8 @@ use Eccube\Service\Payment\PaymentMethodInterface;
 use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
-use Plugin\SamplePayment\Entity\CvsPaymentStatus;
-use Plugin\SamplePayment\Repository\CvsPaymentStatusRepository;
+use Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus;
+use Plugin\UnivaPayForECCUBE4\Repository\CvsPaymentStatusRepository;
 use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
@@ -106,7 +106,7 @@ class Convenience implements PaymentMethodInterface
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::OUTSTANDING);
-        $this->Order->setSamplePaymentCvsPaymentStatus($PaymentStatus);
+        $this->Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
 
         // purchaseFlow::prepareを呼び出し, 購入処理を進める.
         $this->purchaseFlow->prepare($this->Order, new PurchaseContext());
@@ -133,7 +133,7 @@ class Convenience implements PaymentMethodInterface
             $this->Order->setOrderStatus($OrderStatus);
 
             $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::REQUEST);
-            $this->Order->setSamplePaymentCvsPaymentStatus($PaymentStatus); // 決済要求成功に変更
+            $this->Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus); // 決済要求成功に変更
             $message = 'コンビニ払込票番号：7192771999999';
             $this->Order->appendCompleteMessage($message);
             $this->Order->appendCompleteMailMessage($message);
@@ -148,7 +148,7 @@ class Convenience implements PaymentMethodInterface
             $result = new PaymentResult();
             $result->setSuccess(false);
             $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::FAILURE);
-            $this->Order->setSamplePaymentCvsPaymentStatus($PaymentStatus); // 決済失敗
+            $this->Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus); // 決済失敗
             $result->setErrors([trans('sample_payment.shopping.cvs.error')]);
 
             // 失敗時はpurchaseFlow::rollbackを呼び出す.
