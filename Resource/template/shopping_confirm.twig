@@ -8,6 +8,8 @@
         amount: 1,
         currency: "jpy",
         autoClose: true,
+        email: "{{ Order.email }}",
+        metadata: { orderNo: "{{ Order.order_no }}" },
         onSuccess: (result) => {
             console.log(result);
             form.submit();
