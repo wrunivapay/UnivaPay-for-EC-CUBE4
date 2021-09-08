@@ -16,7 +16,7 @@ univapay.admin.config.save: 登録
 univapay.admin.config.required: 必須
 univapay.admin.config.back: プラグイン一覧
 univapay.admin.config.api_url: API URL
-univapay.admin.config.api_id: API ID
+univapay.admin.config.app_id: APP ID
 univapay.admin.order_edit.title: 決済情報
 univapay.admin.order_edit.payment_status: 決済種別
 univapay.admin.order_edit.payment_action: 決済操作

@@ -30,9 +30,9 @@ class Config
     /**
      * @var string
      *
-     * @ORM\Column(name="api_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="app_id", type="string", length=255, nullable=true)
      */
-    private $api_id;
+    private $app_id;
 
     /**
      * @return int
@@ -65,19 +65,19 @@ class Config
     /**
      * @return string
      */
-    public function getApiId()
+    public function getAppId()
     {
-        return $this->api_id;
+        return $this->app_id;
     }
 
     /**
-     * @param string $api_id
+     * @param string $app_id
      *
      * @return $this;
      */
-    public function setApiId($api_id)
+    public function setAppId($app_id)
     {
-        $this->api_id = $api_id;
+        $this->app_id = $app_id;
 
         return $this;
     }

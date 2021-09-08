@@ -78,9 +78,8 @@ class PluginManager extends AbstractPluginManager
         }
 
         $Config = new Config();
-        $Config->setApiId('api-id');
-        $Config->setApiPassword('api-password');
-        $Config->setApiUrl('https://payment.example/com');
+        $Config->setAppId('');
+        $Config->setApiUrl('https://other-widget.gyro-n.money');
 
         $entityManager->persist($Config);
         $entityManager->flush($Config);

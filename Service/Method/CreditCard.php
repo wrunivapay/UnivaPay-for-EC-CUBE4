@@ -120,10 +120,6 @@ class CreditCard implements PaymentMethodInterface
             $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
             $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
 
-            // 注文完了画面/注文完了メールにメッセージを追加
-            $this->Order->appendCompleteMessage('トークン -> '.$token);
-            $this->Order->appendCompleteMailMessage('トークン -> '.$token);
-
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
 
