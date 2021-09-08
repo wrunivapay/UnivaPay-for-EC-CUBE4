@@ -35,13 +35,6 @@ class Config
     private $api_id;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="api_password", type="string", length=255, nullable=true)
-     */
-    private $api_password;
-
-    /**
      * @return int
      */
     public function getId()
@@ -85,26 +78,6 @@ class Config
     public function setApiId($api_id)
     {
         $this->api_id = $api_id;
-
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getApiPassword()
-    {
-        return $this->api_password;
-    }
-
-    /**
-     * @param string $api_password
-     *
-     * @return $this
-     */
-    public function setApiPassword($api_password)
-    {
-        $this->api_password = $api_password;
 
         return $this;
     }
