@@ -1,9 +1,9 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4;
+namespace Plugin\UnivaPayPlugin;
 
 use Eccube\Common\EccubeTwigBlock;
 
-class UnivaPayForECCUBE4TwigBlock implements EccubeTwigBlock
+class UnivaPayPluginTwigBlock implements EccubeTwigBlock
 {
     /**
      * @return array
@@ -11,8 +11,8 @@ class UnivaPayForECCUBE4TwigBlock implements EccubeTwigBlock
     public static function getTwigBlock()
     {
         return [
-            '@UnivaPayForECCUBE4/credit.twig',
-            '@UnivaPayForECCUBE4/credit_confirm.twig',
+            '@UnivaPayPlugin/credit.twig',
+            '@UnivaPayPlugin/credit_confirm.twig',
         ];
     }
 }

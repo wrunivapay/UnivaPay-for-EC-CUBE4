@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Controller;
+namespace Plugin\UnivaPayPlugin\Controller;
 
 use Eccube\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,7 +16,7 @@ class PaymentCompanyController extends AbstractController
      * 決済サーバのカード入力画面.
      *
      * @Route("/payment_company")
-     * @Template("@UnivaPayForECCUBE4/dummy.twig")
+     * @Template("@UnivaPayPlugin/dummy.twig")
      */
     public function index(Request $request)
     {

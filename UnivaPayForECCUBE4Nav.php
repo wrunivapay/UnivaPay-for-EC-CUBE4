@@ -1,9 +1,9 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4;
+namespace Plugin\UnivaPayPlugin;
 
 use Eccube\Common\EccubeNav;
 
-class UnivaPayForECCUBE4Nav implements EccubeNav
+class UnivaPayPluginNav implements EccubeNav
 {
     /**
      * @return array

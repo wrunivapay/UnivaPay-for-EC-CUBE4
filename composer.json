@@ -4,7 +4,7 @@
   "description": "UnivaPay for EC-CUBE4",
   "type": "eccube-plugin",
   "extra": {
-    "code": "UnivaPayForECCUBE4"
+    "code": "UnivaPayPlugin"
   },
   "require": {
     "ec-cube/plugin-installer": "~0.0.4"

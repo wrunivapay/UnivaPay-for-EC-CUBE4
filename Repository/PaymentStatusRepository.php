@@ -1,8 +1,8 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Repository;
+namespace Plugin\UnivaPayPlugin\Repository;
 
 use Eccube\Repository\AbstractRepository;
-use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
+use Plugin\UnivaPayPlugin\Entity\PaymentStatus;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class PaymentStatusRepository extends AbstractRepository

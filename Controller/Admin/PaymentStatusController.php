@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\UnivaPayForECCUBE4\Controller\Admin;
+namespace Plugin\UnivaPayPlugin\Controller\Admin;
 
 use Eccube\Common\Constant;
 use Eccube\Controller\AbstractController;
@@ -20,8 +20,8 @@ use Eccube\Repository\Master\PageMaxRepository;
 use Eccube\Repository\OrderRepository;
 use Eccube\Util\FormUtil;
 use Knp\Component\Pager\PaginatorInterface;
-use Plugin\UnivaPayForECCUBE4\Form\Type\Admin\SearchPaymentType;
-use Plugin\UnivaPayForECCUBE4\Repository\PaymentStatusRepository;
+use Plugin\UnivaPayPlugin\Form\Type\Admin\SearchPaymentType;
+use Plugin\UnivaPayPlugin\Repository\PaymentStatusRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
@@ -76,7 +76,7 @@ class PaymentStatusController extends AbstractController
      *
      * @Route("/%eccube_admin_route%/univapay/payment_status", name="univapay_admin_payment_status")
      * @Route("/%eccube_admin_route%/univapay/payment_status/{page_no}", requirements={"page_no" = "\d+"}, name="univapay_admin_payment_status_pageno")
-     * @Template("@UnivaPayForECCUBE4/admin/payment_status.twig")
+     * @Template("@UnivaPayPlugin/admin/payment_status.twig")
      */
     public function index(Request $request, $page_no = null, PaginatorInterface $paginator)
     {
@@ -240,7 +240,7 @@ class PaymentStatusController extends AbstractController
         }
 
         if (!empty($searchData['PaymentStatuses']) && count($searchData['PaymentStatuses']) > 0) {
-            $qb->andWhere($qb->expr()->in('o.UnivaPayForECCUBE4PaymentStatus', ':PaymentStatuses'))
+            $qb->andWhere($qb->expr()->in('o.UnivaPayPluginPaymentStatus', ':PaymentStatuses'))
                 ->setParameter('PaymentStatuses', $searchData['PaymentStatuses']);
         }
 

@@ -1,10 +1,10 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4;
+namespace Plugin\UnivaPayPlugin;
 
 use Eccube\Event\TemplateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class UnivaPayForECCUBE4Event implements EventSubscriberInterface
+class UnivaPayPluginEvent implements EventSubscriberInterface
 {
     /**
      * リッスンしたいサブスクライバのイベント名の配列を返します。
@@ -31,11 +31,11 @@ class UnivaPayForECCUBE4Event implements EventSubscriberInterface
 
     public function onAdminOrderEditTwig(TemplateEvent $event)
     {
-        $event->addSnippet('@UnivaPayForECCUBE4/admin/order_edit.twig');
+        $event->addSnippet('@UnivaPayPlugin/admin/order_edit.twig');
     }
 
     public function onShoppingConfirmEditTwig(TemplateEvent $event)
     {
-        $event->addSnippet('@UnivaPayForECCUBE4/shopping_confirm.twig');
+        $event->addSnippet('@UnivaPayPlugin/shopping_confirm.twig');
     }
 }

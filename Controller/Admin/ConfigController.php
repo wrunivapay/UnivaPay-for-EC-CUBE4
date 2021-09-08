@@ -11,11 +11,11 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\UnivaPayForECCUBE4\Controller\Admin;
+namespace Plugin\UnivaPayPlugin\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
-use Plugin\UnivaPayForECCUBE4\Form\Type\Admin\ConfigType;
-use Plugin\UnivaPayForECCUBE4\Repository\ConfigRepository;
+use Plugin\UnivaPayPlugin\Form\Type\Admin\ConfigType;
+use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -39,7 +39,7 @@ class ConfigController extends AbstractController
 
     /**
      * @Route("/%eccube_admin_route%/univapay/config", name="univapay_admin_config")
-     * @Template("@UnivaPayForECCUBE4/admin/config.twig")
+     * @Template("@UnivaPayPlugin/admin/config.twig")
      */
     public function index(Request $request)
     {

@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Entity;
+namespace Plugin\UnivaPayPlugin\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
@@ -7,7 +7,7 @@ use Doctrine\ORM\Mapping as ORM;
  * Config
  *
  * @ORM\Table(name="plg_univapay_config")
- * @ORM\Entity(repositoryClass="Plugin\UnivaPayForECCUBE4\Repository\ConfigRepository")
+ * @ORM\Entity(repositoryClass="Plugin\UnivaPayPlugin\Repository\ConfigRepository")
  */
 class Config
 {

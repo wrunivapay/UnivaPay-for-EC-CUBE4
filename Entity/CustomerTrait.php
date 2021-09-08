@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Entity;
+namespace Plugin\UnivaPayPlugin\Entity;
 
 use Eccube\Annotation\EntityExtension;
 use Doctrine\ORM\Mapping as ORM;

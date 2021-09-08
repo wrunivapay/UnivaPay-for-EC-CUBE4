@@ -1,4 +1,4 @@
-{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayForECCUBE4\\Service\\Method\\CreditCard' %}
+{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' %}
 <script src="https://other-widget.gyro-n.money/client/checkout.js"></script>
 <script>
     form = document.querySelector("#shopping-form");

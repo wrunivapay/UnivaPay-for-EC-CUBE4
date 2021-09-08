@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Controller;
+namespace Plugin\UnivaPayPlugin\Controller;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\OrderStatus;
@@ -11,9 +11,9 @@ use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Eccube\Service\ShoppingService;
 use Eccube\Service\OrderStateMachine;
-use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
-use Plugin\UnivaPayForECCUBE4\Repository\PaymentStatusRepository;
-use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
+use Plugin\UnivaPayPlugin\Entity\PaymentStatus;
+use Plugin\UnivaPayPlugin\Repository\PaymentStatusRepository;
+use Plugin\UnivaPayPlugin\Service\Method\Convenience;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -109,7 +109,7 @@ class PaymentController extends AbstractController
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
+        $Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
 
         // purchaseFlow::rollbackを呼び出し, 購入処理をロールバックする.
         $this->purchaseFlow->rollback($Order, new PurchaseContext());
@@ -169,7 +169,7 @@ class PaymentController extends AbstractController
 
         // 決済ステータスを仮売上へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
-        $Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
+        $Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
 
         // 注文完了メールにメッセージを追加
         $Order->appendCompleteMailMessage('');
@@ -200,7 +200,7 @@ class PaymentController extends AbstractController
         $Order = $this->orderRepository->findOneBy([
             'order_no' => $orderNo,
             'OrderStatus' => $pendingOrderStatus,
-            'UnivaPayForECCUBE4PaymentStatus' => $outstandingPaymentStatus,
+            'UnivaPayPluginPaymentStatus' => $outstandingPaymentStatus,
         ]);
 
         return $Order;

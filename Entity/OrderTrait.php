@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Entity;
+namespace Plugin\UnivaPayPlugin\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Annotation\EntityExtension;
@@ -32,13 +32,13 @@ trait OrderTrait
      *
      * dtb_order.univapay_payment_status_id
      *
-     * @var UnivaPayForECCUBE4PaymentStatus
-     * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus")
+     * @var UnivaPayPluginPaymentStatus
+     * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayPlugin\Entity\PaymentStatus")
      * @ORM\JoinColumns({
      *   @ORM\JoinColumn(name="univapay_payment_status_id", referencedColumnName="id")
      * })
      */
-    private $UnivaPayForECCUBE4PaymentStatus;
+    private $UnivaPayPluginPaymentStatus;
 
     /**
      * @return string
@@ -79,16 +79,16 @@ trait OrderTrait
     /**
      * @return PaymentStatus
      */
-    public function getUnivaPayForECCUBE4PaymentStatus()
+    public function getUnivaPayPluginPaymentStatus()
     {
-        return $this->UnivaPayForECCUBE4PaymentStatus;
+        return $this->UnivaPayPluginPaymentStatus;
     }
 
     /**
-     * @param PaymentStatus $UnivaPayForECCUBE4PaymentStatus|null
+     * @param PaymentStatus $UnivaPayPluginPaymentStatus|null
      */
-    public function setUnivaPayForECCUBE4PaymentStatus(PaymentStatus $UnivaPayForECCUBE4PaymentStatus = null)
+    public function setUnivaPayPluginPaymentStatus(PaymentStatus $UnivaPayPluginPaymentStatus = null)
     {
-        $this->UnivaPayForECCUBE4PaymentStatus = $UnivaPayForECCUBE4PaymentStatus;
+        $this->UnivaPayPluginPaymentStatus = $UnivaPayPluginPaymentStatus;
     }
 }

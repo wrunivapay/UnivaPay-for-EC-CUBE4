@@ -1,14 +1,14 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4;
+namespace Plugin\UnivaPayPlugin;
 
 use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
 use Eccube\Repository\PaymentRepository;
-use Plugin\UnivaPayForECCUBE4\Entity\Config;
-use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
-use Plugin\UnivaPayForECCUBE4\Service\Method\LinkCreditCard;
-use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
-use Plugin\UnivaPayForECCUBE4\Service\Method\CreditCard;
+use Plugin\UnivaPayPlugin\Entity\Config;
+use Plugin\UnivaPayPlugin\Entity\PaymentStatus;
+use Plugin\UnivaPayPlugin\Service\Method\LinkCreditCard;
+use Plugin\UnivaPayPlugin\Service\Method\Convenience;
+use Plugin\UnivaPayPlugin\Service\Method\CreditCard;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager

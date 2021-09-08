@@ -1,10 +1,10 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Form\Extension;
+namespace Plugin\UnivaPayPlugin\Form\Extension;
 
 use Eccube\Entity\Order;
 use Eccube\Form\Type\Shopping\OrderType;
 use Eccube\Repository\PaymentRepository;
-use Plugin\UnivaPayForECCUBE4\Service\Method\CreditCard;
+use Plugin\UnivaPayPlugin\Service\Method\CreditCard;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;

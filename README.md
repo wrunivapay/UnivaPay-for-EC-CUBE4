@@ -32,19 +32,19 @@ http://doc4.ec-cube.net/quickstart_install
 
 本サンプルプラグインの場合は以下のようになります。
 
-`/app/Plugin/UnivaPayForECCUBE4`
+`/app/Plugin/UnivaPayPlugin`
 
 ## コマンドラインインタフェース
 
 ### 利用例
 - インストール
-`bin/console eccube:plugin:install --code=UnivaPayForECCUBE4`
+`bin/console eccube:plugin:install --code=UnivaPayPlugin`
 - 有効化
-`bin/console eccube:plugin:enable --code=UnivaPayForECCUBE4`
+`bin/console eccube:plugin:enable --code=UnivaPayPlugin`
 - 無効化
-`bin/console eccube:plugin:disable --code=UnivaPayForECCUBE4`
+`bin/console eccube:plugin:disable --code=UnivaPayPlugin`
 - 削除
-`bin/console eccube:plugin:uninstall --code=UnivaPayForECCUBE4`
+`bin/console eccube:plugin:uninstall --code=UnivaPayPlugin`
 
 ### プラグインジェネレータ
 
@@ -241,13 +241,13 @@ class Event implements EventSubscriberInterface
 
 - 商品購入ページ
 ```twig
-{{ include('@UnivaPayForECCUBE4/credit.twig', ignore_missing=true) }}
-{{ include('@UnivaPayForECCUBE4/cvs.twig', ignore_missing=true) }}
+{{ include('@UnivaPayPlugin/credit.twig', ignore_missing=true) }}
+{{ include('@UnivaPayPlugin/cvs.twig', ignore_missing=true) }}
 ```
 - 商品購入/ご注文確認ページ
 ```twig
-{{ include('@UnivaPayForECCUBE4/credit_confirm.twig', ignore_missing=true) }}
-{{ include('@UnivaPayForECCUBE4/cvs_confirm.twig', ignore_missing=true) }}
+{{ include('@UnivaPayPlugin/credit_confirm.twig', ignore_missing=true) }}
+{{ include('@UnivaPayPlugin/cvs_confirm.twig', ignore_missing=true) }}
 ```
 
 ### 画面への介入について
@@ -441,36 +441,36 @@ twigのソースコード内でメッセージを使用する場合には `trans
 
 ## ファイルごとの概要
 
-### [Plugin\UnivaPayForECCUBE4\Service\Method\CreditCard](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Service/Method/CreditCard.php)
+### [Plugin\UnivaPayPlugin\Service\Method\CreditCard](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Service/Method/CreditCard.php)
 
 トークン型クレジットカード払い用のビジネスロジッククラス
 
-### [Plugin\UnivaPayForECCUBE4\Service\Method\LinkCreditCard](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Service/Method/LinkCreditCard.php)
+### [Plugin\UnivaPayPlugin\Service\Method\LinkCreditCard](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Service/Method/LinkCreditCard.php)
 
 リンク型クレジットカード払い用のビジネスロジッククラス
 
-### [Plugin\UnivaPayForECCUBE4\Service\Method\Convenience](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Service/Method/Convenience.php)
+### [Plugin\UnivaPayPlugin\Service\Method\Convenience](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Service/Method/Convenience.php)
 
 コンビニ決済用のビジネスロジッククラス
 
-### [Plugin\UnivaPayForECCUBE4\Controller\Admin\ConfigController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/Admin/ConfigController.php)
+### [Plugin\UnivaPayPlugin\Controller\Admin\ConfigController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/Admin/ConfigController.php)
 
 プラグイン設定画面のコントローラクラス。
 
-### [Plugin\UnivaPayForECCUBE4\Controller\Admin\OrderController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/Admin/OrderController.php)
+### [Plugin\UnivaPayPlugin\Controller\Admin\OrderController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/Admin/OrderController.php)
 
 受注編集画面から Ajax で通信するコントローラクラス。
 主に管理画面の操作と連動して、決済サーバーとの通信を実装する
 
-### [Plugin\UnivaPayForECCUBE4\Controller\Admin\PaymentStatusController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/Admin/PaymentStatusController.php)
+### [Plugin\UnivaPayPlugin\Controller\Admin\PaymentStatusController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/Admin/PaymentStatusController.php)
 
 決済ステータス一括変更画面のコントローラクラス
 
-### [Plugin\UnivaPayForECCUBE4\Controller\PaymentCompanyController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/PaymentCompanyController.php)
+### [Plugin\UnivaPayPlugin\Controller\PaymentCompanyController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/PaymentCompanyController.php)
 
 リンク型決済のダミー画面。決済会社のカード入力フォームに相当する。
 
-### [Plugin\UnivaPayForECCUBE4\Controller\PaymentController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/PaymentController.php)
+### [Plugin\UnivaPayPlugin\Controller\PaymentController](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Controller/PaymentController.php)
 
 リンク型決済およびコンビニ決済と連携するためのコントローラクラス。
 
@@ -480,78 +480,78 @@ twigのソースコード内でメッセージを使用する場合には `trans
 
 などを実装する。
 
-### [Plugin\UnivaPayForECCUBE4\Entity\Config](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/Config.php)
+### [Plugin\UnivaPayPlugin\Entity\Config](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/Config.php)
 
 プラグイン設定画面のエンティティクラス。
 
-### [Plugin\UnivaPayForECCUBE4\Entity\CustomerTrait](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/CustomerTrait.php)
+### [Plugin\UnivaPayPlugin\Entity\CustomerTrait](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/CustomerTrait.php)
 
 Customer 拡張用のトレイト。決済会社から取得した、クレジットカード等の JSON データを格納する。
 
-### [Plugin\UnivaPayForECCUBE4\Entity\OrderTrait](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/OrderTrait.php)
+### [Plugin\UnivaPayPlugin\Entity\OrderTrait](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/OrderTrait.php)
 
 Order 拡張用のトレイト。クレジットカードのトークンや、決済ステータス、コンビニ種別などを格納する。
 
-### [Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/PaymentStatus.php)
+### [Plugin\UnivaPayPlugin\Entity\PaymentStatus](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/PaymentStatus.php)
 
 決済ステータスのエンティティクラス。
 
-### [Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/CvsPaymentStatus.php)
+### [Plugin\UnivaPayPlugin\Entity\CvsPaymentStatus](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/CvsPaymentStatus.php)
 
 コンビニ決済の決済ステータスのエンティティクラス。
 
-### [Plugin\UnivaPayForECCUBE4\Entity\CvsType](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/CvsType.php)
+### [Plugin\UnivaPayPlugin\Entity\CvsType](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Entity/CvsType.php)
 
 コンビニの種別のエンティティクラス。
 
-### [Plugin\UnivaPayForECCUBE4\Event](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Event.php)
+### [Plugin\UnivaPayPlugin\Event](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Event.php)
 
 プラグインで使用する `EventSubscriber`
 管理画面のテンプレートを拡張するために使用している。
 
-### [Plugin\UnivaPayForECCUBE4\Form\Extension\CreditCardExtention](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Extension/CreditCardExtention.php)
+### [Plugin\UnivaPayPlugin\Form\Extension\CreditCardExtention](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Extension/CreditCardExtention.php)
 
 クレジットカード払い用のフォームエクステンション。
 ご注文情報入力画面に、クレジットカード入力フォームを実装するために使用する。
 
-### [Plugin\UnivaPayForECCUBE4\Form\Extension\CvsExtension](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Extension/CvsExtension.php)
+### [Plugin\UnivaPayPlugin\Form\Extension\CvsExtension](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Extension/CvsExtension.php)
 
 コンビニ決済用のフォームエクステンション。
 ご注文情報入力画面に、コンビニ選択フォームを実装するために使用する。
 
-### [Plugin\UnivaPayForECCUBE4\Form\Type\Admin\ConfigType](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Type/Admin/ConfigType.php)
+### [Plugin\UnivaPayPlugin\Form\Type\Admin\ConfigType](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Type/Admin/ConfigType.php)
 
 プラグイン設定画面用のフォームタイプ
 
-### [Plugin\UnivaPayForECCUBE4\Form\Type\Admin\SearchPaymentType](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Type/Admin/SearchPaymentType.php)
+### [Plugin\UnivaPayPlugin\Form\Type\Admin\SearchPaymentType](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Form/Type/Admin/SearchPaymentType.php)
 
 決済ステータス一括変更画面用のフォームタイプ
 
-### [Plugin\UnivaPayForECCUBE4\Nav](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Nav.php)
+### [Plugin\UnivaPayPlugin\Nav](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Nav.php)
 
 管理画面ナビ拡張用クラス
 
-### [Plugin\UnivaPayForECCUBE4\PluginManager](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/PluginManager.php)
+### [Plugin\UnivaPayPlugin\PluginManager](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/PluginManager.php)
 
 PluginManager クラス。 install/uninstall/enable/disable の処理を実装する。
 
-### [Plugin\UnivaPayForECCUBE4\PluginManager\Repository\ConfigRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/ConfigRepository.php)
+### [Plugin\UnivaPayPlugin\PluginManager\Repository\ConfigRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/ConfigRepository.php)
 
 プラグイン設定画面用のリポジトリクラス
 
-### [Plugin\UnivaPayForECCUBE4\PluginManager\Repository\PaymentStatusRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/PaymentStatusRepository.php)
+### [Plugin\UnivaPayPlugin\PluginManager\Repository\PaymentStatusRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/PaymentStatusRepository.php)
 
 決済ステータス用のリポジトリクラス
 
-### [Plugin\UnivaPayForECCUBE4\PluginManager\Repository\CvsPaymentStatusRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/CvsPaymentStatusRepository.php)
+### [Plugin\UnivaPayPlugin\PluginManager\Repository\CvsPaymentStatusRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/CvsPaymentStatusRepository.php)
 
 コンビニ決済ステータス用のリポジトリクラス
 
-### [Plugin\UnivaPayForECCUBE4\PluginManager\Repository\CvsTypeRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/CvsTypeRepository.php)
+### [Plugin\UnivaPayPlugin\PluginManager\Repository\CvsTypeRepository](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/Repository/CvsTypeRepository.php)
 
 コンビニ種別用のリポジトリクラス
 
-### [Plugin\UnivaPayForECCUBE4\TwigBlock](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/TwigBlock.php)
+### [Plugin\UnivaPayPlugin\TwigBlock](https://github.com/EC-CUBE/sample-payment-plugin/blob/4.0/TwigBlock.php)
 
 TwigBlock定義用クラス
 

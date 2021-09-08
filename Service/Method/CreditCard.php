@@ -11,7 +11,7 @@
  * file that was distributed with this source code.
  */
 
-namespace Plugin\UnivaPayForECCUBE4\Service\Method;
+namespace Plugin\UnivaPayPlugin\Service\Method;
 
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
@@ -21,8 +21,8 @@ use Eccube\Service\Payment\PaymentMethodInterface;
 use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
-use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
-use Plugin\UnivaPayForECCUBE4\Repository\PaymentStatusRepository;
+use Plugin\UnivaPayPlugin\Entity\PaymentStatus;
+use Plugin\UnivaPayPlugin\Repository\PaymentStatusRepository;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -116,7 +116,7 @@ class CreditCard implements PaymentMethodInterface
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $this->Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
+        $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
 
         // purchaseFlow::prepareを呼び出し, 購入処理を進める.
         $this->purchaseFlow->prepare($this->Order, new PurchaseContext());
@@ -143,7 +143,7 @@ class CreditCard implements PaymentMethodInterface
 
             // 決済ステータスを仮売上へ変更
             $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
-            $this->Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
+            $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
 
             // 注文完了画面/注文完了メールにメッセージを追加
             $this->Order->appendCompleteMessage('トークン -> '.$token);
@@ -161,7 +161,7 @@ class CreditCard implements PaymentMethodInterface
 
             // 決済ステータスを未決済へ変更
             $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-            $this->Order->setUnivaPayForECCUBE4PaymentStatus($PaymentStatus);
+            $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
 
             // 失敗時はpurchaseFlow::rollbackを呼び出す.
             $this->purchaseFlow->rollback($this->Order, new PurchaseContext());

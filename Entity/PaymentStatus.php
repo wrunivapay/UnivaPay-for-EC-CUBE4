@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayForECCUBE4\Entity;
+namespace Plugin\UnivaPayPlugin\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Entity\Master\AbstractMasterEntity;
@@ -8,7 +8,7 @@ use Eccube\Entity\Master\AbstractMasterEntity;
  * PaymentStatus
  *
  * @ORM\Table(name="plg_univapay_payment_status")
- * @ORM\Entity(repositoryClass="Plugin\UnivaPayForECCUBE4\Repository\PaymentStatusRepository")
+ * @ORM\Entity(repositoryClass="Plugin\UnivaPayPlugin\Repository\PaymentStatusRepository")
  */
 class PaymentStatus extends AbstractMasterEntity
 {
