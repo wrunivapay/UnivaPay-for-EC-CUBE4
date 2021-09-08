@@ -1,16 +1,4 @@
 <?php
-
-/*
- * This file is part of EC-CUBE
- *
- * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
- *
- * https://www.ec-cube.co.jp/
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Plugin\UnivaPayForECCUBE4;
 
 use Eccube\Entity\Payment;
@@ -55,7 +43,7 @@ class PluginManager extends AbstractPluginManager
         $Payment->setCharge(0);
         $Payment->setSortNo($sortNo);
         $Payment->setVisible(true);
-        $Payment->setMethod('サンプル決済(トークン)'); // todo nameでいいんじゃないか
+        $Payment->setMethod('UnivaPay');
         $Payment->setMethodClass(CreditCard::class);
 
         $entityManager->persist($Payment);
@@ -79,7 +67,7 @@ class PluginManager extends AbstractPluginManager
         $Payment->setCharge(0);
         $Payment->setSortNo($sortNo);
         $Payment->setVisible(true);
-        $Payment->setMethod('サンプル決済(リンク)'); // todo nameでいいんじゃないか
+        $Payment->setMethod('サンプル決済(リンク)');
         $Payment->setMethodClass(LinkCreditCard::class);
 
         $entityManager->persist($Payment);

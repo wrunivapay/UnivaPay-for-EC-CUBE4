@@ -1,16 +1,4 @@
 <?php
-
-/*
- * This file is part of EC-CUBE
- *
- * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
- *
- * https://www.ec-cube.co.jp/
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Plugin\UnivaPayForECCUBE4;
 
 use Eccube\Event\TemplateEvent;
@@ -37,11 +25,17 @@ class UnivaPayForECCUBE4Event implements EventSubscriberInterface
     {
         return [
             '@admin/Order/edit.twig' => 'onAdminOrderEditTwig',
+            'Shopping/confirm.twig' => 'onShoppingConfirmEditTwig'
         ];
     }
 
     public function onAdminOrderEditTwig(TemplateEvent $event)
     {
         $event->addSnippet('@UnivaPayForECCUBE4/admin/order_edit.twig');
+    }
+
+    public function onShoppingConfirmEditTwig(TemplateEvent $event)
+    {
+        $event->addSnippet('@UnivaPayForECCUBE4/shopping_confirm.twig');
     }
 }
