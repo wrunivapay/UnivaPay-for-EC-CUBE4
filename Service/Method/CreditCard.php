@@ -1,16 +1,4 @@
 <?php
-
-/*
- * This file is part of EC-CUBE
- *
- * Copyright(c) EC-CUBE CO.,LTD. All Rights Reserved.
- *
- * https://www.ec-cube.co.jp/
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 namespace Plugin\UnivaPayPlugin\Service\Method;
 
 use Eccube\Entity\Master\OrderStatus;
@@ -75,27 +63,16 @@ class CreditCard implements PaymentMethodInterface
     /**
      * 注文確認画面遷移時に呼び出される.
      *
-     * クレジットカードの有効性チェックを行う.
-     *
      * @return PaymentResult
      *
      * @throws \Eccube\Service\PurchaseFlow\PurchaseException
      */
     public function verify()
     {
-        // 決済サーバとの通信処理(有効性チェックやカード番号の下4桁取得)
-        // ...
-        //
+        // 註文確定時に決済を行うのでここでは何もしない
 
-        if (true) {
-            $result = new PaymentResult();
-            $result->setSuccess(true);
-            $this->Order->setUnivapayCardNoLast4('****-*****-****-1234');
-        } else {
-            $result = new PaymentResult();
-            $result->setSuccess(false);
-            $result->setErrors([trans('univapay.shopping.verify.error')]);
-        }
+        $result = new PaymentResult();
+        $result->setSuccess(true);
 
         return $result;
     }
@@ -116,7 +93,7 @@ class CreditCard implements PaymentMethodInterface
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
+        $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
 
         // purchaseFlow::prepareを呼び出し, 購入処理を進める.
         $this->purchaseFlow->prepare($this->Order, new PurchaseContext());
@@ -132,18 +109,16 @@ class CreditCard implements PaymentMethodInterface
     public function checkout()
     {
         // 決済サーバに仮売上のリクエスト送る(設定等によって送るリクエストは異なる)
-        // ...
-        //
-        $token = $this->Order->getUnivapayToken();
+        $token = $this->Order->getUnivapayChargeId();
 
-        if (true) {
+        if ($token) {
             // 受注ステータスを新規受付へ変更
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
             $this->Order->setOrderStatus($OrderStatus);
 
             // 決済ステータスを仮売上へ変更
             $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
-            $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
+            $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
 
             // 注文完了画面/注文完了メールにメッセージを追加
             $this->Order->appendCompleteMessage('トークン -> '.$token);
@@ -161,7 +136,7 @@ class CreditCard implements PaymentMethodInterface
 
             // 決済ステータスを未決済へ変更
             $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-            $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
+            $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
 
             // 失敗時はpurchaseFlow::rollbackを呼び出す.
             $this->purchaseFlow->rollback($this->Order, new PurchaseContext());

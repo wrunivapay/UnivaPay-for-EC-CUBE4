@@ -106,7 +106,7 @@ class LinkCreditCard implements PaymentMethodInterface
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $this->Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
+        $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
 
         // purchaseFlow::prepareを呼び出し, 購入処理を進める.
         $this->purchaseFlow->prepare($this->Order, new PurchaseContext());

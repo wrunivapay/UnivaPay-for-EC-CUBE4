@@ -109,7 +109,7 @@ class PaymentController extends AbstractController
 
         // 決済ステータスを未決済へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
+        $Order->setUnivaPayPaymentStatus($PaymentStatus);
 
         // purchaseFlow::rollbackを呼び出し, 購入処理をロールバックする.
         $this->purchaseFlow->rollback($Order, new PurchaseContext());
@@ -169,7 +169,7 @@ class PaymentController extends AbstractController
 
         // 決済ステータスを仮売上へ変更
         $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
-        $Order->setUnivaPayPluginPaymentStatus($PaymentStatus);
+        $Order->setUnivaPayPaymentStatus($PaymentStatus);
 
         // 注文完了メールにメッセージを追加
         $Order->appendCompleteMailMessage('');
@@ -200,7 +200,7 @@ class PaymentController extends AbstractController
         $Order = $this->orderRepository->findOneBy([
             'order_no' => $orderNo,
             'OrderStatus' => $pendingOrderStatus,
-            'UnivaPayPluginPaymentStatus' => $outstandingPaymentStatus,
+            'UnivaPayPaymentStatus' => $outstandingPaymentStatus,
         ]);
 
         return $Order;

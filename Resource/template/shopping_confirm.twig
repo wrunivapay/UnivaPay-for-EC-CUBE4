@@ -1,17 +1,19 @@
 {% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' %}
+{{ form_widget(form.univapay_charge_id) }}
 <script src="https://other-widget.gyro-n.money/client/checkout.js"></script>
 <script>
     form = document.querySelector("#shopping-form");
+    chargeId = document.querySelector("#shopping_order_univapay_charge_id");
+    form.appendChild(chargeId);
     checkout = UnivapayCheckout.create({
         appId: "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJhcHBfdG9rZW4iLCJpYXQiOjE2MjgxNTk4NDksIm1lcmNoYW50X2lkIjoiMTFlYjljMGUtZjk2Zi04NzE4LWI4ZjQtM2JlZWZhMjQ3ZTRiIiwic3RvcmVfaWQiOiIxMWViOWMwZi00NDgxLTg1NmMtYWQzOS1mMzZmNGEwZDZlMDgiLCJkb21haW5zIjpbIioiXSwibW9kZSI6InRlc3QiLCJjcmVhdG9yX2lkIjoiMTFlYjljMGUtZjk2Zi04NzE4LWI4ZjQtM2JlZWZhMjQ3ZTRiIiwidmVyc2lvbiI6MSwianRpIjoiMTFlYmY1ZDktMjFmYS1iYTIyLTk3ZDEtMjFhOWYwMzUzNjFkIn0.KX22rkeffVMu7C2CxsATSyBjXgK3BTTGQcLNaFLL9cw",
         checkout: "payment",
         amount: 1,
         currency: "jpy",
-        autoClose: true,
         email: "{{ Order.email }}",
         metadata: { orderNo: "{{ Order.order_no }}" },
         onSuccess: (result) => {
-            console.log(result);
+            chargeId.value = result.response.id;
             form.submit();
         },
         onError: () => {
