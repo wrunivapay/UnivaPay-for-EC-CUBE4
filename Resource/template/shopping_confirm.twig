@@ -7,7 +7,7 @@
     chargeId = document.querySelector("#shopping_order_univapay_charge_id");
     form.appendChild(chargeId);
     checkout = UnivapayCheckout.create({
-        appId: "config.getAppId()",
+        appId: "{{ config.getAppId() }}",
         checkout: "payment",
         amount: {{ Order.payment_total }},
         currency: "{{ Order.currency_code }}",
