@@ -9,7 +9,7 @@ univapay.admin.order.change_price.success: 取消処理を行いました。
 univapay.admin.payment_status.bulk_action.success: %count%件を処理しました。
 
 # twig
-univapay.admin.config.title: サンプル決済
+univapay.admin.config.title: UnivaPay
 univapay.admin.config.sub_title: プラグイン一覧
 univapay.admin.config.header: 設定
 univapay.admin.config.save: 登録
@@ -47,4 +47,3 @@ univapay.admin.payment_status.bulk_modal_action_exec: 実行
 univapay.admin.payment_status.bulk_modal_action_cancel: キャンセル
 univapay.admin.payment_status.bulk_alert: 選択されていません
 univapay.shopping.checkout.error: カード決済に失敗しました。
-univapay.shopping.verify.error: カードを利用することができません。
