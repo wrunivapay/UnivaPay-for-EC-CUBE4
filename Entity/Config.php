@@ -30,7 +30,7 @@ class Config
     /**
      * @var string
      *
-     * @ORM\Column(name="app_id", type="string", length=255, nullable=true)
+     * @ORM\Column(name="app_id", type="string", length=512, nullable=true)
      */
     private $app_id;
 

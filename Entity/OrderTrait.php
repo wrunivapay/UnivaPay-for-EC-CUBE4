@@ -10,7 +10,7 @@ use Eccube\Annotation\EntityExtension;
 trait OrderTrait
 {
     /**
-     * トークンを保持するカラム.
+     * 決済IDを保持するカラム.
      *
      * dtb_order.univapay_charge_id
      *
