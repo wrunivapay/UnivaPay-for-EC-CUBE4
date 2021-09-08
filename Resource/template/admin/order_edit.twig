@@ -2,7 +2,6 @@
     $(function () {
         // ページ最下部に移動
         $('#univapay-info').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
-        $('#univapay-cvsinfo').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
 
         // 取消処理実行
         $('#univapay-action__cancel').on('click', function () {
@@ -65,40 +64,6 @@
                         </ul>
                     </div>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div id="univapay-cvsinfo" class="card rounded border-0 mb-4">
-        <div class="card-header">
-            <div class="row">
-                <div class="col-8">
-                    <span class="card-title">{{ 'univapay.admin.order_edit.cvs_title'|trans }}</span>
-                </div>
-                <div class="col-4 text-right"><a data-toggle="collapse" href="#univapay-cvsinfo__body"
-                                                 aria-expanded="false" aria-controls="univapay-cvsinfo__body"><i
-                                                                                                                     class="fa fa-angle-up fa-lg"></i></a></div>
-            </div>
-        </div>
-        <div class="collapse show ec-cardCollapse" id="univapay-cvsinfo__body">
-            <div class="card-body">
-                <div class="row mb-2">
-                    <div class="col-2"><span>{{ 'univapay.admin.order_edit.cvs_payment_status'|trans }}</span></div>
-                    <div class="col">
-                        {{ Order.univapay_cvs_payment_status is not empty ? Order.univapay_cvs_payment_status.name : '--' }}
-                    </div>
-                </div>
-                <div class="row mb-2">
-                    <div class="col-2"><span>{{ 'univapay.admin.order_edit.cvs_type'|trans }}</span></div>
-                    <div class="col">
-                        {{ Order.univapay_cvs_type is not empty ? Order.univapay_cvs_type.name : '--' }}
-                    </div>
-                </div>
-            </div>
-            <div class="card-body">
-                決済状況変更のテストはこちらから:
-                <a target="_blank" href="{{ url('univapay_receive_cvs_status') }}?no={{ Order.orderNo }}&cvs_status={{ constant('Plugin\\UnivaPayForECCUBE4\\Entity\\CvsPaymentStatus::COMPLETE') }}">決済完了</a>
-                <a target="_blank" href="{{ url('univapay_receive_cvs_status') }}?no={{ Order.orderNo }}&cvs_status={{ constant('Plugin\\UnivaPayForECCUBE4\\Entity\\CvsPaymentStatus::EXPIRED') }}">期限切れ</a>
-                <a target="_blank" href="{{ url('univapay_receive_cvs_status') }}?no={{ Order.orderNo }}&cvs_status={{ constant('Plugin\\UnivaPayForECCUBE4\\Entity\\CvsPaymentStatus::FAILURE') }}">決済失敗</a>
             </div>
         </div>
     </div>

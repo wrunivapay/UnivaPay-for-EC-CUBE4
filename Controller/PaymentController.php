@@ -12,9 +12,7 @@ use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Eccube\Service\ShoppingService;
 use Eccube\Service\OrderStateMachine;
 use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
-use Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus;
 use Plugin\UnivaPayForECCUBE4\Repository\PaymentStatusRepository;
-use Plugin\UnivaPayForECCUBE4\Repository\CvsPaymentStatusRepository;
 use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -44,11 +42,6 @@ class PaymentController extends AbstractController
     protected $paymentStatusRepository;
 
     /**
-     * @var CvsPaymentStatusRepository
-     */
-    protected $cvsPaymentStatusRepository;
-
-    /**
      * @var PurchaseFlow
      */
     protected $purchaseFlow;
@@ -70,7 +63,6 @@ class PaymentController extends AbstractController
      * @param OrderRepository $orderRepository
      * @param OrderStatusRepository $orderStatusRepository
      * @param PaymentStatusRepository $paymentStatusRepository
-     * @param CvsPaymentStatusRepository $CvsPaymentStatusRepository
      * @param PurchaseFlow $shoppingPurchaseFlow,
      * @param CartService $cartService
      * @param OrderStateMachine $orderStateMachine
@@ -79,7 +71,6 @@ class PaymentController extends AbstractController
         OrderRepository $orderRepository,
         OrderStatusRepository $orderStatusRepository,
         PaymentStatusRepository $paymentStatusRepository,
-        CvsPaymentStatusRepository $cvsPaymentStatusRepository,
         PurchaseFlow $shoppingPurchaseFlow,
         CartService $cartService,
         OrderStateMachine $orderStateMachine
@@ -87,7 +78,6 @@ class PaymentController extends AbstractController
         $this->orderRepository = $orderRepository;
         $this->orderStatusRepository = $orderStatusRepository;
         $this->paymentStatusRepository = $paymentStatusRepository;
-        $this->cvsPaymentStatusRepository = $cvsPaymentStatusRepository;
         $this->purchaseFlow = $shoppingPurchaseFlow;
         $this->cartService = $cartService;
         $this->orderStateMachine = $orderStateMachine;
@@ -186,82 +176,6 @@ class PaymentController extends AbstractController
 
         // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
         $this->purchaseFlow->commit($Order, new PurchaseContext());
-
-        $this->entityManager->flush();
-
-        return new Response('OK!!');
-    }
-
-    /**
-     * 結果通知URLを受け取る(コンビニ決済).
-     *
-     * @Route("/univapay_receive_cvs_status", name="univapay_receive_cvs_status")
-     */
-    public function receiveCvsStatus(Request $request)
-    {
-        // 決済会社から受注番号を受け取る
-        $orderNo = $request->get('no');
-        /** @var Order $Order */
-        $Order = $this->orderRepository->findOneBy([
-            'order_no' => $orderNo,
-        ]);
-
-        if (!$Order) {
-            throw new NotFoundHttpException();
-        }
-
-        if ($Order->getPayment()->getMethodClass() !== Convenience::class) {
-            throw new BadRequestHttpException();
-        }
-
-        $cvs_status = $request->get('cvs_status');
-
-        switch ($cvs_status) {
-            // 決済失敗
-            case CvsPaymentStatus::FAILURE:
-                // 受注ステータスをキャンセルへ変更
-                $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
-                if ($this->orderStateMachine->can($Order, $OrderStatus)) {
-                    $this->orderStateMachine->apply($Order, $OrderStatus);
-
-                    // 決済ステータスを決済失敗へ変更
-                    $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::FAILURE);
-                    $Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
-                } else {
-                    throw new BadRequestHttpException();
-                }
-
-                break;
-            // 期限切れ
-            case CvsPaymentStatus::EXPIRED:
-                // 受注ステータスをキャンセルへ変更
-                $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
-                if ($this->orderStateMachine->can($Order, $OrderStatus)) {
-                    $this->orderStateMachine->apply($Order, $OrderStatus);
-
-                    // 決済ステータスを期限切れへ変更
-                    $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::EXPIRED);
-                    $Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
-                } else {
-                    throw new BadRequestHttpException();
-                }
-
-                break;
-            // 決済完了
-            case CvsPaymentStatus::COMPLETE:
-            default:
-                // 受注ステータスを対応中へ変更
-                $OrderStatus = $this->orderStatusRepository->find(OrderStatus::IN_PROGRESS);
-                if ($this->orderStateMachine->can($Order, $OrderStatus)) {
-                    $this->orderStateMachine->apply($Order, $OrderStatus);
-
-                    // 決済ステータスを決済完了へ変更
-                    $PaymentStatus = $this->cvsPaymentStatusRepository->find(CvsPaymentStatus::COMPLETE);
-                    $Order->setUnivaPayForECCUBE4CvsPaymentStatus($PaymentStatus);
-                } else {
-                    throw new BadRequestHttpException();
-                }
-        }
 
         $this->entityManager->flush();
 

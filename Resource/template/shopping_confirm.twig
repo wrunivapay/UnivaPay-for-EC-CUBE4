@@ -1,3 +1,4 @@
+{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayForECCUBE4\\Service\\Method\\CreditCard' %}
 <script src="https://other-widget.gyro-n.money/client/checkout.js"></script>
 <script>
     form = document.querySelector("#shopping-form");
@@ -9,6 +10,14 @@
         autoClose: true,
         onSuccess: () => {
             form.submit();
+        },
+        onError: () => {
+            alert("エラーが発生しました。サイト管理者にお問い合わせください。");
+            window.history.back(-1);
+        },
+        closed: () => {
+            alert("決済が中断されました");
+            window.history.back(-1);
         }
     });
     form.addEventListener("submit", () => {
@@ -16,3 +25,4 @@
         checkout.open();
     });
 </script>
+{% endif %}

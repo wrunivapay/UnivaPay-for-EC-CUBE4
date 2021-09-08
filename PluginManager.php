@@ -6,8 +6,6 @@ use Eccube\Plugin\AbstractPluginManager;
 use Eccube\Repository\PaymentRepository;
 use Plugin\UnivaPayForECCUBE4\Entity\Config;
 use Plugin\UnivaPayForECCUBE4\Entity\PaymentStatus;
-use Plugin\UnivaPayForECCUBE4\Entity\CvsPaymentStatus;
-use Plugin\UnivaPayForECCUBE4\Entity\CvsType;
 use Plugin\UnivaPayForECCUBE4\Service\Method\LinkCreditCard;
 use Plugin\UnivaPayForECCUBE4\Service\Method\Convenience;
 use Plugin\UnivaPayForECCUBE4\Service\Method\CreditCard;
@@ -19,11 +17,8 @@ class PluginManager extends AbstractPluginManager
     {
         $this->createTokenPayment($container);
         $this->createLinkPayment($container);
-        $this->createCvsPayment($container);
         $this->createConfig($container);
         $this->createPaymentStatuses($container);
-        $this->createCvsPaymentStatuses($container);
-        $this->createCvsTypes($container);
     }
 
     private function createTokenPayment(ContainerInterface $container)
@@ -74,30 +69,6 @@ class PluginManager extends AbstractPluginManager
         $entityManager->flush($Payment);
     }
 
-    private function createCvsPayment(ContainerInterface $container)
-    {
-        $entityManager = $container->get('doctrine')->getManager();
-        $paymentRepository = $container->get(PaymentRepository::class);
-
-        $Payment = $paymentRepository->findOneBy([], ['sort_no' => 'DESC']);
-        $sortNo = $Payment ? $Payment->getSortNo() + 1 : 1;
-
-        $Payment = $paymentRepository->findOneBy(['method_class' => Cvs::class]);
-        if ($Payment) {
-            return;
-        }
-
-        $Payment = new Payment();
-        $Payment->setCharge(0);
-        $Payment->setSortNo($sortNo);
-        $Payment->setVisible(true);
-        $Payment->setMethod('コンビニ決済');
-        $Payment->setMethodClass(Convenience::class);
-
-        $entityManager->persist($Payment);
-        $entityManager->flush($Payment);
-    }
-
     private function createConfig(ContainerInterface $container)
     {
         $entityManager = $container->get('doctrine.orm.entity_manager');
@@ -142,27 +113,5 @@ class PluginManager extends AbstractPluginManager
             PaymentStatus::CANCEL => 'キャンセル',
         ];
         $this->createMasterData($container, $statuses, PaymentStatus::class);
-    }
-
-    private function createCvsPaymentStatuses(ContainerInterface $container)
-    {
-        $statuses = [
-            CvsPaymentStatus::OUTSTANDING => '未決済',
-            CvsPaymentStatus::REQUEST => '要求成功',
-            CvsPaymentStatus::COMPLETE => '決済完了',
-            CvsPaymentStatus::FAILURE => '決済失敗',
-            CvsPaymentStatus::EXPIRED => '期限切れ',
-        ];
-        $this->createMasterData($container, $statuses, CvsPaymentStatus::class);
-    }
-
-    private function createCvsTypes(ContainerInterface $container)
-    {
-        $statuses = [
-            CvsType::LAWSON => 'ローソン',
-            CvsType::MINISTOP => 'ミニストップ',
-            CvsType::SEVENELEVEN => 'セブンイレブン',
-        ];
-        $this->createMasterData($container, $statuses, CvsType::class);
     }
 }
