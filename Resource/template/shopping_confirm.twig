@@ -8,7 +8,8 @@
         amount: 1,
         currency: "jpy",
         autoClose: true,
-        onSuccess: () => {
+        onSuccess: (result) => {
+            console.log(result);
             form.submit();
         },
         onError: () => {
