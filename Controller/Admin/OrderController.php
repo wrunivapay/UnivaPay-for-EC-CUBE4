@@ -7,9 +7,28 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
+use Univapay\UnivapayClient;
+use Univapay\UnivapayClientOptions;
+use Univapay\Resources\Authentication\AppJWT;
 
 class OrderController extends AbstractController
 {
+    /**
+     * @var ConfigRepository
+     */
+    protected $configRepository;
+
+    /**
+     * ConfigController constructor.
+     *
+     * @param ConfigRepository $configRepository
+     */
+    public function __construct(ConfigRepository $configRepository)
+    {
+        $this->configRepository = $configRepository;
+    }
+
     /**
      * 受注編集 > 決済のキャンセル処理
      *
@@ -19,7 +38,8 @@ class OrderController extends AbstractController
     public function cancel(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            // 通信処理
+            $client = $hits->initClient();
+            $charge = $this->getCharge($client, $Order->getUnivapayChargeId());
 
             $this->addSuccess('univapay.admin.order.cancel.success', 'admin');
 
@@ -38,7 +58,8 @@ class OrderController extends AbstractController
     public function changePrice(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            // 通信処理
+            $client = $hits->initClient();
+            $charge = $this->getCharge($client, $Order->getUnivapayChargeId());
 
             $this->addSuccess('univapay.admin.order.change_price.success', 'admin');
 
@@ -57,13 +78,30 @@ class OrderController extends AbstractController
     public function getStatus(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            dump($Order);
+            $client = $hits->initClient();
+            $charge = $this->getCharge($client, $Order->getUnivapayChargeId());
 
-            $this->addSuccess('univapay.admin.order.get.success', 'admin');
-
-            return $this->json([]);
+            return $this->json(json_encode($charge));
         }
 
         throw new BadRequestHttpException();
+    }
+
+    // get charge
+    private function getCharge($client, $chargeId) {
+        $client->getMe();
+        $stores = $client->listStores();
+        $store = current($stores->items)->fetch();
+
+        return $client->getCharge($store, $chargeId);
+    }
+
+    // init client
+    private function initClient() {
+        $Config = $this->configRepository->get();
+        $clientOptions = new UnivapayClientOptions($Config->getApiUrl());
+        $client = new UnivapayClient(AppJWT::createToken($Config->getAppId(), $Config->getAppSecret(), $clientOptions));
+
+        return $client;
     }
 }
