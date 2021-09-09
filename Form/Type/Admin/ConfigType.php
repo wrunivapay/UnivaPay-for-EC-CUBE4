@@ -19,6 +19,11 @@ class ConfigType extends AbstractType
                     new NotBlank(),
                 ],
             ])
+            ->add('app_secret', TextType::class, [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+            ])
             ->add('api_url', UrlType::class, [
                 'constraints' => [
                     new NotBlank(),

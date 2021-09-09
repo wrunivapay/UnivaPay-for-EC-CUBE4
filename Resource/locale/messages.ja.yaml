@@ -16,34 +16,11 @@ univapay.admin.config.save: 登録
 univapay.admin.config.required: 必須
 univapay.admin.config.back: プラグイン一覧
 univapay.admin.config.api_url: API URL
-univapay.admin.config.app_id: APP ID
+univapay.admin.config.app_id: トークン
+univapay.admin.config.app_secret: シークレット
 univapay.admin.order_edit.title: 決済情報
 univapay.admin.order_edit.payment_status: 決済種別
 univapay.admin.order_edit.payment_action: 決済操作
 univapay.admin.order_edit.payment_action_cancel: 取消実行
 univapay.admin.order_edit.payment_action_change_price: 金額変更
-univapay.admin.payment_status.title: 決済状況一覧
-univapay.admin.payment_status.sub_title: 受注管理
-univapay.admin.payment_status.search: 検索
-univapay.admin.payment_status.search_result_count: 検索結果：%count%件が該当しました
-univapay.admin.payment_status.search_condition_payment: 支払方法
-univapay.admin.payment_status.search_condition_order_status: 対応状況
-univapay.admin.payment_status.search_condition_payment_status: 決済状況
-univapay.admin.payment_status.invalid_condition: 検索条件に誤りがあります
-univapay.admin.payment_status.no_result: 検索条件に合致するデータが見つかりませんでした
-univapay.admin.payment_status.change_condition: 検索条件を変えて、再度検索をお試しください。
-univapay.admin.payment_status.display_count: %count%件
-univapay.admin.payment_status.col_order_date: 受注日時
-univapay.admin.payment_status.col_order_no: 注文番号
-univapay.admin.payment_status.col_order_name: お名前
-univapay.admin.payment_status.col_order_payment: 支払方法
-univapay.admin.payment_status.col_order_price: 購入金額
-univapay.admin.payment_status.col_order_staus: 対応状況
-univapay.admin.payment_status.bulk_label: 一括操作
-univapay.admin.payment_status.bulk_submit: 決定
-univapay.admin.payment_status.bulk_modal_title: 一括操作の確認
-univapay.admin.payment_status.bulk_modal_body: 複数の項目を変更します。実行してよろしいですか
-univapay.admin.payment_status.bulk_modal_action_exec: 実行
-univapay.admin.payment_status.bulk_modal_action_cancel: キャンセル
-univapay.admin.payment_status.bulk_alert: 選択されていません
 univapay.shopping.checkout.error: カード決済に失敗しました。

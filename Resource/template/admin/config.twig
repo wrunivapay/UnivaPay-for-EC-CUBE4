@@ -23,19 +23,27 @@
                         <div class="card-header"><span>{{ 'univapay.admin.config.header'|trans }}</span></div>
                         <div class="card-body">
                             <div class="row">
-                                <div class="col-3"><span>{{ 'univapay.admin.config.api_url'|trans }}</span><span
-                                            class="badge badge-primary ml-1">{{ 'univapay.admin.config.required'|trans }}</span></div>
-                                <div class="col mb-2">
-                                    {{ form_widget(form.api_url) }}
-                                    {{ form_errors(form.api_url) }}
-                                </div>
-                            </div>
-                            <div class="row">
                                 <div class="col-3"><span>{{ 'univapay.admin.config.app_id'|trans }}</span><span
                                             class="badge badge-primary ml-1">{{ 'univapay.admin.config.required'|trans }}</span></div>
                                 <div class="col mb-2">
                                     {{ form_widget(form.app_id) }}
                                     {{ form_errors(form.app_id) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'univapay.admin.config.app_secret'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'univapay.admin.config.required'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.app_secret) }}
+                                    {{ form_errors(form.app_secret) }}
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'univapay.admin.config.api_url'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'univapay.admin.config.required'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.api_url) }}
+                                    {{ form_errors(form.api_url) }}
                                 </div>
                             </div>
                         </div>

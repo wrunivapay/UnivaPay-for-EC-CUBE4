@@ -20,19 +20,6 @@ trait OrderTrait
     private $univapay_charge_id;
 
     /**
-     * 決済ステータスを保持するカラム.
-     *
-     * dtb_order.univapay_payment_status_id
-     *
-     * @var UnivaPayPaymentStatus
-     * @ORM\ManyToOne(targetEntity="Plugin\UnivaPayPlugin\Entity\PaymentStatus")
-     * @ORM\JoinColumns({
-     *   @ORM\JoinColumn(name="univapay_payment_status_id", referencedColumnName="id")
-     * })
-     */
-    private $UnivaPayPaymentStatus;
-
-    /**
      * @return string
      */
     public function getUnivapayChargeId()
@@ -50,21 +37,5 @@ trait OrderTrait
         $this->univapay_charge_id = $univapay_charge_id;
 
         return $this;
-    }
-
-    /**
-     * @return PaymentStatus
-     */
-    public function getUnivaPayPaymentStatus()
-    {
-        return $this->UnivaPayPaymentStatus;
-    }
-
-    /**
-     * @param PaymentStatus $UnivaPayPaymentStatus|null
-     */
-    public function setUnivaPayPaymentStatus(PaymentStatus $UnivaPayPaymentStatus = null)
-    {
-        $this->UnivaPayPaymentStatus = $UnivaPayPaymentStatus;
     }
 }

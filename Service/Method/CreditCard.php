@@ -9,8 +9,6 @@ use Eccube\Service\Payment\PaymentMethodInterface;
 use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
-use Plugin\UnivaPayPlugin\Entity\PaymentStatus;
-use Plugin\UnivaPayPlugin\Repository\PaymentStatusRepository;
 use Symfony\Component\Form\FormInterface;
 
 /**
@@ -34,11 +32,6 @@ class CreditCard implements PaymentMethodInterface
     private $orderStatusRepository;
 
     /**
-     * @var PaymentStatusRepository
-     */
-    private $paymentStatusRepository;
-
-    /**
      * @var PurchaseFlow
      */
     private $purchaseFlow;
@@ -47,16 +40,13 @@ class CreditCard implements PaymentMethodInterface
      * CreditCard constructor.
      *
      * @param OrderStatusRepository $orderStatusRepository
-     * @param PaymentStatusRepository $paymentStatusRepository
      * @param PurchaseFlow $shoppingPurchaseFlow
      */
     public function __construct(
         OrderStatusRepository $orderStatusRepository,
-        PaymentStatusRepository $paymentStatusRepository,
         PurchaseFlow $shoppingPurchaseFlow
     ) {
         $this->orderStatusRepository = $orderStatusRepository;
-        $this->paymentStatusRepository = $paymentStatusRepository;
         $this->purchaseFlow = $shoppingPurchaseFlow;
     }
 
@@ -91,10 +81,6 @@ class CreditCard implements PaymentMethodInterface
         $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PENDING);
         $this->Order->setOrderStatus($OrderStatus);
 
-        // 決済ステータスを未決済へ変更
-        $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-        $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
-
         // purchaseFlow::prepareを呼び出し, 購入処理を進める.
         $this->purchaseFlow->prepare($this->Order, new PurchaseContext());
     }
@@ -116,10 +102,6 @@ class CreditCard implements PaymentMethodInterface
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
             $this->Order->setOrderStatus($OrderStatus);
 
-            // 決済ステータスを仮売上へ変更
-            $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::PROVISIONAL_SALES);
-            $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
-
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
 
@@ -129,10 +111,6 @@ class CreditCard implements PaymentMethodInterface
             // 受注ステータスを購入処理中へ変更
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PROCESSING);
             $this->Order->setOrderStatus($OrderStatus);
-
-            // 決済ステータスを未決済へ変更
-            $PaymentStatus = $this->paymentStatusRepository->find(PaymentStatus::OUTSTANDING);
-            $this->Order->setUnivaPayPaymentStatus($PaymentStatus);
 
             // 失敗時はpurchaseFlow::rollbackを呼び出す.
             $this->purchaseFlow->rollback($this->Order, new PurchaseContext());

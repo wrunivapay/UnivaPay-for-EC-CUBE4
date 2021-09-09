@@ -35,6 +35,13 @@ class Config
     private $app_id;
 
     /**
+     * @var string
+     *
+     * @ORM\Column(name="app_secret", type="string", length=32, nullable=true)
+     */
+    private $app_secret;
+
+    /**
      * @return int
      */
     public function getId()
@@ -78,6 +85,26 @@ class Config
     public function setAppId($app_id)
     {
         $this->app_id = $app_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getAppSecret()
+    {
+        return $this->app_secret;
+    }
+
+    /**
+     * @param string $app_secret
+     *
+     * @return $this;
+     */
+    public function setAppSecret($app_secret)
+    {
+        $this->app_secret = $app_secret;
 
         return $this;
     }
