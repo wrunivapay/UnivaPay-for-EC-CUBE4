@@ -47,4 +47,23 @@ class OrderController extends AbstractController
 
         throw new BadRequestHttpException();
     }
+
+    /**
+     * 受注編集 > 決済状況の取得
+     *
+     * @Method("GET")
+     * @Route("/%eccube_admin_route%/univapay/order/get/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_get")
+     */
+    public function getStatus(Request $request, Order $Order)
+    {
+        if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
+            dump($Order);
+
+            $this->addSuccess('univapay.admin.order.get.success', 'admin');
+
+            return $this->json([]);
+        }
+
+        throw new BadRequestHttpException();
+    }
 }

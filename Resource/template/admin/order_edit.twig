@@ -4,12 +4,20 @@
         // ページ最下部に移動
         $('#univapay-info').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
 
+        // 決済状況取得
+        $.ajax({
+            type: 'GET',
+            url: '{{ url('univapay_admin_order_get', { id: Order.id }) }}',
+        }).always(function() {
+            console.log(this);
+        });
+
         // 取消処理実行
         $('#univapay-action__cancel').on('click', function () {
             $('#univapay-info__body button').prop('disabled', true);
             $.ajax({
                 type: 'POST',
-                {# url: '{{ url('univapay_admin_order_cancel', { id: Order.id }) }}', #}
+                url: '{{ url('univapay_admin_order_cancel', { id: Order.id }) }}',
             }).always(function () {
                 location.href = location.href;
             });
@@ -20,7 +28,7 @@
             $('#univapay-info__body button').prop('disabled', true);
             $.ajax({
                 type: 'POST',
-                {# url: '{{ url('univapay_admin_order_change_price', { id: Order.id }) }}', #}
+                url: '{{ url('univapay_admin_order_change_price', { id: Order.id }) }}',
             }).always(function () {
                 location.href = location.href;
             });
@@ -44,7 +52,7 @@
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univapay.admin.order_edit.payment_status'|trans }}</span></div>
                     <div class="col">
-                        {{ Order.univapay_payment_status is not empty ? Order.univapay_payment_status.name : '--' }}
+                        {{ '--' }}
                     </div>
                 </div>
                 <div class="row mb-2">

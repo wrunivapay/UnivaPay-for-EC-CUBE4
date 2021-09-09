@@ -13,6 +13,7 @@
         currency: "{{ Order.currency_code }}",
         email: "{{ Order.email }}",
         metadata: { orderNo: "{{ Order.order_no }}" },
+        capture: false,
         onSuccess: (result) => {
             chargeId.value = result.response.id;
             form.submit();
