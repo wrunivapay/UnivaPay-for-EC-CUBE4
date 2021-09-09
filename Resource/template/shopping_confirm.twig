@@ -1,7 +1,7 @@
 {% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' %}
 {% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findById(1)[0] %}
 {{ form_widget(form.univapay_charge_id) }}
-<script src="{{ config.getApiUrl() }}/client/checkout.js"></script>
+<script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
 <script>
     form = document.querySelector("#shopping-form");
     chargeId = document.querySelector("#shopping_order_univapay_charge_id");

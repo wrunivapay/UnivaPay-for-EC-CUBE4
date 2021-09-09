@@ -3,10 +3,7 @@ univapay.admin.nav.payment_list: 決済状況一覧
 
 # flash messages
 univapay.admin.save.success: 登録しました。
-univapay.admin.save.failed: 登録に失敗しました。
-univapay.admin.order.cancel.success: 取消処理を行いました。
-univapay.admin.order.change_price.success: 取消処理を行いました。
-univapay.admin.payment_status.bulk_action.success: %count%件を処理しました。
+univapay.admin.order.change_status.success: ステータスを変更しました。
 
 # twig
 univapay.admin.config.title: UnivaPay
@@ -15,12 +12,13 @@ univapay.admin.config.header: 設定
 univapay.admin.config.save: 登録
 univapay.admin.config.required: 必須
 univapay.admin.config.back: プラグイン一覧
+univapay.admin.config.widget_url: ウィジェット URL
 univapay.admin.config.api_url: API URL
 univapay.admin.config.app_id: トークン
 univapay.admin.config.app_secret: シークレット
 univapay.admin.order_edit.title: 決済情報
-univapay.admin.order_edit.payment_status: 決済種別
+univapay.admin.order_edit.payment_status: ステータス
 univapay.admin.order_edit.payment_action: 決済操作
-univapay.admin.order_edit.payment_action_cancel: 取消実行
-univapay.admin.order_edit.payment_action_change_price: 金額変更
+univapay.admin.order_edit.payment_action_capture: キャプチャ
+univapay.admin.order_edit.payment_action_cancel: 取消
 univapay.shopping.checkout.error: カード決済に失敗しました。

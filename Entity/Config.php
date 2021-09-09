@@ -23,6 +23,13 @@ class Config
     /**
      * @var string
      *
+     * @ORM\Column(name="widget_url", type="string", length=1024, nullable=true)
+     */
+    private $widget_url;
+
+    /**
+     * @var string
+     *
      * @ORM\Column(name="api_url", type="string", length=1024, nullable=true)
      */
     private $api_url;
@@ -47,6 +54,26 @@ class Config
     public function getId()
     {
         return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWidgetUrl()
+    {
+        return $this->widget_url;
+    }
+
+    /**
+     * @param string $widget_url
+     *
+     * @return $this;
+     */
+    public function setWidgetUrl($widget_url)
+    {
+        $this->widget_url = $widget_url;
+
+        return $this;
     }
 
     /**

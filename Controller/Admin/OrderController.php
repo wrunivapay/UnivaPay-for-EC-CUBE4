@@ -11,9 +11,14 @@ use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
 use Univapay\UnivapayClient;
 use Univapay\UnivapayClientOptions;
 use Univapay\Resources\Authentication\AppJWT;
+use Money\Currency;
+use Money\Money;
 
 class OrderController extends AbstractController
 {
+    private $token;
+    private $client;
+
     /**
      * @var ConfigRepository
      */
@@ -30,47 +35,42 @@ class OrderController extends AbstractController
     }
 
     /**
-     * 受注編集 > 決済のキャンセル処理
+     * Change status
      *
      * @Method("POST")
-     * @Route("/%eccube_admin_route%/univapay/order/cancel/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_cancel")
+     * @Route("/%eccube_admin_route%/univapay/order/change/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_change")
      */
-    public function cancel(Request $request, Order $Order)
+    public function changeStatus(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $client = $hits->initClient();
-            $charge = $this->getCharge($client, $Order->getUnivapayChargeId());
+            $this->initClient();
+            $chargeId = $Order->getUnivapayChargeId();
+            $charge = $this->getCharge($chargeId);
+            switch ($request->get("action")) {
+                case "capture":
+                    $charge->capture();
+                    break;
+                case "cancel":
+                    if($charge->status->getName() === "SUCCESSFUL") {
+                        $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency.""));
+                        $charge->createRefund($money)->awaitResult();
+                    } else {
+                        $charge->cancel()->awaitResult();
+                    }
+                    break;
+            }
 
-            $this->addSuccess('univapay.admin.order.cancel.success', 'admin');
+            $this->addSuccess('univapay.admin.order.change_status.success', 'admin');
 
-            return $this->json([]);
+            $charge->fetch();
+            return $this->json($charge->status);
         }
 
         throw new BadRequestHttpException();
     }
 
     /**
-     * 受注編集 > 決済の金額変更
-     *
-     * @Method("POST")
-     * @Route("/%eccube_admin_route%/univapay/order/change_price/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_change_price")
-     */
-    public function changePrice(Request $request, Order $Order)
-    {
-        if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $client = $hits->initClient();
-            $charge = $this->getCharge($client, $Order->getUnivapayChargeId());
-
-            $this->addSuccess('univapay.admin.order.change_price.success', 'admin');
-
-            return $this->json([]);
-        }
-
-        throw new BadRequestHttpException();
-    }
-
-    /**
-     * 受注編集 > 決済状況の取得
+     * Get status
      *
      * @Method("GET")
      * @Route("/%eccube_admin_route%/univapay/order/get/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_get")
@@ -78,30 +78,27 @@ class OrderController extends AbstractController
     public function getStatus(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $client = $hits->initClient();
-            $charge = $this->getCharge($client, $Order->getUnivapayChargeId());
+            $this->initClient();
+            $charge = $this->getCharge($Order->getUnivapayChargeId());
 
-            return $this->json(json_encode($charge));
+            return $this->json($charge->status);
         }
 
         throw new BadRequestHttpException();
     }
 
     // get charge
-    private function getCharge($client, $chargeId) {
-        $client->getMe();
-        $stores = $client->listStores();
-        $store = current($stores->items)->fetch();
-
-        return $client->getCharge($store, $chargeId);
+    private function getCharge($chargeId) {
+        return $this->client->getCharge($this->token->storeId, $chargeId);
     }
 
     // init client
     private function initClient() {
         $Config = $this->configRepository->get();
         $clientOptions = new UnivapayClientOptions($Config->getApiUrl());
-        $client = new UnivapayClient(AppJWT::createToken($Config->getAppId(), $Config->getAppSecret(), $clientOptions));
+        $this->token = AppJWT::createToken($Config->getAppId(), $Config->getAppSecret());
+        $this->client = new UnivapayClient($this->token, $clientOptions);
 
-        return $client;
+        return $this->client;
     }
 }

@@ -24,6 +24,11 @@ class ConfigType extends AbstractType
                     new NotBlank(),
                 ],
             ])
+            ->add('widget_url', UrlType::class, [
+                'constraints' => [
+                    new NotBlank(),
+                ],
+            ])
             ->add('api_url', UrlType::class, [
                 'constraints' => [
                     new NotBlank(),

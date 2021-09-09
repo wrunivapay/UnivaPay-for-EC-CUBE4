@@ -39,6 +39,14 @@
                                 </div>
                             </div>
                             <div class="row">
+                                <div class="col-3"><span>{{ 'univapay.admin.config.widget_url'|trans }}</span><span
+                                            class="badge badge-primary ml-1">{{ 'univapay.admin.config.required'|trans }}</span></div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.widget_url) }}
+                                    {{ form_errors(form.widget_url) }}
+                                </div>
+                            </div>
+                            <div class="row">
                                 <div class="col-3"><span>{{ 'univapay.admin.config.api_url'|trans }}</span><span
                                             class="badge badge-primary ml-1">{{ 'univapay.admin.config.required'|trans }}</span></div>
                                 <div class="col mb-2">
