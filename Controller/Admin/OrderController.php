@@ -7,31 +7,23 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Plugin\UnivaPayPlugin\Util\SDK;
 use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
-use Univapay\UnivapayClient;
-use Univapay\UnivapayClientOptions;
-use Univapay\Resources\Authentication\AppJWT;
 use Money\Currency;
 use Money\Money;
 
 class OrderController extends AbstractController
 {
-    private $token;
-    private $client;
-
-    /**
-     * @var ConfigRepository
-     */
-    protected $configRepository;
+    /** @var ConfigRepository */
+    protected $Config;
 
     /**
      * OrderController constructor.
      *
      * @param ConfigRepository $configRepository
      */
-    public function __construct(ConfigRepository $configRepository)
-    {
-        $this->configRepository = $configRepository;
+    public function __construct(ConfigRepository $configRepository) {
+        $this->Config = $configRepository;
     }
 
     /**
@@ -43,9 +35,9 @@ class OrderController extends AbstractController
     public function changeStatus(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $this->initClient();
+            $util = new SDK($this->Config->findOneById(1));
             $chargeId = $Order->getUnivapayChargeId();
-            $charge = $this->getCharge($chargeId);
+            $charge = $util->getCharge($chargeId);
             switch ($request->get("action")) {
                 case "capture":
                     $charge->capture();
@@ -78,32 +70,12 @@ class OrderController extends AbstractController
     public function getStatus(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $this->initClient();
-            $charge = $this->getCharge($Order->getUnivapayChargeId());
+            $util = new SDK($this->Config->findOneById(1));
+            $charge = $util->getCharge($Order->getUnivapayChargeId());
 
             return $this->json($charge->status);
         }
 
         throw new BadRequestHttpException();
-    }
-
-    // get charge
-    private function getCharge($chargeId) {
-        return $this->client->getCharge($this->token->storeId, $chargeId);
-    }
-
-    // get charge from subscriptionId
-    public function getchargeBySubscriptionId($subscriptionId) {
-        return $this->client->getSubscription($this->token->storeId, $subscriptionId);
-    }
-
-    // init client
-    public function initClient() {
-        $Config = $this->configRepository->get();
-        $clientOptions = new UnivapayClientOptions($Config->getApiUrl());
-        $this->token = AppJWT::createToken($Config->getAppId(), $Config->getAppSecret());
-        $this->client = new UnivapayClient($this->token, $clientOptions);
-
-        return $this->client;
     }
 }

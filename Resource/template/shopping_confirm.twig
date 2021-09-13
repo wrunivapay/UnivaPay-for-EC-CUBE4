@@ -1,6 +1,6 @@
 {% set isSubscription = Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\Subscription' %}
 {% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' or isSubscription %}
-{% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findById(1)[0] %}
+{% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findOneById(1) %}
 {{ form_widget(form.univapay_charge_id) }}
 <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
 <script>

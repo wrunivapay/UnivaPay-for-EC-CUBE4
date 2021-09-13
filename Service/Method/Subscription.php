@@ -11,9 +11,11 @@ use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Symfony\Component\Form\FormInterface;
 use Plugin\UnivaPayPlugin\Controller\Admin\OrderController;
+use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
+use Plugin\UnivaPayPlugin\Util\SDK;
 
 /**
- * クレジットカード(トークン決済)の決済処理を行う.
+ * クレジットカード(Subscription)の決済処理を行う.
  */
 class Subscription implements PaymentMethodInterface
 {
@@ -37,18 +39,24 @@ class Subscription implements PaymentMethodInterface
      */
     private $purchaseFlow;
 
+    /** @var ConfigRepository */
+    protected $Config;
+
     /**
      * CreditCard constructor.
      *
      * @param OrderStatusRepository $orderStatusRepository
      * @param PurchaseFlow $shoppingPurchaseFlow
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         OrderStatusRepository $orderStatusRepository,
-        PurchaseFlow $shoppingPurchaseFlow
+        PurchaseFlow $shoppingPurchaseFlow,
+        ConfigRepository $configRepository
     ) {
         $this->orderStatusRepository = $orderStatusRepository;
         $this->purchaseFlow = $shoppingPurchaseFlow;
+        $this->Config = $configRepository;
     }
 
     /**
@@ -95,13 +103,14 @@ class Subscription implements PaymentMethodInterface
      */
     public function checkout()
     {
-        // 註文確定時送信されたサブスクIDから課金IDを取得
-        $util = new OrderController;
-        $util->initClient();
-        $token = $util->getchargeBySubscriptionId($this->Order->getUnivapayChargeId());
-        dump($token);
+        // Subscription決済時はsubscription idが格納される
+        $subscriptionId = $this->Order->getUnivapayChargeId();
 
-        if ($token) {
+        if ($subscriptionId) {
+            // Subscription idからcharge idを取得して格納
+            $util = new SDK($this->Config->findOneById(1));
+            $token = $util->getchargeBySubscriptionId($subscriptionId)->id;
+            $this->Order->setUnivapayChargeId($token);
             // 受注ステータスを新規受付へ変更
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
             $this->Order->setOrderStatus($OrderStatus);
