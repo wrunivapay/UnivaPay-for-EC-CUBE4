@@ -5,8 +5,8 @@ use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
 use Eccube\Repository\PaymentRepository;
 use Plugin\UnivaPayPlugin\Entity\Config;
-use Plugin\UnivaPayPlugin\Service\Method\Convenience;
 use Plugin\UnivaPayPlugin\Service\Method\CreditCard;
+use Plugin\UnivaPayPlugin\Service\Method\Subscription;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
@@ -14,6 +14,7 @@ class PluginManager extends AbstractPluginManager
     public function enable(array $meta, ContainerInterface $container)
     {
         $this->createTokenPayment($container);
+        $this->createSubscriptionPayment($container);
         $this->createConfig($container);
     }
 
@@ -40,6 +41,31 @@ class PluginManager extends AbstractPluginManager
         $entityManager->persist($Payment);
         $entityManager->flush($Payment);
     }
+
+    private function createSubscriptionPayment(ContainerInterface $container)
+    {
+        $entityManager = $container->get('doctrine')->getManager();
+        $paymentRepository = $container->get(PaymentRepository::class);
+
+        $Payment = $paymentRepository->findOneBy([], ['sort_no' => 'DESC']);
+        $sortNo = $Payment ? $Payment->getSortNo() + 1 : 1;
+
+        $Payment = $paymentRepository->findOneBy(['method_class' => Subscription::class]);
+        if ($Payment) {
+            return;
+        }
+
+        $Payment = new Payment();
+        $Payment->setCharge(0);
+        $Payment->setSortNo($sortNo);
+        $Payment->setVisible(true);
+        $Payment->setMethod('UnivaPay(Subscription)');
+        $Payment->setMethodClass(Subscription::class);
+
+        $entityManager->persist($Payment);
+        $entityManager->flush($Payment);
+    }
+
 
     private function createConfig(ContainerInterface $container)
     {

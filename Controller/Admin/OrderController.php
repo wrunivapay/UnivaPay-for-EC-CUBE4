@@ -25,7 +25,7 @@ class OrderController extends AbstractController
     protected $configRepository;
 
     /**
-     * ConfigController constructor.
+     * OrderController constructor.
      *
      * @param ConfigRepository $configRepository
      */
@@ -92,8 +92,13 @@ class OrderController extends AbstractController
         return $this->client->getCharge($this->token->storeId, $chargeId);
     }
 
+    // get charge from subscriptionId
+    public function getchargeBySubscriptionId($subscriptionId) {
+        return $this->client->getSubscription($this->token->storeId, $subscriptionId);
+    }
+
     // init client
-    private function initClient() {
+    public function initClient() {
         $Config = $this->configRepository->get();
         $clientOptions = new UnivapayClientOptions($Config->getApiUrl());
         $this->token = AppJWT::createToken($Config->getAppId(), $Config->getAppSecret());

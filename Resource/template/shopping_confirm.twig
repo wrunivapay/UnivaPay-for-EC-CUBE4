@@ -1,4 +1,5 @@
-{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' %}
+{% set isSubscription = Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\Subscription' %}
+{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' or isSubscription %}
 {% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findById(1)[0] %}
 {{ form_widget(form.univapay_charge_id) }}
 <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
@@ -13,7 +14,10 @@
         currency: "{{ Order.currency_code }}",
         email: "{{ Order.email }}",
         metadata: { orderNo: "{{ Order.order_no }}" },
+        tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
+        subscriptionPeriod: 'monthly',
         capture: false,
+        name: 'testtesttesttest',
         onSuccess: (result) => {
             chargeId.value = result.response.id;
             form.submit();
