@@ -15,7 +15,7 @@
         email: "{{ Order.email }}",
         metadata: { orderNo: "{{ Order.order_no }}" },
         tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
-        subscriptionPeriod: 'monthly',
+        subscriptionPeriod: 'daily',
         capture: false,
         onSuccess: (result) => {
             chargeId.value = result.response.id;
