@@ -17,7 +17,6 @@
         tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
         subscriptionPeriod: 'monthly',
         capture: false,
-        name: 'testtesttesttest',
         onSuccess: (result) => {
             chargeId.value = result.response.id;
             form.submit();
