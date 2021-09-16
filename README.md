@@ -17,4 +17,4 @@ https://github.com/univapaycast/EC-CUBE4-for-UnivaPay
 その他手順
 - application tokenを店舗限定で発行
 - /admin/univapay/configにて設定
-- webhookを店舗限定で/uniapay/hookにサブスクの成功と失敗にチェックを入れて作成
+- webhookを店舗限定で/uniapay/hookにsubscription_paymentとsubscription_failureにチェックを入れて作成
