@@ -79,17 +79,55 @@ class SubscriptionController extends AbstractController
         if($data->event === 'subscription_payment') {
             $existOrder = $this->Order->findOneBy(["order_no" => $data->data->metadata->orderNo]);
             if(!is_null($existOrder)) {
-                $newOrder = clone $existOrder;
-                $purchaseContext = new PurchaseContext($existOrder, $existOrder->getCustomer());
+                $newOrder = new Order;
+                $newOrder->setMessage($existOrder->getMessage());
+                $newOrder->setName01($existOrder->getName01());
+                $newOrder->setName02($existOrder->getName02());
+                $newOrder->setKana01($existOrder->getKana01());
+                $newOrder->setKana02($existOrder->getKana02());
+                $newOrder->setCompanyName($existOrder->getCompanyName());
+                $newOrder->setEmail($existOrder->getEmail());
+                $newOrder->setPhoneNumber($existOrder->getPhoneNumber());
+                $newOrder->setPostalCode($existOrder->getPostalCode());
+                $newOrder->setAddr01($existOrder->getAddr01());
+                $newOrder->setAddr02($existOrder->getAddr02());
+                $newOrder->setBirth($existOrder->getBirth());
+                $newOrder->setSubtotal($existOrder->getSubtotal());
+                $newOrder->setDiscount($existOrder->getDiscount());
+                $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
+                $newOrder->setCharge($existOrder->getCharge());
+                $newOrder->setTax($existOrder->getTax());
+                $newOrder->setTotal($existOrder->getTotal());
+                $newOrder->setPaymentTotal($existOrder->getPaymentTotal());
+                $newOrder->setPaymentMethod($existOrder->getPaymentMethod());
+                $newOrder->setNote($existOrder->getNote());
+                $newOrder->setCurrencyCode($existOrder->getCurrencyCode());
+                $newOrder->setCompleteMessage($existOrder->getCompleteMessage());
+                $newOrder->setCompleteMailMessage($existOrder->getCompleteMailMessage());
+                $newOrder->setPaymentDate($existOrder->getPaymentDate());
+                $newOrder->setCustomer($existOrder->getCustomer());
+                $newOrder->setCountry($existOrder->getCountry());
+                $newOrder->setPref($existOrder->getPref());
+                $newOrder->setSex($existOrder->getSex());
+                $newOrder->setJob($existOrder->getJob());
+                $newOrder->setPayment($existOrder->getPayment());
+                $newOrder->setDeviceType($existOrder->getDeviceType());
+                $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
+                $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
+                foreach($existOrder->getOrderItems() as $value) {
+                    $newOrder->addOrderItem($value);
+                }
+                foreach($existOrder->getShippings() as $value) {
+                    $newOrder->addShipping($value);
+                }
+                dump($newOrder->getShippings()->first());
+                $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
                 // 注文番号変更
                 $preOrderId = $this->orderHelper->createPreOrderId();
                 $newOrder->setPreOrderId($preOrderId);
                 // 今回での決済の課金ID取得
-                $token = $util->getchargeBySubscriptionId($data->data->id)->id;
-                $newOrder->setUnivapayChargeId($token);
-                // 前回注文の注文状況が変更されている可能性があるので上書き
-                $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
-                $newOrder->setOrderStatus($OrderStatus);
+                $charge = $util->getchargeBySubscriptionId($data->data->id);
+                $newOrder->setUnivapayChargeId($charge->id);
                 // 購入処理を完了
                 $this->purchaseFlow->prepare($newOrder, $purchaseContext);
                 $this->purchaseFlow->commit($newOrder, $purchaseContext);
@@ -98,8 +136,7 @@ class SubscriptionController extends AbstractController
                 $this->entityManager->flush();
                 $this->orderNoProcessor->process($newOrder, $purchaseContext);
                 $this->entityManager->flush();
-                // OrderNo変更(実装予定)
-                return $this->json($token);
+                return $this->json([]);
             }
         }
 
