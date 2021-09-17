@@ -115,12 +115,15 @@ class SubscriptionController extends AbstractController
                 $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
                 $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
                 foreach($existOrder->getOrderItems() as $value) {
-                    $newOrder->addOrderItem($value);
+                    $newOrderItem = clone $value;
+                    $newOrderItem->setOrder($newOrder);
+                    $newOrder->addOrderItem($newOrderItem);
                 }
                 foreach($existOrder->getShippings() as $value) {
-                    $newOrder->addShipping($value);
+                    $newShipping = clone $value;
+                    $newShipping->setOrder($newOrder);
+                    $newOrder->addShipping($newShipping);
                 }
-                dump($newOrder->getShippings()->first());
                 $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
                 // 注文番号変更
                 $preOrderId = $this->orderHelper->createPreOrderId();
@@ -136,7 +139,7 @@ class SubscriptionController extends AbstractController
                 $this->entityManager->flush();
                 $this->orderNoProcessor->process($newOrder, $purchaseContext);
                 $this->entityManager->flush();
-                return $this->json([]);
+                return $this->json(["status" => true]);
             }
         }
 
