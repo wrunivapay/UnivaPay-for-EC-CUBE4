@@ -76,10 +76,15 @@ class SubscriptionController extends AbstractController
     {
         $data = json_decode($request->getContent());
         $util = new SDK($this->Config->findOneById(1));
-        if($data->event === 'subscription_payment') {
+        if($data->event === 'subscription_payment' || $data->event === 'subscription_failure') {
             $existOrder = $this->Order->findOneBy(["order_no" => $data->data->metadata->orderNo]);
             if(!is_null($existOrder)) {
+                // cloneで注文を複製してもidが変更できないため一から作成
                 $newOrder = new Order;
+                // 再課金待ちの場合は何もしない
+                if($data->data->status === 'unpaid') {
+                    return $this->json(["status" => true]);
+                }
                 $newOrder->setMessage($existOrder->getMessage());
                 $newOrder->setName01($existOrder->getName01());
                 $newOrder->setName02($existOrder->getName02());
@@ -135,10 +140,16 @@ class SubscriptionController extends AbstractController
                 $this->purchaseFlow->prepare($newOrder, $purchaseContext);
                 $this->purchaseFlow->commit($newOrder, $purchaseContext);
                 $this->entityManager->persist($newOrder);
-                // 注文番号再採番
+                // 注文番号が重複しないように再採番
                 $this->entityManager->flush();
                 $this->orderNoProcessor->process($newOrder, $purchaseContext);
                 $this->entityManager->flush();
+                // 定期課金に失敗した場合はキャンセル済み注文を追加
+                if($data->data->status === 'suspended') {
+                    $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
+                    $newOrder->setOrderStatus($OrderStatus);
+                    $this->entityManager->flush();
+                }
                 return $this->json(["status" => true]);
             }
         }
