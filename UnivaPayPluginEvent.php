@@ -25,7 +25,8 @@ class UnivaPayPluginEvent implements EventSubscriberInterface
     {
         return [
             '@admin/Order/edit.twig' => 'onAdminOrderEditTwig',
-            'Shopping/confirm.twig' => 'onShoppingConfirmEditTwig'
+            'Shopping/confirm.twig' => 'onShoppingConfirmTwig',
+            'Mypage/history.twig' => 'onMypageHistoryTwig'
         ];
     }
 
@@ -34,8 +35,12 @@ class UnivaPayPluginEvent implements EventSubscriberInterface
         $event->addSnippet('@UnivaPayPlugin/admin/order_edit.twig');
     }
 
-    public function onShoppingConfirmEditTwig(TemplateEvent $event)
+    public function onShoppingConfirmTwig(TemplateEvent $event)
     {
         $event->addSnippet('@UnivaPayPlugin/shopping_confirm.twig');
+    }
+
+    public function onMypageHistoryTwig(TemplateEvent $event) {
+        $event->addSnippet('@UnivaPayPlugin/mypage_history.twig');
     }
 }
