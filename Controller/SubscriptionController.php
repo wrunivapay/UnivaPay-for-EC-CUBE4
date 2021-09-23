@@ -193,4 +193,23 @@ class SubscriptionController extends AbstractController
 
         throw new BadRequestHttpException();
     }
+
+    /**
+     * subscription update action
+     *
+     * @Method("POST")
+     * @Route("/univapay/subscription/update/{id}", requirements={"id" = "\d+"}, name="univapay_update_subscription")
+     */
+    public function updateSubscription(Request $request, Order $Order)
+    {
+        if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
+            $util = new SDK($this->Config->findOneById(1));
+            $subscription = $util->getSubscriptionByChargeId($Order->getUnivapayChargeId());
+            $subscription->token = $request->getContent();
+
+            return $this->json($subscription->status);
+        }
+
+        throw new BadRequestHttpException();
+    }
 }

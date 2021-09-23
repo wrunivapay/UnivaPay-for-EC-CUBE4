@@ -25,7 +25,6 @@
             // 支払情報の下にセクションを移動
             document.querySelector(".ec-orderPayment").after(document.querySelector("#univapay-subscription"));
 
-            subscriptionId = '';
             // 決済状況取得
             $.ajax({
                 type: 'GET',
@@ -34,7 +33,6 @@
                 if(e.status.name !== 'CANCELED') {
                     $('#univapay-subscription button').prop('disabled', false);
                 }
-                subscriptionId = e.id;
             });
 
             $('#univapay-action__cancel').on('click', function () {
@@ -47,29 +45,31 @@
                 });
             });
 
+            checkout = UnivapayCheckout.create({
+                appId: "{{ config.getAppId() }}",
+                checkout: "token",
+                email: "{{ Order.email }}",
+                onSuccess: (result) => {
+                    $.ajax({
+                        type: 'POST',
+                        url: '{{ url('univapay_update_subscription', { id: Order.id }) }}',
+                        data: result.response.id
+                    }).always(function () {
+                        {# location.href = location.href; #}
+                    });
+                },
+                onError: () => {
+                    alert("エラーが発生しました。サイト管理者にお問い合わせください。");
+                    location.href = location.href;
+                },
+                closed: () => {
+                    alert("決済が中断されました");
+                    location.href = location.href;
+                }
+            });
+
             $('#univapay-action__change').on('click', function () {
                 $('#univapay-subscription button').prop('disabled', true);
-                checkout = UnivapayCheckout.create({
-                    appId: "{{ config.getAppId() }}",
-                    checkout: "payment",
-                    subscriptionId: subscriptionId,
-                    tokenType: 'subscription',
-                    subscriptionPeriod: 'daily',
-                    currency: "{{ Order.currency_code }}",
-                    amount: {{ Order.payment_total }},
-                    email: "{{ Order.email }}",
-                    onSuccess: (result) => {
-                        location.href = location.href;
-                    },
-                    onError: () => {
-                        alert("エラーが発生しました。サイト管理者にお問い合わせください。");
-                        location.href = location.href;
-                    },
-                    closed: () => {
-                        alert("決済が中断されました");
-                        location.href = location.href;
-                    }
-                });
                 checkout.open();
             });
         });
