@@ -1,0 +1,77 @@
+{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\Subscription' %}
+    {% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findOneById(1) %}
+    <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
+    <div id="univapay-subscription">
+        <div class="ec-rectHeading">
+            <h2>サブスクリプション</h2>
+        </div>
+        <ul class="list-inline">
+            <li class="list-inline-item">
+                <button id="univapay-action__cancel" type="button"
+                        class="btn btn-ec-regular px-5" disabled>
+                    {{ 'univapay.subscription.cancel'|trans }}
+                </button>
+            </li>
+            <li class="list-inline-item">
+                <button id="univapay-action__change" type="button"
+                        class="btn btn-ec-regular px-5" disabled>
+                    {{ 'univapay.subscription.change'|trans }}
+                </button>
+            </li>
+        </ul>
+    </div>
+    <script>
+        $(function () {
+            // 支払情報の下にセクションを移動
+            document.querySelector(".ec-orderPayment").after(document.querySelector("#univapay-subscription"));
+
+            subscriptionId = '';
+            // 決済状況取得
+            $.ajax({
+                type: 'GET',
+                url: '{{ url('univapay_get_subscription', { id: Order.id }) }}',
+            }).always(function(e) {
+                if(e.status.name !== 'CANCELED') {
+                    $('#univapay-subscription button').prop('disabled', false);
+                }
+                subscriptionId = e.id;
+            });
+
+            $('#univapay-action__cancel').on('click', function () {
+                $('#univapay-subscription button').prop('disabled', true);
+                $.ajax({
+                    type: 'POST',
+                    url: '{{ url('univapay_cancel_subscription', { id: Order.id }) }}'
+                }).always(function () {
+                    location.href = location.href;
+                });
+            });
+
+            $('#univapay-action__change').on('click', function () {
+                $('#univapay-subscription button').prop('disabled', true);
+                checkout = UnivapayCheckout.create({
+                    appId: "{{ config.getAppId() }}",
+                    checkout: "payment",
+                    subscriptionId: subscriptionId,
+                    tokenType: 'subscription',
+                    subscriptionPeriod: 'daily',
+                    currency: "{{ Order.currency_code }}",
+                    amount: {{ Order.payment_total }},
+                    email: "{{ Order.email }}",
+                    onSuccess: (result) => {
+                        location.href = location.href;
+                    },
+                    onError: () => {
+                        alert("エラーが発生しました。サイト管理者にお問い合わせください。");
+                        location.href = location.href;
+                    },
+                    closed: () => {
+                        alert("決済が中断されました");
+                        location.href = location.href;
+                    }
+                });
+                checkout.open();
+            });
+        });
+    </script>
+{% endif %}

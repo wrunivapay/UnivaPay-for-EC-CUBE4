@@ -29,4 +29,9 @@ class SDK {
     public function getchargeBySubscriptionId($subscriptionId) {
         return current($this->client->getSubscription($this->token->storeId, $subscriptionId)->listCharges()->items);
     }
+
+    // get subscription
+    public function getSubscriptionByChargeId($chargeId) {
+        return $this->client->getSubscription($this->token->storeId, $this->getCharge($chargeId)->subscriptionId);
+    }
 }

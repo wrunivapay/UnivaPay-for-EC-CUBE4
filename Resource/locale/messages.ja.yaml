@@ -22,3 +22,5 @@ univapay.admin.order_edit.payment_action: 決済操作
 univapay.admin.order_edit.payment_action_capture: キャプチャ
 univapay.admin.order_edit.payment_action_cancel: 取消
 univapay.shopping.checkout.error: カード決済に失敗しました。
+univapay.subscription.cancel: 解約
+univapay.subscription.change: カード変更

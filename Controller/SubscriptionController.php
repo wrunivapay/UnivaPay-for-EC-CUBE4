@@ -156,4 +156,41 @@ class SubscriptionController extends AbstractController
 
         throw new BadRequestHttpException();
     }
+
+    /**
+     * subscription cancel action
+     *
+     * @Method("POST")
+     * @Route("/univapay/subscription/cancel/{id}", requirements={"id" = "\d+"}, name="univapay_cancel_subscription")
+     */
+    public function cancelSubscription(Request $request, Order $Order)
+    {
+        if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
+            $util = new SDK($this->Config->findOneById(1));
+            $subscription = $util->getSubscriptionByChargeId($Order->getUnivapayChargeId());
+            $subscription = $subscription->cancel()->awaitResult();
+
+            return $this->json($subscription->status);
+        }
+
+        throw new BadRequestHttpException();
+    }
+
+    /**
+     * subscription get action
+     *
+     * @Method("GET")
+     * @Route("/univapay/subscription/get/{id}", requirements={"id" = "\d+"}, name="univapay_get_subscription")
+     */
+    public function getSubscription(Request $request, Order $Order)
+    {
+        if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
+            $util = new SDK($this->Config->findOneById(1));
+            $subscription = $util->getSubscriptionByChargeId($Order->getUnivapayChargeId());
+
+            return $this->json(['status' => $subscription->status, 'id' => $subscription->id]);
+        }
+
+        throw new BadRequestHttpException();
+    }
 }

@@ -4,8 +4,6 @@
         // ページ最下部に移動
         $('#univapay-info').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
 
-        $('#univapay-info__body button').prop('disabled', true);
-
         // 決済状況取得
         $.ajax({
             type: 'GET',
@@ -55,9 +53,9 @@
                 <div class="col-8">
                     <span class="card-title">{{ 'univapay.admin.order_edit.title'|trans }}</span>
                 </div>
-                <div class="col-4 text-right"><a data-toggle="collapse" href="#univapay-info__body"
-                                                 aria-expanded="false" aria-controls="univapay-info__body"><i
-                                class="fa fa-angle-up fa-lg"></i></a></div>
+                <div class="col-4 text-right">
+                    <a data-toggle="collapse" href="#univapay-info__body" aria-expanded="false" aria-controls="univapay-info__body"><i class="fa fa-angle-up fa-lg"></i></a>
+                </div>
             </div>
         </div>
         <div class="collapse show ec-cardCollapse" id="univapay-info__body">
@@ -72,13 +70,13 @@
                         <ul class="list-inline">
                             <li class="list-inline-item">
                                 <button id="univapay-action__capture" type="button"
-                                        class="btn btn-ec-regular px-5">
+                                        class="btn btn-ec-regular px-5" disabled>
                                     {{ 'univapay.admin.order_edit.payment_action_capture'|trans }}
                                 </button>
                             </li>
                             <li class="list-inline-item">
                                 <button id="univapay-action__cancel" type="button"
-                                        class="btn btn-ec-regular px-5">
+                                        class="btn btn-ec-regular px-5" disabled>
                                     {{ 'univapay.admin.order_edit.payment_action_cancel'|trans }}
                                 </button>
                             </li>
