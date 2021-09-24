@@ -205,7 +205,7 @@ class SubscriptionController extends AbstractController
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
             $util = new SDK($this->Config->findOneById(1));
             $subscription = $util->getSubscriptionByChargeId($Order->getUnivapayChargeId());
-            $subscription->token = $request->getContent();
+            $subscription->patch($request->getContent());
 
             return $this->json($subscription->status);
         }

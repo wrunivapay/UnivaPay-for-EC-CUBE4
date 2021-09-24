@@ -48,6 +48,8 @@
             checkout = UnivapayCheckout.create({
                 appId: "{{ config.getAppId() }}",
                 checkout: "token",
+                tokenType: "subscription",
+                subscriptionPeriod: "daily",
                 email: "{{ Order.email }}",
                 onSuccess: (result) => {
                     $.ajax({
@@ -55,7 +57,7 @@
                         url: '{{ url('univapay_update_subscription', { id: Order.id }) }}',
                         data: result.response.id
                     }).always(function () {
-                        {# location.href = location.href; #}
+                        location.href = location.href;
                     });
                 },
                 onError: () => {
