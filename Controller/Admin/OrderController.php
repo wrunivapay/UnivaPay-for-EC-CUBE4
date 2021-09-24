@@ -3,6 +3,8 @@ namespace Plugin\UnivaPayPlugin\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Order;
+use Eccube\Entity\Master\OrderStatus;
+use Eccube\Repository\Master\OrderStatusRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -18,12 +20,22 @@ class OrderController extends AbstractController
     protected $Config;
 
     /**
+     * @var OrderStatusRepository
+     */
+    private $orderStatusRepository;
+
+    /**
      * OrderController constructor.
      *
      * @param ConfigRepository $configRepository
+     * @param OrderStatusRepository $orderStatusRepository
      */
-    public function __construct(ConfigRepository $configRepository) {
+    public function __construct(
+        ConfigRepository $configRepository,
+        OrderStatusRepository $orderStatusRepository
+    ) {
         $this->Config = $configRepository;
+        $this->orderStatusRepository = $orderStatusRepository;
     }
 
     /**
@@ -41,6 +53,8 @@ class OrderController extends AbstractController
             switch ($request->get("action")) {
                 case "capture":
                     $charge->capture();
+                    $charge->fetch();
+                    $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                     break;
                 case "cancel":
                     if($charge->status->getName() === "SUCCESSFUL") {
@@ -49,12 +63,15 @@ class OrderController extends AbstractController
                     } else {
                         $charge->cancel()->awaitResult();
                     }
+                    $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
                     break;
             }
+            $Order->setOrderStatus($OrderStatus);
+            $this->entityManager->persist($Order);
+            $this->entityManager->flush();
 
             $this->addSuccess('univapay.admin.order.change_status.success', 'admin');
 
-            $charge->fetch();
             return $this->json($charge->status);
         }
 
