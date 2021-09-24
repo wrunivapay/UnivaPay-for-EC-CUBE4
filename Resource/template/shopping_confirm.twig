@@ -16,7 +16,7 @@
         metadata: { orderNo: "{{ Order.order_no }}" },
         tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
         subscriptionPeriod: 'daily',
-        capture: false,
+        capture: '{{ config.getCapture() }}' === '1',
         onSuccess: (result) => {
             chargeId.value = result.response.id;
             form.submit();

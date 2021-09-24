@@ -16,6 +16,7 @@ univapay.admin.config.widget_url: ウィジェット URL
 univapay.admin.config.api_url: API URL
 univapay.admin.config.app_id: トークン
 univapay.admin.config.app_secret: シークレット
+univapay.admin.config.capture: キャプチャを行う
 univapay.admin.order_edit.title: 決済情報
 univapay.admin.order_edit.payment_status: ステータス
 univapay.admin.order_edit.payment_action: 決済操作

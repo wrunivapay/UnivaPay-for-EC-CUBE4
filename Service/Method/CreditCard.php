@@ -10,6 +10,7 @@ use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Symfony\Component\Form\FormInterface;
+use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
 
 /**
  * クレジットカード(トークン決済)の決済処理を行う.
@@ -36,18 +37,24 @@ class CreditCard implements PaymentMethodInterface
      */
     private $purchaseFlow;
 
+    /** @var ConfigRepository */
+    protected $Config;
+
     /**
      * CreditCard constructor.
      *
      * @param OrderStatusRepository $orderStatusRepository
      * @param PurchaseFlow $shoppingPurchaseFlow
+     * @param ConfigRepository $configRepository
      */
     public function __construct(
         OrderStatusRepository $orderStatusRepository,
-        PurchaseFlow $shoppingPurchaseFlow
+        PurchaseFlow $shoppingPurchaseFlow,
+        ConfigRepository $configRepository
     ) {
         $this->orderStatusRepository = $orderStatusRepository;
         $this->purchaseFlow = $shoppingPurchaseFlow;
+        $this->Config = $configRepository;
     }
 
     /**
@@ -104,6 +111,12 @@ class CreditCard implements PaymentMethodInterface
 
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
+
+            // capture済みの場合は支払済みに変更
+            if($this->Config->findOneById(1)->getCapture()) {
+                $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
+                $this->Order->setOrderStatus($OrderStatus);
+            }
 
             $result = new PaymentResult();
             $result->setSuccess(true);

@@ -111,12 +111,13 @@ class Subscription implements PaymentMethodInterface
             $util = new SDK($this->Config->findOneById(1));
             $token = $util->getchargeBySubscriptionId($subscriptionId)->id;
             $this->Order->setUnivapayChargeId($token);
-            // 受注ステータスを新規受付へ変更
-            $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
-            $this->Order->setOrderStatus($OrderStatus);
 
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
+
+            // サブスクではcapture済みなので支払済みに変更
+            $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
+            $this->Order->setOrderStatus($OrderStatus);
 
             $result = new PaymentResult();
             $result->setSuccess(true);

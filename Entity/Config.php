@@ -49,6 +49,13 @@ class Config
     private $app_secret;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="capture", type="boolean", nullable=true)
+     */
+    private $capture;
+
+    /**
      * @return int
      */
     public function getId()
@@ -135,4 +142,25 @@ class Config
 
         return $this;
     }
+
+    /**
+     * @return boolean
+     */
+    public function getCapture()
+    {
+        return $this->capture;
+    }
+
+    /**
+     * @param boolean $capture
+     *
+     * @return $this;
+     */
+    public function setCapture($capture)
+    {
+        $this->capture = $capture;
+
+        return $this;
+    }
+
 }
