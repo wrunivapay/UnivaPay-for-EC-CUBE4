@@ -1,6 +1,3 @@
-# nav
-univapay.admin.nav.payment_list: 決済状況一覧
-
 # flash messages
 univapay.admin.save.success: 登録しました。
 univapay.admin.order.change_status.success: ステータスを変更しました。
