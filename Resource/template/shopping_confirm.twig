@@ -1,8 +1,9 @@
 {% set isSubscription = Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\Subscription' %}
 {% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' or isSubscription %}
 {% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findOneById(1) %}
-{% set subscriptionTotal = Order.payment_total - Order.subtotal %}
-{% for item in Order.OrderItems %}{% if item.ProductClass %}{% set subscriptionTotal = subscriptionTotal + item.ProductClass.price01_inc_tax %}{% endif %}{% endfor %}
+{% set subscriptionTotal = 0 %}
+{% for item in Order.OrderItems %}{% if item.ProductClass %}{% set subscriptionTotal = subscriptionTotal + (item.ProductClass.price01_inc_tax*item.quantity) %}{% dump(item.ProductClass) %}{% endif %}{% endfor %}
+{% set subscriptionTotal = subscriptionTotal == 0 ? Order.payment_total : Order.payment_total - Order.subtotal + subscriptionTotal %}
 {{ form_widget(form.univapay_charge_id) }}
 <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
 <script>
