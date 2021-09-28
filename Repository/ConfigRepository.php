@@ -1,8 +1,8 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Repository;
+namespace Plugin\UnivaPay\Repository;
 
 use Eccube\Repository\AbstractRepository;
-use Plugin\UnivaPayPlugin\Entity\Config;
+use Plugin\UnivaPay\Entity\Config;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class ConfigRepository extends AbstractRepository

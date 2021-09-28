@@ -1,9 +1,9 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Controller\Admin;
+namespace Plugin\UnivaPay\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
-use Plugin\UnivaPayPlugin\Form\Type\Admin\ConfigType;
-use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
+use Plugin\UnivaPay\Form\Type\Admin\ConfigType;
+use Plugin\UnivaPay\Repository\ConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,8 +26,8 @@ class ConfigController extends AbstractController
     }
 
     /**
-     * @Route("/%eccube_admin_route%/univapay/config", name="univa_pay_plugin_admin_config")
-     * @Template("@UnivaPayPlugin/admin/config.twig")
+     * @Route("/%eccube_admin_route%/univapay/config", name="univa_pay_admin_config")
+     * @Template("@UnivaPay/admin/config.twig")
      */
     public function index(Request $request)
     {
@@ -40,7 +40,7 @@ class ConfigController extends AbstractController
             $this->entityManager->persist($Config);
             $this->entityManager->flush($Config);
 
-            $this->addSuccess('univapay.admin.save.success', 'admin');
+            $this->addSuccess('univa_pay.admin.save.success', 'admin');
 
             return $this->redirectToRoute('univa_pay_plugin_admin_config');
         }

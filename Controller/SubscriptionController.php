@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Controller;
+namespace Plugin\UnivaPay\Controller;
 
 use Eccube\Entity\Order;
 use Eccube\Entity\Master\OrderStatus;
@@ -14,8 +14,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Plugin\UnivaPayPlugin\Util\SDK;
-use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
+use Plugin\UnivaPay\Util\SDK;
+use Plugin\UnivaPay\Repository\ConfigRepository;
 
 class SubscriptionController extends AbstractController
 {
@@ -70,7 +70,7 @@ class SubscriptionController extends AbstractController
      * subscription webhook action
      *
      * @Method("POST")
-     * @Route("/univapay/hook", name="univapay_hook")
+     * @Route("/univapay/hook", name="univa_pay_hook")
      */
     public function hook(Request $request)
     {
@@ -161,7 +161,7 @@ class SubscriptionController extends AbstractController
      * subscription cancel action
      *
      * @Method("POST")
-     * @Route("/univapay/subscription/cancel/{id}", requirements={"id" = "\d+"}, name="univapay_cancel_subscription")
+     * @Route("/univapay/subscription/cancel/{id}", requirements={"id" = "\d+"}, name="univa_pay_cancel_subscription")
      */
     public function cancelSubscription(Request $request, Order $Order)
     {
@@ -180,7 +180,7 @@ class SubscriptionController extends AbstractController
      * subscription get action
      *
      * @Method("GET")
-     * @Route("/univapay/subscription/get/{id}", requirements={"id" = "\d+"}, name="univapay_get_subscription")
+     * @Route("/univapay/subscription/get/{id}", requirements={"id" = "\d+"}, name="univa_pay_get_subscription")
      */
     public function getSubscription(Request $request, Order $Order)
     {
@@ -198,7 +198,7 @@ class SubscriptionController extends AbstractController
      * subscription update action
      *
      * @Method("POST")
-     * @Route("/univapay/subscription/update/{id}", requirements={"id" = "\d+"}, name="univapay_update_subscription")
+     * @Route("/univapay/subscription/update/{id}", requirements={"id" = "\d+"}, name="univa_pay_update_subscription")
      */
     public function updateSubscription(Request $request, Order $Order)
     {

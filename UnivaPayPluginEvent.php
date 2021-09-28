@@ -1,10 +1,10 @@
 <?php
-namespace Plugin\UnivaPayPlugin;
+namespace Plugin\UnivaPay;
 
 use Eccube\Event\TemplateEvent;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class UnivaPayPluginEvent implements EventSubscriberInterface
+class UnivaPayEvent implements EventSubscriberInterface
 {
     /**
      * リッスンしたいサブスクライバのイベント名の配列を返します。
@@ -26,21 +26,27 @@ class UnivaPayPluginEvent implements EventSubscriberInterface
         return [
             '@admin/Order/edit.twig' => 'onAdminOrderEditTwig',
             'Shopping/confirm.twig' => 'onShoppingConfirmTwig',
-            'Mypage/history.twig' => 'onMypageHistoryTwig'
+            'Mypage/history.twig' => 'onMypageHistoryTwig',
+            '@admin/Product/product.twig' => 'onAdminProductEditTwig',
         ];
     }
 
     public function onAdminOrderEditTwig(TemplateEvent $event)
     {
-        $event->addSnippet('@UnivaPayPlugin/admin/order_edit.twig');
+        $event->addSnippet('@UnivaPay/admin/order_edit.twig');
     }
 
     public function onShoppingConfirmTwig(TemplateEvent $event)
     {
-        $event->addSnippet('@UnivaPayPlugin/shopping_confirm.twig');
+        $event->addSnippet('@UnivaPay/shopping_confirm.twig');
     }
 
     public function onMypageHistoryTwig(TemplateEvent $event) {
-        $event->addSnippet('@UnivaPayPlugin/mypage_history.twig');
+        $event->addSnippet('@UnivaPay/mypage_history.twig');
+    }
+
+    public function onAdminProductEditTwig(TemplateEvent $event)
+    {
+        $event->addSnippet('@UnivaPay/admin/product_edit.twig');
     }
 }

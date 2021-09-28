@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Controller\Admin;
+namespace Plugin\UnivaPay\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Order;
@@ -9,8 +9,8 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Plugin\UnivaPayPlugin\Util\SDK;
-use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
+use Plugin\UnivaPay\Util\SDK;
+use Plugin\UnivaPay\Repository\ConfigRepository;
 use Money\Currency;
 use Money\Money;
 
@@ -42,7 +42,7 @@ class OrderController extends AbstractController
      * Change status
      *
      * @Method("POST")
-     * @Route("/%eccube_admin_route%/univapay/order/change/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_change")
+     * @Route("/%eccube_admin_route%/univapay/order/change/{id}", requirements={"id" = "\d+"}, name="univa_pay_admin_order_change")
      */
     public function changeStatus(Request $request, Order $Order)
     {
@@ -70,7 +70,7 @@ class OrderController extends AbstractController
             $this->entityManager->persist($Order);
             $this->entityManager->flush();
 
-            $this->addSuccess('univapay.admin.order.change_status.success', 'admin');
+            $this->addSuccess('univa_pay.admin.order.change_status.success', 'admin');
 
             return $this->json($charge->status);
         }
@@ -82,7 +82,7 @@ class OrderController extends AbstractController
      * Get status
      *
      * @Method("GET")
-     * @Route("/%eccube_admin_route%/univapay/order/get/{id}", requirements={"id" = "\d+"}, name="univapay_admin_order_get")
+     * @Route("/%eccube_admin_route%/univapay/order/get/{id}", requirements={"id" = "\d+"}, name="univa_pay_admin_order_get")
      */
     public function getStatus(Request $request, Order $Order)
     {

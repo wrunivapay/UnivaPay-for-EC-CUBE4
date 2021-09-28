@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Service\Method;
+namespace Plugin\UnivaPay\Service\Method;
 
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
@@ -10,9 +10,9 @@ use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Symfony\Component\Form\FormInterface;
-use Plugin\UnivaPayPlugin\Controller\Admin\OrderController;
-use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
-use Plugin\UnivaPayPlugin\Util\SDK;
+use Plugin\UnivaPay\Controller\Admin\OrderController;
+use Plugin\UnivaPay\Repository\ConfigRepository;
+use Plugin\UnivaPay\Util\SDK;
 
 /**
  * クレジットカード(Subscription)の決済処理を行う.
@@ -131,7 +131,7 @@ class Subscription implements PaymentMethodInterface
 
             $result = new PaymentResult();
             $result->setSuccess(false);
-            $result->setErrors([trans('univapay.shopping.checkout.error')]);
+            $result->setErrors([trans('univa_pay.shopping.checkout.error')]);
         }
 
         return $result;

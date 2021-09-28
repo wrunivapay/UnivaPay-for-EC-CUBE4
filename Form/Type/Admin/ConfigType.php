@@ -1,7 +1,7 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Form\Type\Admin;
+namespace Plugin\UnivaPay\Form\Type\Admin;
 
-use Plugin\UnivaPayPlugin\Entity\Config;
+use Plugin\UnivaPay\Entity\Config;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;

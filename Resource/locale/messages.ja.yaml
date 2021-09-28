@@ -1,24 +1,24 @@
 # flash messages
-univapay.admin.save.success: 登録しました。
-univapay.admin.order.change_status.success: ステータスを変更しました。
+univa_pay.admin.save.success: 登録しました。
+univa_pay.admin.order.change_status.success: ステータスを変更しました。
 
 # twig
-univapay.admin.config.title: UnivaPay
-univapay.admin.config.sub_title: プラグイン一覧
-univapay.admin.config.header: 設定
-univapay.admin.config.save: 登録
-univapay.admin.config.required: 必須
-univapay.admin.config.back: プラグイン一覧
-univapay.admin.config.widget_url: ウィジェット URL
-univapay.admin.config.api_url: API URL
-univapay.admin.config.app_id: トークン
-univapay.admin.config.app_secret: シークレット
-univapay.admin.config.capture: キャプチャを行う
-univapay.admin.order_edit.title: 決済情報
-univapay.admin.order_edit.payment_status: ステータス
-univapay.admin.order_edit.payment_action: 決済操作
-univapay.admin.order_edit.payment_action_capture: キャプチャ
-univapay.admin.order_edit.payment_action_cancel: 取消
-univapay.shopping.checkout.error: カード決済に失敗しました。
-univapay.subscription.cancel: 解約
-univapay.subscription.change: カード変更
+univa_pay.admin.config.title: UnivaPay
+univa_pay.admin.config.sub_title: プラグイン一覧
+univa_pay.admin.config.header: 設定
+univa_pay.admin.config.save: 登録
+univa_pay.admin.config.required: 必須
+univa_pay.admin.config.back: プラグイン一覧
+univa_pay.admin.config.widget_url: ウィジェット URL
+univa_pay.admin.config.api_url: API URL
+univa_pay.admin.config.app_id: トークン
+univa_pay.admin.config.app_secret: シークレット
+univa_pay.admin.config.capture: キャプチャを行う
+univa_pay.admin.order_edit.title: 決済情報
+univa_pay.admin.order_edit.payment_status: ステータス
+univa_pay.admin.order_edit.payment_action: 決済操作
+univa_pay.admin.order_edit.payment_action_capture: キャプチャ
+univa_pay.admin.order_edit.payment_action_cancel: 取消
+univa_pay.shopping.checkout.error: カード決済に失敗しました。
+univa_pay.subscription.cancel: 解約
+univa_pay.subscription.change: カード変更

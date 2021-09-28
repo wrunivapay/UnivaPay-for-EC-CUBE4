@@ -1,12 +1,13 @@
 <?php
-namespace Plugin\UnivaPayPlugin;
+namespace Plugin\UnivaPay;
 
 use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
 use Eccube\Repository\PaymentRepository;
-use Plugin\UnivaPayPlugin\Entity\Config;
-use Plugin\UnivaPayPlugin\Service\Method\CreditCard;
-use Plugin\UnivaPayPlugin\Service\Method\Subscription;
+use Plugin\UnivaPay\Entity\Config;
+use Plugin\UnivaPay\Entity\SubscriptionPeriod;
+use Plugin\UnivaPay\Service\Method\CreditCard;
+use Plugin\UnivaPay\Service\Method\Subscription;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
@@ -21,6 +22,7 @@ class PluginManager extends AbstractPluginManager
         $this->createTokenPayment($container);
         $this->createSubscriptionPayment($container);
         $this->createConfig($container);
+        $this->createSubscriptionPeriod($container);
         // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
         exec('composer require univapay/php-sdk:5.2.1');
     }
@@ -91,5 +93,35 @@ class PluginManager extends AbstractPluginManager
 
         $entityManager->persist($Config);
         $entityManager->flush($Config);
+    }
+
+    private function createMasterData(ContainerInterface $container, array $statuses, $class)
+    {
+        $entityManager = $container->get('doctrine')->getManager();
+        $i = 0;
+        foreach ($statuses as $id => $name) {
+            $PaymentStatus = $entityManager->find($class, $id);
+            if (!$PaymentStatus) {
+                $PaymentStatus = new $class;
+            }
+            $PaymentStatus->setId($id);
+            $PaymentStatus->setName($name);
+            $PaymentStatus->setSortNo($i++);
+            $entityManager->persist($PaymentStatus);
+            $entityManager->flush($PaymentStatus);
+        }
+    }
+
+    private function createSubscriptionPeriod(ContainerInterface $container) {
+        $statuses = [
+            SubscriptionPeriod::DAILY => '毎日',
+            SubscriptionPeriod::WEEKLY => '毎週',
+            SubscriptionPeriod::BITWEEKLY => '隔週',
+            SubscriptionPeriod::MONTHLY => '毎月',
+            SubscriptionPeriod::QUARTERLY => '3ヶ月',
+            SubscriptionPeriod::SEMIANNUALLY => '6ヶ月',
+            SubscriptionPeriod::ANNUALLY => '毎年',
+        ];
+        $this->createMasterData($container, $statuses, SubscriptionPeriod::class);
     }
 }

@@ -1,10 +1,10 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Form\Extension;
+namespace Plugin\UnivaPay\Form\Extension;
 
 use Eccube\Entity\Order;
 use Eccube\Form\Type\Shopping\OrderType;
 use Eccube\Repository\PaymentRepository;
-use Plugin\UnivaPayPlugin\Service\Method\CreditCard;
+use Plugin\UnivaPay\Service\Method\CreditCard;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -32,7 +32,7 @@ class CreditCardExtention extends AbstractTypeExtension
             /** @var Order $data */
             $form = $event->getForm();
 
-            $form->add('univapay_charge_id', HiddenType::class, [
+            $form->add('univa_pay_charge_id', HiddenType::class, [
                 'required' => false,
                 'mapped' => true, // Orderエンティティに追加したカラムなので、mappedはtrue
             ]);

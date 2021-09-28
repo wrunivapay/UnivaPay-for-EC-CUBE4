@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Util;
+namespace Plugin\UnivaPay\Util;
 
 use Univapay\UnivapayClient;
 use Univapay\UnivapayClientOptions;
@@ -12,7 +12,7 @@ class SDK {
     /**
      * SDK constructor.
      */
-    public function __construct(\Plugin\UnivaPayPlugin\Entity\Config $Config)
+    public function __construct(\Plugin\UnivaPay\Entity\Config $Config)
     {
         // init client
         $clientOptions = new UnivapayClientOptions($Config->getApiUrl());

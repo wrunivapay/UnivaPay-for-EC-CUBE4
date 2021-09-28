@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Service\Method;
+namespace Plugin\UnivaPay\Service\Method;
 
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
@@ -10,7 +10,7 @@ use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Symfony\Component\Form\FormInterface;
-use Plugin\UnivaPayPlugin\Repository\ConfigRepository;
+use Plugin\UnivaPay\Repository\ConfigRepository;
 
 /**
  * クレジットカード(トークン決済)の決済処理を行う.
@@ -130,7 +130,7 @@ class CreditCard implements PaymentMethodInterface
 
             $result = new PaymentResult();
             $result->setSuccess(false);
-            $result->setErrors([trans('univapay.shopping.checkout.error')]);
+            $result->setErrors([trans('univa_pay.shopping.checkout.error')]);
         }
 
         return $result;

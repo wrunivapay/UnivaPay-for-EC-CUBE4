@@ -1,5 +1,5 @@
-{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\Subscription' %}
-    {% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findOneById(1) %}
+{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPay\\Service\\Method\\Subscription' %}
+    {% set config = repository('Plugin\\UnivaPay\\Entity\\Config').findOneById(1) %}
     <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
     <div id="univapay-subscription">
         <div class="ec-rectHeading">
@@ -9,13 +9,13 @@
             <li class="list-inline-item">
                 <button id="univapay-action__cancel" type="button"
                         class="btn btn-ec-regular px-5" disabled>
-                    {{ 'univapay.subscription.cancel'|trans }}
+                    {{ 'univa_pay.subscription.cancel'|trans }}
                 </button>
             </li>
             <li class="list-inline-item">
                 <button id="univapay-action__change" type="button"
                         class="btn btn-ec-regular px-5" disabled>
-                    {{ 'univapay.subscription.change'|trans }}
+                    {{ 'univa_pay.subscription.change'|trans }}
                 </button>
             </li>
         </ul>
@@ -28,7 +28,7 @@
             // 決済状況取得
             $.ajax({
                 type: 'GET',
-                url: '{{ url('univapay_get_subscription', { id: Order.id }) }}',
+                url: '{{ url('univa_pay_get_subscription', { id: Order.id }) }}',
             }).always(function(e) {
                 if(e.status.name !== 'CANCELED') {
                     $('#univapay-subscription button').prop('disabled', false);
@@ -39,7 +39,7 @@
                 $('#univapay-subscription button').prop('disabled', true);
                 $.ajax({
                     type: 'POST',
-                    url: '{{ url('univapay_cancel_subscription', { id: Order.id }) }}'
+                    url: '{{ url('univa_pay_cancel_subscription', { id: Order.id }) }}'
                 }).always(function () {
                     location.href = location.href;
                 });
@@ -54,7 +54,7 @@
                 onSuccess: (result) => {
                     $.ajax({
                         type: 'POST',
-                        url: '{{ url('univapay_update_subscription', { id: Order.id }) }}',
+                        url: '{{ url('univa_pay_update_subscription', { id: Order.id }) }}',
                         data: result.response.id
                     }).always(function () {
                         location.href = location.href;

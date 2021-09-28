@@ -1,42 +1,42 @@
-{% set isSubscription = Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\Subscription' %}
-{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPayPlugin\\Service\\Method\\CreditCard' or isSubscription %}
-{% set config = repository('Plugin\\UnivaPayPlugin\\Entity\\Config').findOneById(1) %}
-{% set subscriptionTotal = 0 %}
-{% for item in Order.OrderItems %}{% if item.ProductClass %}{% set subscriptionTotal = subscriptionTotal + (item.ProductClass.price01_inc_tax*item.quantity) %}{% dump(item.ProductClass) %}{% endif %}{% endfor %}
-{% set subscriptionTotal = subscriptionTotal == 0 ? Order.payment_total : Order.payment_total - Order.subtotal + subscriptionTotal %}
-{{ form_widget(form.univapay_charge_id) }}
-<script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
-<script>
-    form = document.querySelector("#shopping-form");
-    chargeId = document.querySelector("#shopping_order_univapay_charge_id");
-    form.appendChild(chargeId);
-    checkout = UnivapayCheckout.create({
-        appId: "{{ config.getAppId() }}",
-        checkout: "payment",
-        amount: {{ isSubscription ? subscriptionTotal : Order.payment_total }},
-        currency: "{{ Order.currency_code }}",
-        email: "{{ Order.email }}",
-        metadata: { orderNo: "{{ Order.order_no }}" },
-        tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
-        subscriptionPeriod: 'daily',
-        capture: '{{ config.getCapture() }}' === '1',
-        subscriptionInitialAmount: {{ Order.payment_total }},
-        onSuccess: (result) => {
-            chargeId.value = result.response.id;
-            form.submit();
-        },
-        onError: () => {
-            alert("エラーが発生しました。サイト管理者にお問い合わせください。");
-            window.location.href = "{{ url('shopping') }}";
-        },
-        closed: () => {
-            alert("決済が中断されました");
-            window.location.href = "{{ url('shopping') }}";
-        }
-    });
-    form.addEventListener("submit", () => {
-        event.preventDefault();
-        checkout.open();
-    });
-</script>
+{% set isSubscription = Order.Payment.getMethodClass == 'Plugin\\UnivaPay\\Service\\Method\\Subscription' %}
+{% if Order.Payment.getMethodClass == 'Plugin\\UnivaPay\\Service\\Method\\CreditCard' or isSubscription %}
+    {% set config = repository('Plugin\\UnivaPay\\Entity\\Config').findOneById(1) %}
+    {% set subscriptionTotal = 0 %}
+    {% for item in Order.OrderItems %}{% if item.ProductClass %}{% set subscriptionTotal = subscriptionTotal + (item.ProductClass.price01_inc_tax*item.quantity) %}{% dump(item.ProductClass) %}{% endif %}{% endfor %}
+    {% set subscriptionTotal = subscriptionTotal == 0 ? Order.payment_total : Order.payment_total - Order.subtotal + subscriptionTotal %}
+    {{ form_widget(form.univa_pay_charge_id) }}
+    <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
+    <script>
+        form = document.querySelector("#shopping-form");
+        chargeId = document.querySelector("#shopping_order_univa_pay_charge_id");
+        form.appendChild(chargeId);
+        checkout = UnivapayCheckout.create({
+            appId: "{{ config.getAppId() }}",
+            checkout: "payment",
+            amount: {{ isSubscription ? subscriptionTotal : Order.payment_total }},
+            currency: "{{ Order.currency_code }}",
+            email: "{{ Order.email }}",
+            metadata: { orderNo: "{{ Order.order_no }}" },
+            tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
+            subscriptionPeriod: 'daily',
+            capture: '{{ config.getCapture() }}' === '1',
+            subscriptionInitialAmount: {{ Order.payment_total }},
+            onSuccess: (result) => {
+                chargeId.value = result.response.id;
+                form.submit();
+            },
+            onError: () => {
+                alert("エラーが発生しました。サイト管理者にお問い合わせください。");
+                window.location.href = "{{ url('shopping') }}";
+            },
+            closed: () => {
+                alert("決済が中断されました");
+                window.location.href = "{{ url('shopping') }}";
+            }
+        });
+        form.addEventListener("submit", () => {
+            event.preventDefault();
+            checkout.open();
+        });
+    </script>
 {% endif %}

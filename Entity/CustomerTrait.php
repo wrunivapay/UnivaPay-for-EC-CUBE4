@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Entity;
+namespace Plugin\UnivaPay\Entity;
 
 use Eccube\Annotation\EntityExtension;
 use Doctrine\ORM\Mapping as ORM;
@@ -15,5 +15,5 @@ trait CustomerTrait
      * @var string
      * @ORM\Column(type="smallint", nullable=true)
      */
-    public $univapay_cards;
+    public $univa_pay_cards;
 }

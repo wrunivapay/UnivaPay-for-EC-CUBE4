@@ -1,13 +1,13 @@
 <?php
-namespace Plugin\UnivaPayPlugin\Entity;
+namespace Plugin\UnivaPay\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Config
  *
- * @ORM\Table(name="plg_univapay_config")
- * @ORM\Entity(repositoryClass="Plugin\UnivaPayPlugin\Repository\ConfigRepository")
+ * @ORM\Table(name="plg_univa_pay_config")
+ * @ORM\Entity(repositoryClass="Plugin\UnivaPay\Repository\ConfigRepository")
  */
 class Config
 {
