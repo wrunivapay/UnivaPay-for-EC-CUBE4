@@ -42,7 +42,7 @@ class ConfigController extends AbstractController
 
             $this->addSuccess('univa_pay.admin.save.success', 'admin');
 
-            return $this->redirectToRoute('univa_pay_plugin_admin_config');
+            return $this->redirectToRoute('univa_pay_admin_config');
         }
 
         return [
