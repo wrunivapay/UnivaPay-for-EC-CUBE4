@@ -22,3 +22,4 @@ univa_pay.admin.order_edit.payment_action_cancel: 取消
 univa_pay.shopping.checkout.error: カード決済に失敗しました。
 univa_pay.subscription.cancel: 解約
 univa_pay.subscription.change: カード変更
+univa_pay.subscription.period: 課金周期

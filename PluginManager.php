@@ -116,7 +116,7 @@ class PluginManager extends AbstractPluginManager
         $statuses = [
             SubscriptionPeriod::DAILY => '毎日',
             SubscriptionPeriod::WEEKLY => '毎週',
-            SubscriptionPeriod::BITWEEKLY => '隔週',
+            SubscriptionPeriod::BIWEEKLY => '隔週',
             SubscriptionPeriod::MONTHLY => '毎月',
             SubscriptionPeriod::QUARTERLY => '3ヶ月',
             SubscriptionPeriod::SEMIANNUALLY => '6ヶ月',

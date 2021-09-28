@@ -3,8 +3,6 @@ namespace Plugin\UnivaPay\Form\Extension;
 
 use Eccube\Entity\Order;
 use Eccube\Form\Type\Shopping\OrderType;
-use Eccube\Repository\PaymentRepository;
-use Plugin\UnivaPay\Service\Method\CreditCard;
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -16,16 +14,6 @@ use Symfony\Component\Form\FormEvents;
  */
 class CreditCardExtention extends AbstractTypeExtension
 {
-    /**
-     * @var PaymentRepository
-     */
-    protected $paymentRepository;
-
-    public function __construct(PaymentRepository $paymentRepository)
-    {
-        $this->paymentRepository = $paymentRepository;
-    }
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::POST_SET_DATA, function (FormEvent $event) {

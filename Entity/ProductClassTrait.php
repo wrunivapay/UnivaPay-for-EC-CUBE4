@@ -5,9 +5,9 @@
     use Eccube\Annotation\EntityExtension;
 
     /**
-     * @EntityExtension("Eccube\Entity\Product")
+     * @EntityExtension("Eccube\Entity\ProductClass")
      */
-    trait ProductTrait
+    trait ProductClassTrait
     {
         /**
          * 支払周期を保存するカラム
@@ -24,7 +24,7 @@
         /**
          * Set subscriptionPeriod.
          *
-         * @param \Plugin\UnivaPay\Entity\SubscriptionPeriod|null|object $subscriptionPeriod
+         * @param \Plugin\UnivaPay\Entity\SubscriptionPeriod|null $subscriptionPeriod
          *
          * @return Order
          */

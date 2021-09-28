@@ -2,7 +2,13 @@
 {% if Order.Payment.getMethodClass == 'Plugin\\UnivaPay\\Service\\Method\\CreditCard' or isSubscription %}
     {% set config = repository('Plugin\\UnivaPay\\Entity\\Config').findOneById(1) %}
     {% set subscriptionTotal = 0 %}
-    {% for item in Order.OrderItems %}{% if item.ProductClass %}{% set subscriptionTotal = subscriptionTotal + (item.ProductClass.price01_inc_tax*item.quantity) %}{% dump(item.ProductClass) %}{% endif %}{% endfor %}
+    {% set subscriptionPeriod = 4 %}
+    {% for item in Order.OrderItems %}{% if item.ProductClass %}
+        {% if item.ProductClass.SubscriptionPeriod %}
+            {% set subscriptionPeriod = item.ProductClass.SubscriptionPeriod.id %}
+        {% endif %}
+        {% set subscriptionTotal = subscriptionTotal + (item.ProductClass.price01_inc_tax*item.quantity) %}
+    {% endif %}{% endfor %}
     {% set subscriptionTotal = subscriptionTotal == 0 ? Order.payment_total : Order.payment_total - Order.subtotal + subscriptionTotal %}
     {{ form_widget(form.univa_pay_charge_id) }}
     <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
@@ -18,7 +24,21 @@
             email: "{{ Order.email }}",
             metadata: { orderNo: "{{ Order.order_no }}" },
             tokenType: '{{ isSubscription ? "subscription" : "one_time" }}',
-            subscriptionPeriod: 'daily',
+            {% if subscriptionPeriod == 1 %}
+                subscriptionPeriod: 'daily',
+            {% elseif subscriptionPeriod == 2 %}
+                subscriptionPeriod: 'weekly',
+            {% elseif subscriptionPeriod == 3 %}
+                subscriptionPeriod: 'biweekly',
+            {% elseif subscriptionPeriod == 4 %}
+                subscriptionPeriod: 'monthly',
+            {% elseif subscriptionPeriod == 5 %}
+                subscriptionPeriod: 'quarterly',
+            {% elseif subscriptionPeriod == 6 %}
+                subscriptionPeriod: 'semiannually',
+            {% elseif subscriptionPeriod == 7 %}
+                subscriptionPeriod: 'annually',
+            {% endif %}
             capture: '{{ config.getCapture() }}' === '1',
             subscriptionInitialAmount: {{ Order.payment_total }},
             onSuccess: (result) => {
