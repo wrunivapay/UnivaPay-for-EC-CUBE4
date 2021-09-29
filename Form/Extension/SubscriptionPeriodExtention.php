@@ -5,6 +5,7 @@
     use Eccube\Form\Type\Admin\ProductClassType;
     use Symfony\Component\Form\AbstractTypeExtension;
     use Plugin\UnivaPay\Form\Type\SubscriptionPeriodType;
+    use Plugin\UnivaPay\Entity\SubscriptionPeriod;
     use Symfony\Component\Validator\Constraints as Assert;
     use Symfony\Component\Form\FormBuilderInterface;
     use Symfony\Component\Form\FormEvent;
@@ -24,9 +25,7 @@
                 $form->add('subscription_period', SubscriptionPeriodType::class, [
                     'multiple' => false,
                     'expanded' => false,
-                    'constraints' => [
-                        new Assert\NotBlank(),
-                    ],
+                    'placeholder' => 'デフォルト(毎月)',
                 ]);
             });
         }
