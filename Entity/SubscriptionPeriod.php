@@ -16,7 +16,8 @@
         const WEEKLY = 2;
         const BIWEEKLY = 3;
         const MONTHLY = 4;
-        const QUARTERLY = 5;
-        const SEMIANNUALLY = 6;
-        const ANNUALLY = 7;
+        const BIMONTHLY = 5;
+        const QUARTERLY = 6;
+        const SEMIANNUALLY = 7;
+        const ANNUALLY = 8;
     }

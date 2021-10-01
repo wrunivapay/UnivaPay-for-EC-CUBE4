@@ -118,6 +118,7 @@ class PluginManager extends AbstractPluginManager
             SubscriptionPeriod::WEEKLY => '毎週',
             SubscriptionPeriod::BIWEEKLY => '隔週',
             SubscriptionPeriod::MONTHLY => '毎月',
+            SubscriptionPeriod::BIMONTHLY => '隔月',
             SubscriptionPeriod::QUARTERLY => '3ヶ月',
             SubscriptionPeriod::SEMIANNUALLY => '6ヶ月',
             SubscriptionPeriod::ANNUALLY => '毎年',

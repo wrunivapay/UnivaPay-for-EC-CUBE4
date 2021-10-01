@@ -33,10 +33,12 @@
             {% elseif subscriptionPeriod == 4 %}
                 subscriptionPeriod: 'monthly',
             {% elseif subscriptionPeriod == 5 %}
-                subscriptionPeriod: 'quarterly',
+                subscriptionPeriod: 'bimonthly',
             {% elseif subscriptionPeriod == 6 %}
-                subscriptionPeriod: 'semiannually',
+                subscriptionPeriod: 'quarterly',
             {% elseif subscriptionPeriod == 7 %}
+                subscriptionPeriod: 'semiannually',
+            {% elseif subscriptionPeriod == 8 %}
                 subscriptionPeriod: 'annually',
             {% endif %}
             capture: '{{ config.getCapture() }}' === '1',
