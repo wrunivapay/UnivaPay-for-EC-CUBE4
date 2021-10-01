@@ -25,7 +25,7 @@
                 $form->add('subscription_period', SubscriptionPeriodType::class, [
                     'multiple' => false,
                     'expanded' => false,
-                    'placeholder' => 'デフォルト(毎月)',
+                    'placeholder' => 'univa_pay.subscription.default',
                 ]);
             });
         }
