@@ -10,7 +10,7 @@ https://qiita.com/yoshiharu-semachi/items/03817d6dd883b000348f
 UnivaPayドキュメント  
 https://docs.gyro-n.money/guides/widget-javascript/
 
-UnivaPay SDK
+UnivaPay SDK  
 https://github.com/univapay/univapay-php-sdk
 
 検証環境は下記参照  
@@ -20,6 +20,7 @@ https://github.com/univapaycast/EC-CUBE4-for-UnivaPay
 https://drive.google.com/drive/folders/1QM6dFdt3QilxVe3JOMEnvpcGxF5xI5BI?usp=sharing
 
 アップデート手順
+
 1. composer.json内のversionを上げる
 2. masterにコミット後github内でバージョンタグの作成
 3. サポート向けドライブに作成されたファイルをアップロード
