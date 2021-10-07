@@ -90,8 +90,18 @@ class OrderController extends AbstractController
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
             $util = new SDK($this->Config->findOneById(1));
             $charge = $util->getCharge($Order->getUnivapayChargeId());
+            $ret = [
+                'status' => $charge->status->getValue()
+            ];
+            $refund = current(current($charge->listRefunds()));
+            if($refund) {
+                $ret['status'] = 'refund';
+                if($refund->status->getValue() !== 'successful') {
+                    $ret['status'] = $refund->status->getValue();
+                }
+            }
 
-            return $this->json($charge->status);
+            return $this->json($ret);
         }
 
         throw new BadRequestHttpException();

@@ -19,6 +19,10 @@ univa_pay.admin.order_edit.payment_status: ステータス
 univa_pay.admin.order_edit.payment_action: 決済操作
 univa_pay.admin.order_edit.payment_action_capture: キャプチャ
 univa_pay.admin.order_edit.payment_action_cancel: 取消
+univa_pay.admin.status.successful: 課金成功
+univa_pay.admin.status.authorized: オーソリ成功
+univa_pay.admin.status.refund: 返金成功
+univa_pay.admin.status.inprogress: 決済ステータス取得中
 univa_pay.shopping.checkout.error: カード決済に失敗しました。
 univa_pay.subscription.cancel: 解約
 univa_pay.subscription.change: カード変更

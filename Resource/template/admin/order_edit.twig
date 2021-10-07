@@ -9,14 +9,19 @@
             type: 'GET',
             url: '{{ url('univa_pay_admin_order_get', { id: Order.id }) }}',
         }).always(function(e) {
-            $('#univapay-status').text(e.value);
-            switch(e.name) {
-                case "AUTHORIZED":
+            $('#univapay-status').text(e.status);
+            switch(e.status) {
+                case "authorized":
                     $('#univapay-action__capture').prop('disabled', false)
                     $('#univapay-action__cancel').prop('disabled', false)
+                    $('#univapay-status').text('{{ 'univa_pay.admin.status.authorized'|trans }}')
                     break;
-                case "SUCCESSFUL":
+                case "successful":
                     $('#univapay-action__cancel').prop('disabled', false)
+                    $('#univapay-status').text('{{ 'univa_pay.admin.status.successful'|trans }}')
+                    break;
+                case "refund":
+                    $('#univapay-status').text('{{ 'univa_pay.admin.status.refund'|trans }}')
                     break;
             }
         });
@@ -62,7 +67,7 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_status'|trans }}</span></div>
-                    <div class="col" id="univapay-status"></div>
+                    <div class="col" id="univapay-status">{{ 'univa_pay.admin.order_edit.inprogress'|trans }}</div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_action'|trans }}</span></div>
