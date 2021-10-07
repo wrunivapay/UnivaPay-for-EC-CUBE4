@@ -109,7 +109,8 @@ class SubscriptionController extends AbstractController
                 $newOrder->setCurrencyCode($existOrder->getCurrencyCode());
                 $newOrder->setCompleteMessage($existOrder->getCompleteMessage());
                 $newOrder->setCompleteMailMessage($existOrder->getCompleteMailMessage());
-                $newOrder->setPaymentDate($existOrder->getPaymentDate());
+                // 決済日を今日に変更
+                $newOrder->setPaymentDate(new \DateTime());
                 $newOrder->setCustomer($existOrder->getCustomer());
                 $newOrder->setCountry($existOrder->getCountry());
                 $newOrder->setPref($existOrder->getPref());

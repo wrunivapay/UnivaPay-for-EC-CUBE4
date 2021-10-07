@@ -116,6 +116,7 @@ class CreditCard implements PaymentMethodInterface
             if($this->Config->findOneById(1)->getCapture()) {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                 $this->Order->setOrderStatus($OrderStatus);
+                $this->Order->setPaymentDate(new \DateTime());
             }
 
             $result = new PaymentResult();

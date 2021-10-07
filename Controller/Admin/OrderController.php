@@ -55,6 +55,7 @@ class OrderController extends AbstractController
                     $charge->capture();
                     $charge->fetch();
                     $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
+                    $Order->setPaymentDate(new \DateTime());
                     break;
                 case "cancel":
                     if($charge->status->getName() === "SUCCESSFUL") {
