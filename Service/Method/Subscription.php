@@ -118,6 +118,7 @@ class Subscription implements PaymentMethodInterface
             // サブスクではcapture済みなので支払済みに変更
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
             $this->Order->setOrderStatus($OrderStatus);
+            $this->Order->setPaymentDate(new \DateTime());
 
             $result = new PaymentResult();
             $result->setSuccess(true);
