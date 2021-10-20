@@ -81,8 +81,8 @@ class SubscriptionController extends AbstractController
             if(!is_null($existOrder)) {
                 // cloneで注文を複製してもidが変更できないため一から作成
                 $newOrder = new Order;
-                // 再課金待ちの場合は何もしない
-                if($data->data->status === 'unpaid') {
+                // 再課金待ちもしくは初回課金の場合は何もしない
+                if($data->data->status === 'unpaid' || $data->data->transactionTokenId == $existOrder->getUnivapayChargeId()) {
                     return $this->json(["status" => true]);
                 }
                 $newOrder->setMessage($existOrder->getMessage());
@@ -120,6 +120,7 @@ class SubscriptionController extends AbstractController
                 $newOrder->setDeviceType($existOrder->getDeviceType());
                 $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
                 $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
+                $newOrder->setUnivapayChargeId($data->data->transactionTokenId);
                 foreach($existOrder->getOrderItems() as $value) {
                     $newOrderItem = clone $value;
                     $newOrderItem->setOrder($newOrder);
