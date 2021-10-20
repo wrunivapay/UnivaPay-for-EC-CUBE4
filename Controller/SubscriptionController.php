@@ -146,11 +146,9 @@ class SubscriptionController extends AbstractController
                 $this->orderNoProcessor->process($newOrder, $purchaseContext);
                 $this->entityManager->flush();
                 // 定期課金に失敗した場合はキャンセル済み注文に変更
-                if($data->data->status === 'suspended') {
-                    $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
-                    $newOrder->setOrderStatus($OrderStatus);
-                    $this->entityManager->flush();
-                }
+                $OrderStatus = $this->orderStatusRepository->find($data->data->status === 'suspended' ? OrderStatus::CANCEL : OrderStatus::PAID);
+                $newOrder->setOrderStatus($OrderStatus);
+                $this->entityManager->flush();
                 return $this->json(["status" => true]);
             }
         }
