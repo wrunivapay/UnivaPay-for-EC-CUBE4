@@ -81,8 +81,10 @@ class SubscriptionController extends AbstractController
             if(!is_null($existOrder)) {
                 // cloneで注文を複製してもidが変更できないため一から作成
                 $newOrder = new Order;
+                // tokenIdからchargeIdを取得
+                $chargeId = $util->getCharge($data->data->transactionTokenId)->id;
                 // 再課金待ちもしくは初回課金の場合は何もしない
-                if($data->data->status === 'unpaid' || $data->data->transactionTokenId == $existOrder->getUnivapayChargeId()) {
+                if($data->data->status === 'unpaid' || $chargeId == $existOrder->getUnivapayChargeId()) {
                     return $this->json(["status" => true]);
                 }
                 $newOrder->setMessage($existOrder->getMessage());
