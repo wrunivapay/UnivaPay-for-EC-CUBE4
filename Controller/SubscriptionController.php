@@ -81,12 +81,14 @@ class SubscriptionController extends AbstractController
             if(!is_null($existOrder)) {
                 // cloneで注文を複製してもidが変更できないため一から作成
                 $newOrder = new Order;
-                // tokenIdからchargeIdを取得
-                $chargeId = $util->getCharge($data->data->transactionTokenId)->id;
+                // SubscriptionIdからChargeを取得
+                $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
-                if($data->data->status === 'unpaid' || $chargeId == $existOrder->getUnivapayChargeId()) {
+                if($data->data->status === 'unpaid' || $charge->id == $existOrder->getUnivapayChargeId()) {
                     return $this->json(["status" => true]);
                 }
+                // 今回での決済の課金ID取得
+                $newOrder->setUnivapayChargeId($charge->id);
                 $newOrder->setMessage($existOrder->getMessage());
                 $newOrder->setName01($existOrder->getName01());
                 $newOrder->setName02($existOrder->getName02());
@@ -122,7 +124,6 @@ class SubscriptionController extends AbstractController
                 $newOrder->setDeviceType($existOrder->getDeviceType());
                 $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
                 $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
-                $newOrder->setUnivapayChargeId($data->data->transactionTokenId);
                 foreach($existOrder->getOrderItems() as $value) {
                     $newOrderItem = clone $value;
                     $newOrderItem->setOrder($newOrder);
@@ -137,9 +138,6 @@ class SubscriptionController extends AbstractController
                 // 注文番号変更
                 $preOrderId = $this->orderHelper->createPreOrderId();
                 $newOrder->setPreOrderId($preOrderId);
-                // 今回での決済の課金ID取得
-                $charge = $util->getchargeBySubscriptionId($data->data->id);
-                $newOrder->setUnivapayChargeId($charge->id);
                 // 購入処理を完了
                 $this->purchaseFlow->prepare($newOrder, $purchaseContext);
                 $this->purchaseFlow->commit($newOrder, $purchaseContext);
