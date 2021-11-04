@@ -83,7 +83,7 @@ class SubscriptionController extends AbstractController
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
                 if($data->data->status === 'unpaid' || $charge->id == $existOrder->getUnivapayChargeId()) {
-                    return $this->json(["status" => true]);
+                    return $this->json([]);
                 }
                 // cloneで注文を複製してもidが変更できないため一から作成
                 $newOrder = new Order;
