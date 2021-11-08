@@ -75,10 +75,10 @@ class SubscriptionController extends AbstractController
     public function hook(Request $request)
     {
         $data = json_decode($request->getContent());
-        $util = new SDK($this->Config->findOneById(1));
         if($data->event === 'subscription_payment' || $data->event === 'subscription_failure') {
             $existOrder = $this->Order->findOneBy(["order_no" => $data->data->metadata->orderNo]);
             if(!is_null($existOrder)) {
+                $util = new SDK($this->Config->findOneById(1));
                 // SubscriptionIdからChargeを取得
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
@@ -148,13 +148,10 @@ class SubscriptionController extends AbstractController
                     $OrderStatus = $this->orderStatusRepository->find($data->data->status === 'suspended' ? OrderStatus::CANCEL : OrderStatus::PAID);
                     $newOrder->setOrderStatus($OrderStatus);
                     $this->entityManager->flush();
-                    return $this->json(["status" => true]);
                 }
             }
-            return $this->json(["status" => false]);
         }
-
-        throw new BadRequestHttpException();
+        return new Response('', Response::HTTP_OK, array('Content-Type' => 'text/plain; charset=utf-8'));
     }
 
     /**
