@@ -82,76 +82,76 @@ class SubscriptionController extends AbstractController
                 // SubscriptionIdからChargeを取得
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
-                if($data->data->status === 'unpaid' || $charge->id == $existOrder->getUnivapayChargeId()) {
-                    return $this->json([]);
+                if($data->data->status !== 'unpaid' && $charge->id != $existOrder->getUnivapayChargeId()) {
+                    // cloneで注文を複製してもidが変更できないため一から作成
+                    $newOrder = new Order;
+                    // 今回での決済の課金ID取得
+                    $newOrder->setUnivapayChargeId($charge->id);
+                    $newOrder->setMessage($existOrder->getMessage());
+                    $newOrder->setName01($existOrder->getName01());
+                    $newOrder->setName02($existOrder->getName02());
+                    $newOrder->setKana01($existOrder->getKana01());
+                    $newOrder->setKana02($existOrder->getKana02());
+                    $newOrder->setCompanyName($existOrder->getCompanyName());
+                    $newOrder->setEmail($existOrder->getEmail());
+                    $newOrder->setPhoneNumber($existOrder->getPhoneNumber());
+                    $newOrder->setPostalCode($existOrder->getPostalCode());
+                    $newOrder->setAddr01($existOrder->getAddr01());
+                    $newOrder->setAddr02($existOrder->getAddr02());
+                    $newOrder->setBirth($existOrder->getBirth());
+                    $newOrder->setSubtotal($existOrder->getSubtotal());
+                    $newOrder->setDiscount($existOrder->getDiscount());
+                    $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
+                    $newOrder->setCharge($existOrder->getCharge());
+                    $newOrder->setTax($existOrder->getTax());
+                    $newOrder->setTotal($existOrder->getTotal());
+                    $newOrder->setPaymentTotal($existOrder->getPaymentTotal());
+                    $newOrder->setPaymentMethod($existOrder->getPaymentMethod());
+                    $newOrder->setNote($existOrder->getNote());
+                    $newOrder->setCurrencyCode($existOrder->getCurrencyCode());
+                    $newOrder->setCompleteMessage($existOrder->getCompleteMessage());
+                    $newOrder->setCompleteMailMessage($existOrder->getCompleteMailMessage());
+                    // 決済日を今日に変更
+                    $newOrder->setPaymentDate(new \DateTime());
+                    $newOrder->setCustomer($existOrder->getCustomer());
+                    $newOrder->setCountry($existOrder->getCountry());
+                    $newOrder->setPref($existOrder->getPref());
+                    $newOrder->setSex($existOrder->getSex());
+                    $newOrder->setJob($existOrder->getJob());
+                    $newOrder->setPayment($existOrder->getPayment());
+                    $newOrder->setDeviceType($existOrder->getDeviceType());
+                    $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
+                    $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
+                    foreach($existOrder->getOrderItems() as $value) {
+                        $newOrderItem = clone $value;
+                        $newOrderItem->setOrder($newOrder);
+                        $newOrder->addOrderItem($newOrderItem);
+                    }
+                    foreach($existOrder->getShippings() as $value) {
+                        $newShipping = clone $value;
+                        $newShipping->setOrder($newOrder);
+                        $newOrder->addShipping($newShipping);
+                    }
+                    $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
+                    // 注文番号変更
+                    $preOrderId = $this->orderHelper->createPreOrderId();
+                    $newOrder->setPreOrderId($preOrderId);
+                    // 購入処理を完了
+                    $this->purchaseFlow->prepare($newOrder, $purchaseContext);
+                    $this->purchaseFlow->commit($newOrder, $purchaseContext);
+                    $this->entityManager->persist($newOrder);
+                    // 注文番号が重複しないように再採番
+                    $this->entityManager->flush();
+                    $this->orderNoProcessor->process($newOrder, $purchaseContext);
+                    $this->entityManager->flush();
+                    // 定期課金に失敗した場合はキャンセル済み注文に変更
+                    $OrderStatus = $this->orderStatusRepository->find($data->data->status === 'suspended' ? OrderStatus::CANCEL : OrderStatus::PAID);
+                    $newOrder->setOrderStatus($OrderStatus);
+                    $this->entityManager->flush();
+                    return $this->json(["status" => true]);
                 }
-                // cloneで注文を複製してもidが変更できないため一から作成
-                $newOrder = new Order;
-                // 今回での決済の課金ID取得
-                $newOrder->setUnivapayChargeId($charge->id);
-                $newOrder->setMessage($existOrder->getMessage());
-                $newOrder->setName01($existOrder->getName01());
-                $newOrder->setName02($existOrder->getName02());
-                $newOrder->setKana01($existOrder->getKana01());
-                $newOrder->setKana02($existOrder->getKana02());
-                $newOrder->setCompanyName($existOrder->getCompanyName());
-                $newOrder->setEmail($existOrder->getEmail());
-                $newOrder->setPhoneNumber($existOrder->getPhoneNumber());
-                $newOrder->setPostalCode($existOrder->getPostalCode());
-                $newOrder->setAddr01($existOrder->getAddr01());
-                $newOrder->setAddr02($existOrder->getAddr02());
-                $newOrder->setBirth($existOrder->getBirth());
-                $newOrder->setSubtotal($existOrder->getSubtotal());
-                $newOrder->setDiscount($existOrder->getDiscount());
-                $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
-                $newOrder->setCharge($existOrder->getCharge());
-                $newOrder->setTax($existOrder->getTax());
-                $newOrder->setTotal($existOrder->getTotal());
-                $newOrder->setPaymentTotal($existOrder->getPaymentTotal());
-                $newOrder->setPaymentMethod($existOrder->getPaymentMethod());
-                $newOrder->setNote($existOrder->getNote());
-                $newOrder->setCurrencyCode($existOrder->getCurrencyCode());
-                $newOrder->setCompleteMessage($existOrder->getCompleteMessage());
-                $newOrder->setCompleteMailMessage($existOrder->getCompleteMailMessage());
-                // 決済日を今日に変更
-                $newOrder->setPaymentDate(new \DateTime());
-                $newOrder->setCustomer($existOrder->getCustomer());
-                $newOrder->setCountry($existOrder->getCountry());
-                $newOrder->setPref($existOrder->getPref());
-                $newOrder->setSex($existOrder->getSex());
-                $newOrder->setJob($existOrder->getJob());
-                $newOrder->setPayment($existOrder->getPayment());
-                $newOrder->setDeviceType($existOrder->getDeviceType());
-                $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
-                $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
-                foreach($existOrder->getOrderItems() as $value) {
-                    $newOrderItem = clone $value;
-                    $newOrderItem->setOrder($newOrder);
-                    $newOrder->addOrderItem($newOrderItem);
-                }
-                foreach($existOrder->getShippings() as $value) {
-                    $newShipping = clone $value;
-                    $newShipping->setOrder($newOrder);
-                    $newOrder->addShipping($newShipping);
-                }
-                $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
-                // 注文番号変更
-                $preOrderId = $this->orderHelper->createPreOrderId();
-                $newOrder->setPreOrderId($preOrderId);
-                // 購入処理を完了
-                $this->purchaseFlow->prepare($newOrder, $purchaseContext);
-                $this->purchaseFlow->commit($newOrder, $purchaseContext);
-                $this->entityManager->persist($newOrder);
-                // 注文番号が重複しないように再採番
-                $this->entityManager->flush();
-                $this->orderNoProcessor->process($newOrder, $purchaseContext);
-                $this->entityManager->flush();
-                // 定期課金に失敗した場合はキャンセル済み注文に変更
-                $OrderStatus = $this->orderStatusRepository->find($data->data->status === 'suspended' ? OrderStatus::CANCEL : OrderStatus::PAID);
-                $newOrder->setOrderStatus($OrderStatus);
-                $this->entityManager->flush();
-                return $this->json(["status" => true]);
             }
+            return $this->json(["status" => false]);
         }
 
         throw new BadRequestHttpException();
