@@ -78,7 +78,7 @@ class SubscriptionController extends AbstractController
         $data = json_decode($request->getContent());
         if($data->event === 'subscription_payment' || $data->event === 'subscription_failure') {
             $existOrder = $this->Order->findOneBy(["order_no" => $data->data->metadata->orderNo]);
-            if(!is_null($existOrder)) {
+            if(!is_null($existOrder) && $existOrder->getUnivapayChargeId()) {
                 $util = new SDK($this->Config->findOneById(1));
                 // SubscriptionIdからChargeを取得
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
