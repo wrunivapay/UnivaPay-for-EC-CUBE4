@@ -26,8 +26,8 @@ class PluginManager extends AbstractPluginManager
         $this->createSubscriptionPeriod($container);
         // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
         exec('composer require univapay/php-sdk:5.2.1');
-        exec('bin/console cache:clear --no-warmup');
-        exec('bin/console cache:warmup');
+        // composerを変更するとキャッシュとのギャップでエラーがでるためキャッシュを強制削除
+        exec('rm -rf var/cache/*');
     }
 
     private function createTokenPayment(ContainerInterface $container)
