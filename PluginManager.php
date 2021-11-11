@@ -27,6 +27,7 @@ class PluginManager extends AbstractPluginManager
         // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
         exec('composer require univapay/php-sdk:5.2.1');
         exec('composer clear-cache');
+        exec('composer dump-autoload');
     }
 
     private function createTokenPayment(ContainerInterface $container)
