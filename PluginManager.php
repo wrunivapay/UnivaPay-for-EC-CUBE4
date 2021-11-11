@@ -14,7 +14,8 @@ class PluginManager extends AbstractPluginManager
 {
     public function disable(array $meta, ContainerInterface $container)
     {
-        exec('composer remove univapay/php-sdk');
+        // ほとんどの環境でエラーが出るためそのままにしておく
+        // exec('composer remove univapay/php-sdk');
     }
 
     public function enable(array $meta, ContainerInterface $container)
