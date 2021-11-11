@@ -37,4 +37,12 @@
         {
             return ProductClassType::class;
         }
+
+        /**
+         * @return iterable
+         */
+        public function getExtendedTypes(): iterable
+        {
+            return [ProductClassType::class];
+        }
     }

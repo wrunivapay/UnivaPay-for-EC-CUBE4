@@ -3,7 +3,6 @@ namespace Plugin\UnivaPay;
 
 use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
-use Eccube\Repository\PaymentRepository;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\SubscriptionPeriod;
 use Plugin\UnivaPay\Service\Method\CreditCard;
@@ -25,7 +24,7 @@ class PluginManager extends AbstractPluginManager
     private function createTokenPayment(ContainerInterface $container)
     {
         $entityManager = $container->get('doctrine')->getManager();
-        $paymentRepository = $container->get(PaymentRepository::class);
+        $paymentRepository = $entityManager->getRepository(Payment::class);
 
         $Payment = $paymentRepository->findOneBy([], ['sort_no' => 'DESC']);
         $sortNo = $Payment ? $Payment->getSortNo() + 1 : 1;
@@ -49,7 +48,7 @@ class PluginManager extends AbstractPluginManager
     private function createSubscriptionPayment(ContainerInterface $container)
     {
         $entityManager = $container->get('doctrine')->getManager();
-        $paymentRepository = $container->get(PaymentRepository::class);
+        $paymentRepository = $entityManager->getRepository(Payment::class);
 
         $Payment = $paymentRepository->findOneBy([], ['sort_no' => 'DESC']);
         $sortNo = $Payment ? $Payment->getSortNo() + 1 : 1;
