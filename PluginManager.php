@@ -12,14 +12,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
 {
-    public function install(array $meta, ContainerInterface $container)
+    public function enable(array $meta, ContainerInterface $container)
     {
         // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
         exec('composer require univapay/php-sdk:5.2.1');
-    }
-
-    public function enable(array $meta, ContainerInterface $container)
-    {
         $this->createTokenPayment($container);
         $this->createSubscriptionPayment($container);
         $this->createConfig($container);
