@@ -12,10 +12,10 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
 {
-    public function disable(array $meta, ContainerInterface $container)
+    public function install(array $meta, ContainerInterface $container)
     {
-        // ほとんどの環境でエラーが出るためそのままにしておく
-        // exec('composer remove univapay/php-sdk');
+        // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
+        exec('composer require univapay/php-sdk:5.2.1');
     }
 
     public function enable(array $meta, ContainerInterface $container)
@@ -24,8 +24,6 @@ class PluginManager extends AbstractPluginManager
         $this->createSubscriptionPayment($container);
         $this->createConfig($container);
         $this->createSubscriptionPeriod($container);
-        // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
-        exec('composer require univapay/php-sdk:5.2.1');
     }
 
     private function createTokenPayment(ContainerInterface $container)
