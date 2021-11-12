@@ -91,7 +91,8 @@ class OrderController extends AbstractController
             $util = new SDK($this->Config->findOneById(1));
             $charge = $util->getCharge($Order->getUnivapayChargeId());
             $ret = [
-                'status' => $charge->status->getValue()
+                'status' => $charge->status->getValue(),
+                'id' => $charge->id
             ];
             $refund = current(current($charge->listRefunds()));
             if($refund) {

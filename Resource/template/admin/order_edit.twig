@@ -24,6 +24,7 @@
                     $('#univapay-status').text('{{ 'univa_pay.admin.status.refund'|trans }}')
                     break;
             }
+            $('#univapay-charge').text(e.id);
         });
 
         // キャプチャ
@@ -68,6 +69,10 @@
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_status'|trans }}</span></div>
                     <div class="col" id="univapay-status">{{ 'univa_pay.admin.status.inprogress'|trans }}</div>
+                </div>
+                <div class="row mb-2">
+                    <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.charge_id'|trans }}</span></div>
+                    <div class="col" id="univapay-charge">{{ 'univa_pay.admin.status.inprogress'|trans }}</div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_action'|trans }}</span></div>

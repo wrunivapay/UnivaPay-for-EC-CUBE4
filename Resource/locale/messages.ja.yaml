@@ -19,6 +19,7 @@ univa_pay.admin.order_edit.payment_status: ステータス
 univa_pay.admin.order_edit.payment_action: 決済操作
 univa_pay.admin.order_edit.payment_action_capture: キャプチャ
 univa_pay.admin.order_edit.payment_action_cancel: 取消
+univa_pay.admin.order_edit.charge_id: 課金ID
 univa_pay.admin.status.successful: 課金成功
 univa_pay.admin.status.authorized: オーソリ成功
 univa_pay.admin.status.refund: 返金成功
