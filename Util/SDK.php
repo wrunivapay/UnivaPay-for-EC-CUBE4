@@ -26,7 +26,7 @@ class SDK {
     }
 
     // get current charge from subscriptionId
-    public function getchargeBySubscriptionId($subscriptionId) {
+    public function getChargeBySubscriptionId($subscriptionId) {
         return current($this->client->getSubscription($this->token->storeId, $subscriptionId)->listCharges()->items);
     }
 

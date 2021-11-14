@@ -92,7 +92,8 @@ class OrderController extends AbstractController
             $charge = $util->getCharge($Order->getUnivapayChargeId());
             $ret = [
                 'status' => $charge->status->getValue(),
-                'id' => $charge->id
+                'id' => $charge->id,
+                'subscription_id' => $charge->subscriptionId
             ];
             $refund = current(current($charge->listRefunds()));
             if($refund) {

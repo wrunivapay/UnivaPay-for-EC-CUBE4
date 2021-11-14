@@ -25,6 +25,8 @@
                     break;
             }
             $('#univapay-charge').text(e.id);
+            $('#univapay-subscription').text(e.subscription_id);
+            if(e.subscription_id) $('#univapay-subscription').parent().removeClass("d-none");
         });
 
         // キャプチャ
@@ -73,6 +75,10 @@
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.charge_id'|trans }}</span></div>
                     <div class="col" id="univapay-charge">{{ 'univa_pay.admin.status.inprogress'|trans }}</div>
+                </div>
+                <div class="row mb-2 d-none">
+                    <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.subscription_id'|trans }}</span></div>
+                    <div class="col" id="univapay-subscription"></div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_action'|trans }}</span></div>
