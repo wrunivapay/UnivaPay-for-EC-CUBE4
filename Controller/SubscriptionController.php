@@ -105,7 +105,7 @@ class SubscriptionController extends AbstractController
                     $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
                     $newOrder->setCharge($existOrder->getCharge());
                     $newOrder->setTax($existOrder->getTax());
-                    $newOrder->setTotal($existOrder->getTotal());
+                    $newOrder->setTotal($data->data->amount);
                     $newOrder->setPaymentTotal($data->data->amount);
                     $newOrder->setPaymentMethod($existOrder->getPaymentMethod());
                     $newOrder->setNote($existOrder->getNote());
