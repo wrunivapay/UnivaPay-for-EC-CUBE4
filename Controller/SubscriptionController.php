@@ -88,6 +88,7 @@ class SubscriptionController extends AbstractController
                     $newOrder = new Order;
                     // 今回での決済の課金ID取得
                     $newOrder->setUnivapayChargeId($charge->id);
+                    $newOrder->setUnivapaySubscriptionId($existOrder->getUnivapaySubscriptionId());
                     $newOrder->setMessage($existOrder->getMessage());
                     $newOrder->setName01($existOrder->getName01());
                     $newOrder->setName02($existOrder->getName02());
@@ -100,11 +101,14 @@ class SubscriptionController extends AbstractController
                     $newOrder->setAddr01($existOrder->getAddr01());
                     $newOrder->setAddr02($existOrder->getAddr02());
                     $newOrder->setBirth($existOrder->getBirth());
-                    $newOrder->setSubtotal($existOrder->getSubtotal());
+                    // 今回決済金額から小計を逆算
+                    $newSubtotal = $data->data->amount - $existOrder->getDiscount() - $existOrder->getDeliveryFeeTotal();
+                    $newOrder->setSubtotal($newSubtotal);
                     $newOrder->setDiscount($existOrder->getDiscount());
                     $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
                     $newOrder->setCharge($existOrder->getCharge());
                     $newOrder->setTax($existOrder->getTax());
+                    // 二回目以降の決済金額が違う場合があるため変更
                     $newOrder->setTotal($data->data->amount);
                     $newOrder->setPaymentTotal($data->data->amount);
                     $newOrder->setPaymentMethod($existOrder->getPaymentMethod());
@@ -125,6 +129,7 @@ class SubscriptionController extends AbstractController
                     $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
+                        $newOrderItem->setPrice02IncTax($newSubtotal / count($existOrder->getOrderItems()));
                         $newOrderItem->setOrder($newOrder);
                         $newOrder->addOrderItem($newOrderItem);
                     }

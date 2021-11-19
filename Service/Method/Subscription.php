@@ -110,6 +110,7 @@ class Subscription implements PaymentMethodInterface
             // Subscription idからcharge idを取得して格納
             $util = new SDK($this->Config->findOneById(1));
             $token = $util->getchargeBySubscriptionId($subscriptionId)->id;
+            $this->Order->setUnivapaySubscriptionId($subscriptionId);
             $this->Order->setUnivapayChargeId($token);
 
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
