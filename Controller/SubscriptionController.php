@@ -129,7 +129,8 @@ class SubscriptionController extends AbstractController
                     $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
-                        $newOrderItem->setPrice02IncTax($newSubtotal / count($existOrder->getOrderItems()));
+                        // アイテム一個あたりを再計算(商品金額が修正されないため無効化中)
+                        // $newOrderItem->setPrice02IncTax($newSubtotal / count($existOrder->getOrderItems()));
                         $newOrderItem->setOrder($newOrder);
                         $newOrder->addOrderItem($newOrderItem);
                     }
