@@ -9,7 +9,7 @@
         {% endif %}
         {% set subscriptionTotal = subscriptionTotal + (item.ProductClass.price01_inc_tax*item.quantity) %}
     {% endif %}{% endfor %}
-    {% set subscriptionTotal = subscriptionTotal == 0 ? Order.payment_total : Order.payment_total - Order.subtotal + subscriptionTotal %}
+    {% set subscriptionTotal = subscriptionTotal == 0 ? Order.payment_total : Order.delivery_fee_total + subscriptionTotal %}
     {{ form_widget(form.univa_pay_charge_id) }}
     <script src="{{ config.getWidgetUrl() }}/client/checkout.js"></script>
     <script>
