@@ -38,7 +38,7 @@ class CreditCardExtention extends AbstractTypeExtension
     /**
      * @return iterable
      */
-    public function getExtendedTypes(): iterable
+    public static function getExtendedTypes(): iterable
     {
         return [OrderType::class];
     }
