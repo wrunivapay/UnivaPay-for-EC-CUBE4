@@ -33,7 +33,7 @@ cd EC-UnivaPay-for-EC-CUBE4
 cp docker-compose-sample.yml docker-compose.yml
 docker compose up -d
 docker compose exec web sh -c "composer run-script compile && bin/console eccube:install -n"
-docker-compose exec web sh -c "bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
+docker compose exec web sh -c "bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
 ```
 
 データベース更新したとき
