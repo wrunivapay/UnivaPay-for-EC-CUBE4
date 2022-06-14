@@ -24,3 +24,20 @@ https://drive.google.com/drive/folders/1QM6dFdt3QilxVe3JOMEnvpcGxF5xI5BI?usp=sha
 1. composer.json内のversionを上げる
 2. masterにコミット後github内でバージョンタグの作成
 3. サポート向けドライブに作成されたファイルをアップロード
+
+## 開発
+
+```sh
+git clone https://github.com/univapaycast/UnivaPay-for-EC-CUBE4.git
+cd EC-UnivaPay-for-EC-CUBE4
+cp docker-compose-sample.yml docker-compose.yml
+docker compose up -d
+docker compose exec web sh -c "composer run-script compile && bin/console eccube:install -n"
+docker-compose exec web sh -c "bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
+```
+
+データベース更新したとき
+
+```sh
+docker compose exec web sh -c "bin/console eccube:install -n && bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
+```
