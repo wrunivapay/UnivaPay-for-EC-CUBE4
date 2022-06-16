@@ -6,6 +6,7 @@ use Eccube\Entity\Master\OrderStatus;
 use Eccube\Repository\OrderRepository;
 use Eccube\Repository\Master\OrderStatusRepository;
 use Eccube\Service\OrderHelper;
+use Eccube\Service\MailService;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\Processor\OrderNoProcessor;
@@ -42,6 +43,11 @@ class SubscriptionController extends AbstractController
     private $orderHelper;
 
     /**
+     * @var MailService
+     */
+    protected $mailService;
+
+    /**
      * OrderController constructor.
      *
      * @param ConfigRepository $configRepository
@@ -50,6 +56,7 @@ class SubscriptionController extends AbstractController
      * @param PurchaseFlow $shoppingPurchaseFlow
      * @param OrderHelper $orderHelper
      * @param OrderNoProcessor $orderNoProcessor
+     * @param MailService $mailService
      */
     public function __construct(
         ConfigRepository $configRepository,
@@ -57,7 +64,8 @@ class SubscriptionController extends AbstractController
         OrderStatusRepository $orderStatusRepository,
         PurchaseFlow $shoppingPurchaseFlow,
         OrderHelper $orderHelper,
-        OrderNoProcessor $orderNoProcessor
+        OrderNoProcessor $orderNoProcessor,
+        MailService $mailService,
     ) {
         $this->Config = $configRepository;
         $this->Order = $orderRepository;
@@ -65,6 +73,7 @@ class SubscriptionController extends AbstractController
         $this->purchaseFlow = $shoppingPurchaseFlow;
         $this->orderHelper = $orderHelper;
         $this->orderNoProcessor = $orderNoProcessor;
+        $this->mailService = $mailService;
     }
 
     /**
@@ -131,10 +140,10 @@ class SubscriptionController extends AbstractController
                         $newOrderItem = clone $value;
                         // OrderItemごとの金額を修正する
                         // 現状二種類以上の商品を同時購入した場合は正確に計算されないが実装に時間がかかるため保留
-                        if($value->isProduct()) {
+                        if($newOrderItem->isProduct()) {
                             // 決済金額から税抜を計算する
-                            $newOrderItem->setPrice($newSubtotal / ($value->getTaxRate() / 100 + 1));
-                            $newOrderItem->setTax($newOrderItem->getPrice() * ($value->getTaxRate() / 100));
+                            $newOrderItem->setPrice($newSubtotal / ($newOrderItem->getTaxRate() / 100 + 1));
+                            $newOrderItem->setTax($newOrderItem->getPrice() * ($newOrderItem->getTaxRate() / 100));
                         }
                         $newOrderItem->setOrder($newOrder);
                         $newOrder->addOrderItem($newOrderItem);
@@ -144,6 +153,16 @@ class SubscriptionController extends AbstractController
                         $newShipping->setShippingDate(NULL);
                         $newShipping->setTrackingNumber(NULL);
                         $newShipping->setOrder($newOrder);
+                        // 循環参照してしまい正常に発送データがセットできないため
+                        foreach($newShipping->getOrderItems() as $v) {
+                            $newShipping->removeOrderItem($v);
+                        }
+                        foreach($newOrder->getOrderItems() as $v) {
+                            if($v->getShipping() && $v->getShipping()->getId() == $value->getId()) {
+                                $v->setShipping($newShipping);
+                                $newShipping->addOrderItem($v);
+                            }
+                        }
                         $newOrder->addShipping($newShipping);
                     }
                     $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
@@ -161,6 +180,7 @@ class SubscriptionController extends AbstractController
                     // 定期課金に失敗した場合はキャンセル済み注文に変更
                     $OrderStatus = $this->orderStatusRepository->find($data->data->status === 'suspended' ? OrderStatus::CANCEL : OrderStatus::PAID);
                     $newOrder->setOrderStatus($OrderStatus);
+                    $this->mailService->sendOrderMail($newOrder);
                     $this->entityManager->flush();
                 }
             }
