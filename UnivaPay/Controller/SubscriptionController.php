@@ -83,7 +83,9 @@ class SubscriptionController extends AbstractController
                 // SubscriptionIdからChargeを取得
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
-                if($data->data->status !== 'unpaid' && $charge->id != $existOrder->getUnivapayChargeId()) {
+                // if($data->data->status !== 'unpaid' && $charge->id != $existOrder->getUnivapayChargeId()) {
+                // test
+                if($data->data->status !== 'unpaid' && $charge->id == $existOrder->getUnivapayChargeId()) {
                     // cloneで注文を複製してもidが変更できないため一から作成
                     $newOrder = new Order;
                     // 今回での決済の課金ID取得
@@ -102,7 +104,7 @@ class SubscriptionController extends AbstractController
                     $newOrder->setAddr02($existOrder->getAddr02());
                     $newOrder->setBirth($existOrder->getBirth());
                     // 今回決済金額から小計を逆算
-                    $newSubtotal = $data->data->amount - $existOrder->getDiscount() - $existOrder->getDeliveryFeeTotal();
+                    $newSubtotal = $existOrder->getSubtotal() - $existOrder->getTotal() + $data->data->amount;
                     $newOrder->setSubtotal($newSubtotal);
                     $newOrder->setDiscount($existOrder->getDiscount());
                     $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
@@ -129,13 +131,20 @@ class SubscriptionController extends AbstractController
                     $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
-                        // アイテム一個あたりを再計算(商品金額が修正されないため無効化中)
-                        // $newOrderItem->setPrice02IncTax($newSubtotal / count($existOrder->getOrderItems()));
+                        // OrderItemごとの金額を修正する
+                        // 現状二種類以上の商品を同時購入した場合は正確に計算されないが実装に時間がかかるため保留
+                        if($value->isProduct()) {
+                            // 決済金額から税抜を計算する
+                            $newOrderItem->setPrice($newSubtotal / ($value->getTaxRate() / 100 + 1));
+                            $newOrderItem->setTax($newOrderItem->getPrice() * ($value->getTaxRate() / 100));
+                        }
                         $newOrderItem->setOrder($newOrder);
                         $newOrder->addOrderItem($newOrderItem);
                     }
                     foreach($existOrder->getShippings() as $value) {
                         $newShipping = clone $value;
+                        $newShipping->setShippingDate(NULL);
+                        $newShipping->setTrackingNumber(NULL);
                         $newShipping->setOrder($newOrder);
                         $newOrder->addShipping($newShipping);
                     }
