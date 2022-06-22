@@ -65,7 +65,7 @@ class SubscriptionController extends AbstractController
         PurchaseFlow $shoppingPurchaseFlow,
         OrderHelper $orderHelper,
         OrderNoProcessor $orderNoProcessor,
-        MailService $mailService,
+        MailService $mailService
     ) {
         $this->Config = $configRepository;
         $this->Order = $orderRepository;
