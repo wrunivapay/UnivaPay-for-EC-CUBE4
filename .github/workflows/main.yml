@@ -8,12 +8,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v2
-      - uses: "shivammathur/setup-php@v2"
-        with:
-          php-version: "latest"
-      - uses: "ramsey/composer-install@v2"
-        with:
-          working-directory: "UnivaPay"
       - name: Build
         run: cd UnivaPay && tar -cvzf UnivaPay.tar.gz *
       - name: Release
