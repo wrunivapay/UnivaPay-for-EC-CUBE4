@@ -11,6 +11,7 @@ use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Symfony\Component\Form\FormInterface;
 use Plugin\UnivaPay\Repository\ConfigRepository;
+use Plugin\UnivaPay\Util\SDK;
 
 /**
  * クレジットカード(トークン決済)の決済処理を行う.
@@ -112,8 +113,11 @@ class CreditCard implements PaymentMethodInterface
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
 
-            // capture済みの場合は支払済みに変更
-            if($this->Config->findOneById(1)->getCapture()) {
+            // 決済種別取得
+            $util = new SDK($this->Config->findOneById(1));
+            $paymentType = $util->getTransactionTokenByChargeId($token)->paymentType->getValue();
+            // capture済みもしくはカード払い以外の場合は支払済みに変更
+            if($this->Config->findOneById(1)->getCapture() || $paymentType !== 'card') {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                 $this->Order->setOrderStatus($OrderStatus);
                 $this->Order->setPaymentDate(new \DateTime());
