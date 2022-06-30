@@ -2,7 +2,7 @@ version: "3.8"
 
 services:
   web:
-    image: docker pull ghcr.io/univapaycast/ec-cube4-for-univapay:main
+    image: ghcr.io/univapaycast/ec-cube4-for-univapay:main
     ports:
       - 1080:80
     environment:
