@@ -112,9 +112,10 @@ class SubscriptionController extends AbstractController
                     $newOrder->setAddr02($existOrder->getAddr02());
                     $newOrder->setBirth($existOrder->getBirth());
                     // 今回決済金額から小計を逆算
-                    $newSubtotal = $existOrder->getSubtotal() - $existOrder->getTotal() + $data->data->amount;
+                    $newSubtotal = $existOrder->getSubtotal() - $existOrder->getTotal() + $data->data->amount - $existOrder->getDiscount();
                     $newOrder->setSubtotal($newSubtotal);
-                    $newOrder->setDiscount($existOrder->getDiscount());
+                    // 割引無効化
+                    $newOrder->setDiscount(0);
                     $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
                     $newOrder->setCharge($existOrder->getCharge());
                     $newOrder->setTax($existOrder->getTax());
@@ -139,6 +140,8 @@ class SubscriptionController extends AbstractController
                     $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
+                        if($newOrderItem->isDiscount())
+                            continue;
                         // OrderItemごとの金額を修正する
                         if($newOrderItem->isProduct()) {
                             // 二回目は通常金額を取得する
