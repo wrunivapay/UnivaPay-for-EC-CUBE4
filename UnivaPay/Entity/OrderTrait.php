@@ -10,7 +10,7 @@ use Eccube\Annotation\EntityExtension;
 trait OrderTrait
 {
     /**
-     * 決済IDを保持するカラム.
+     * 決済IDを保持するカラム
      *
      * dtb_order.univa_pay_charge_id
      *
@@ -20,7 +20,7 @@ trait OrderTrait
     private $univa_pay_charge_id;
 
     /**
-     * 検索用に定期課金IDを保持するカラム.
+     * 検索用に定期課金IDを保持するカラム
      *
      * dtb_order.univa_pay_subscription_id
      *
@@ -28,6 +28,16 @@ trait OrderTrait
      * @ORM\Column(type="string", nullable=true)
      */
     private $univa_pay_subscription_id;
+
+    /**
+     * 定期課金用に金額を保持するカラム
+     *
+     * dtb_order.univa_pay_charge_amount
+     *
+     * @var string
+     * @ORM\Column(type="string", nullable=true)
+     */
+    private $univa_pay_charge_amount;
 
     /**
      * @return string
@@ -65,6 +75,26 @@ trait OrderTrait
     public function setUnivapaySubscriptionId($univa_pay_subscription_id)
     {
         $this->univa_pay_subscription_id = $univa_pay_subscription_id;
+
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getUnivapayChargeAmount()
+    {
+        return $this->univa_pay_charge_amount;
+    }
+
+    /**
+     * @param string $univa_pay_charge_amount
+     *
+     * @return $this
+     */
+    public function setUnivapayChargeAmount($univa_pay_charge_amount)
+    {
+        $this->univa_pay_charge_amount = $univa_pay_charge_amount;
 
         return $this;
     }

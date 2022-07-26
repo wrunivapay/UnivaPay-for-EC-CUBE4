@@ -112,6 +112,15 @@ class Subscription implements PaymentMethodInterface
             $token = $util->getchargeBySubscriptionId($subscriptionId)->id;
             $this->Order->setUnivapaySubscriptionId($subscriptionId);
             $this->Order->setUnivapayChargeId($token);
+            $items = [];
+            foreach($this->Order->getOrderItems() as $value) {
+                // 商品単位で金額を取得
+                if($value->isProduct()) {
+                    $class = $value->getProductClass();
+                    $items[$class->getId()] = ['price' => $class->getPrice01(), 'tax' => $class->getPrice01IncTax() - $class->getPrice01()];
+                }
+            }
+            $this->Order->setUnivapayChargeAmount(json_encode($items));
 
             // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
