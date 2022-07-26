@@ -1,6 +1,6 @@
 # UnivaPay-for-EC-CUBE4
 
-[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0). 
+[![License: GPL v3](https://img.shields.io/badge/License-GPLv3-blue.svg)](https://www.gnu.org/licenses/gpl-3.0)  
 EC-CUBE用のUnivaPay導入プラグイン  
 UnivaPayの申し込み方法  
 <https://www.univapay.com/service/credit/#12>  
