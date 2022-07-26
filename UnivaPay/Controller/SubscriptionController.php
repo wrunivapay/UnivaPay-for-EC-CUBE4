@@ -140,7 +140,7 @@ class SubscriptionController extends AbstractController
                         $newOrderItem = clone $value;
                         // OrderItemごとの金額を修正する
                         if($newOrderItem->isProduct()) {
-                            // 決済金額から税抜を計算する
+                            // 二回目は通常金額を取得する
                             $newOrderItem->setPrice($newOrderItem->getProductClass()->getPrice01());
                             $newOrderItem->setTax($newOrderItem->getProductClass()->getPrice01IncTax() - $newOrderItem->getProductClass()->getPrice01());
                         }
