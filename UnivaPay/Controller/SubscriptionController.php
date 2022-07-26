@@ -92,7 +92,7 @@ class SubscriptionController extends AbstractController
                 // SubscriptionIdからChargeを取得
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
-                if($data->data->status !== 'unpaid' && $charge->id != $existOrder->getUnivapayChargeId()) {
+                if($data->data->status !== 'unpaid' && $charge->id == $existOrder->getUnivapayChargeId()) {
                     // cloneで注文を複製してもidが変更できないため一から作成
                     $newOrder = new Order;
                     // 今回での決済の課金ID取得
@@ -139,11 +139,10 @@ class SubscriptionController extends AbstractController
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
                         // OrderItemごとの金額を修正する
-                        // 現状二種類以上の商品を同時購入した場合は正確に計算されないが実装に時間がかかるため保留
                         if($newOrderItem->isProduct()) {
                             // 決済金額から税抜を計算する
-                            $newOrderItem->setPrice($newSubtotal / ($newOrderItem->getTaxRate() / 100 + 1));
-                            $newOrderItem->setTax($newOrderItem->getPrice() * ($newOrderItem->getTaxRate() / 100));
+                            $newOrderItem->setPrice($newOrderItem->getProductClass()->getPrice01());
+                            $newOrderItem->setTax($newOrderItem->getProductClass()->getPrice01IncTax() - $newOrderItem->getProductClass()->getPrice01());
                         }
                         $newOrderItem->setOrder($newOrder);
                         $newOrder->addOrderItem($newOrderItem);
