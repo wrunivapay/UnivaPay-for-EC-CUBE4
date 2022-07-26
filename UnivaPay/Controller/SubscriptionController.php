@@ -88,7 +88,8 @@ class SubscriptionController extends AbstractController
         if($data->event === 'subscription_payment' || $data->event === 'subscription_failure') {
             $existOrder = $this->Order->findOneBy(["order_no" => $data->data->metadata->orderNo]);
             if(!is_null($existOrder) && $existOrder->getUnivapayChargeId()) {
-                $util = new SDK($this->Config->findOneById(1));
+                $config = $this->Config->findOneById(1);
+                $util = new SDK($config);
                 // SubscriptionIdからChargeを取得
                 $charge = $util->getchargeBySubscriptionId($data->data->id);
                 // 再課金待ちもしくは初回課金の場合は何もしない
@@ -179,7 +180,8 @@ class SubscriptionController extends AbstractController
                     // 定期課金に失敗した場合はキャンセル済み注文に変更
                     $OrderStatus = $this->orderStatusRepository->find($data->data->status === 'suspended' ? OrderStatus::CANCEL : OrderStatus::PAID);
                     $newOrder->setOrderStatus($OrderStatus);
-                    $this->mailService->sendOrderMail($newOrder);
+                    if($config->getMail())
+                        $this->mailService->sendOrderMail($newOrder);
                     $this->entityManager->flush();
                 }
             }

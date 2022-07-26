@@ -61,6 +61,13 @@
                                     {{ form_errors(form.capture) }}
                                 </div>
                             </div>
+                            <div class="row">
+                                <div class="col-3"><span>{{ 'univa_pay.admin.config.mail'|trans }}</div>
+                                <div class="col mb-2">
+                                    {{ form_widget(form.mail) }}
+                                    {{ form_errors(form.mail) }}
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>

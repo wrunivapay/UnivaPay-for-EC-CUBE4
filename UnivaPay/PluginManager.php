@@ -84,6 +84,7 @@ class PluginManager extends AbstractPluginManager
         $Config->setWidgetUrl('https://widget.univapay.com');
         $Config->setApiUrl('https://api.univapay.com');
         $Config->setCapture(false);
+        $Config->setMail(true);
 
         $entityManager->persist($Config);
         $entityManager->flush($Config);

@@ -56,6 +56,13 @@ class Config
     private $capture;
 
     /**
+     * @var boolean
+     *
+     * @ORM\Column(name="mail", type="boolean", nullable=true)
+     */
+    private $mail;
+
+    /**
      * @return int
      */
     public function getId()
@@ -159,6 +166,26 @@ class Config
     public function setCapture($capture)
     {
         $this->capture = $capture;
+
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function getMail()
+    {
+        return $this->mail;
+    }
+
+    /**
+     * @param boolean $mail
+     *
+     * @return $this;
+     */
+    public function setMail($mail)
+    {
+        $this->mail = $mail;
 
         return $this;
     }

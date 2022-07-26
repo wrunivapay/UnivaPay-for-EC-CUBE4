@@ -38,6 +38,10 @@ class ConfigType extends AbstractType
             ->add('capture', CheckboxType::class, [
                 'required' => false,
                 'label'    => false
+            ])
+            ->add('mail', CheckboxType::class, [
+                'required' => false,
+                'label'    => false
             ]);
     }
 

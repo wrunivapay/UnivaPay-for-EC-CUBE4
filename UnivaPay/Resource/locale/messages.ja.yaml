@@ -14,6 +14,7 @@ univa_pay.admin.config.api_url: API URL
 univa_pay.admin.config.app_id: トークン
 univa_pay.admin.config.app_secret: シークレット
 univa_pay.admin.config.capture: キャプチャを行う
+univa_pay.admin.config.mail: 定期購入決済時に受注メールを送信する
 univa_pay.admin.order_edit.title: 決済情報
 univa_pay.admin.order_edit.payment_status: ステータス
 univa_pay.admin.order_edit.payment_action: 決済操作
