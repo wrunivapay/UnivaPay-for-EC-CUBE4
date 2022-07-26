@@ -7,7 +7,6 @@ UnivaPayの申し込み方法
 最新のリリースは下記から  
 <https://github.com/univapay/UnivaPay-for-EC-CUBE4/releases>
 
-
 ## 開発環境
 
 ### 一般向け
