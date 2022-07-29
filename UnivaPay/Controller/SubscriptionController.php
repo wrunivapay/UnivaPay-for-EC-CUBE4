@@ -140,8 +140,20 @@ class SubscriptionController extends AbstractController
                     $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
                     // 商品ごとの今回課金金額を取得
                     $amount = json_decode($existOrder->getUnivapayChargeAmount());
-                    $amount = $amount ? get_object_vars($amount) : false;
-                    var_dump('here');
+                    // 商品金額が存在しなかったらその時点のデータを作成する
+                    if(!$amount) {
+                        $items = [];
+                        foreach($existOrder->getOrderItems() as $value) {
+                            // 商品単位で金額を取得
+                            if($value->isProduct()) {
+                                $class = $value->getProductClass();
+                                $items[$class->getId()] = ['price' => $class->getPrice01(), 'tax' => $class->getPrice01IncTax() - $class->getPrice01()];
+                            }
+                        }
+                        $newOrder->setUnivapayChargeAmount(json_encode($items));
+                        $amount = json_decode($newOrder->getUnivapayChargeAmount());
+                    }
+                    $amount = get_object_vars($amount);
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
                         if($newOrderItem->isDiscount())
@@ -150,13 +162,8 @@ class SubscriptionController extends AbstractController
                         if($newOrderItem->isProduct()) {
                             // 二回目は通常金額を取得する
                             $class = $newOrderItem->getProductClass();
-                            if($amount) {
-                                $newOrderItem->setPrice($amount[$class->getId()]->price);
-                                $newOrderItem->setTax($amount[$class->getId()]->tax);
-                            } else {
-                                $newOrderItem->setPrice($class->getPrice01());
-                                $newOrderItem->setTax($class->getPrice01IncTax() - $class->getPrice01());
-                            }
+                            $newOrderItem->setPrice($amount[$class->getId()]->price);
+                            $newOrderItem->setTax($amount[$class->getId()]->tax);
                         }
                         $newOrderItem->setOrder($newOrder);
                         $newOrder->addOrderItem($newOrderItem);
