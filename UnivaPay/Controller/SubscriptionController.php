@@ -10,6 +10,7 @@ use Eccube\Service\MailService;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\Processor\OrderNoProcessor;
+use Eccube\Service\PurchaseFlow\Processor\AddPointProcessor;
 use Eccube\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -56,6 +57,7 @@ class SubscriptionController extends AbstractController
      * @param PurchaseFlow $shoppingPurchaseFlow
      * @param OrderHelper $orderHelper
      * @param OrderNoProcessor $orderNoProcessor
+     * @param AddPointProcessor $addPointProcessor
      * @param MailService $mailService
      */
     public function __construct(
@@ -65,6 +67,7 @@ class SubscriptionController extends AbstractController
         PurchaseFlow $shoppingPurchaseFlow,
         OrderHelper $orderHelper,
         OrderNoProcessor $orderNoProcessor,
+        AddPointProcessor $addPointProcessor,
         MailService $mailService
     ) {
         $this->Config = $configRepository;
@@ -73,6 +76,7 @@ class SubscriptionController extends AbstractController
         $this->purchaseFlow = $shoppingPurchaseFlow;
         $this->orderHelper = $orderHelper;
         $this->orderNoProcessor = $orderNoProcessor;
+        $this->addPointProcessor = $addPointProcessor;
         $this->mailService = $mailService;
     }
 
@@ -156,7 +160,8 @@ class SubscriptionController extends AbstractController
                     $amount = get_object_vars($amount);
                     foreach($existOrder->getOrderItems() as $value) {
                         $newOrderItem = clone $value;
-                        if($newOrderItem->isDiscount())
+                        // 値引きは引き継がない
+                        if($newOrderItem->isDiscount() || $newOrderItem->isPoint())
                             continue;
                         // OrderItemごとの金額を修正する
                         if($newOrderItem->isProduct()) {
@@ -186,6 +191,8 @@ class SubscriptionController extends AbstractController
                         $newOrder->addShipping($newShipping);
                     }
                     $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
+                    // ポイントを再計算4.0以前のバージョンの場合、先にポイントを再計算を行わないと正常に動かない
+                    $this->addPointProcessor->validate($newOrder, $purchaseContext);
                     // 注文番号変更
                     $preOrderId = $this->orderHelper->createPreOrderId();
                     $newOrder->setPreOrderId($preOrderId);
