@@ -175,7 +175,8 @@ class SubscriptionController extends AbstractController
                     }
                     foreach($existOrder->getShippings() as $value) {
                         $newShipping = clone $value;
-                        $newShipping->setShippingDate(NULL);
+                        $newShipping->setShippingDeliveryDate(NULL);
+                        $newShipping->setShippingDeliveryTime(NULL);
                         $newShipping->setTrackingNumber(NULL);
                         $newShipping->setOrder($newOrder);
                         // 循環参照してしまい正常に発送データがセットできないため
