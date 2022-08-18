@@ -30,13 +30,18 @@ class SDK {
         return $this->client->getTransactionToken($this->client->getCharge($this->token->storeId, $chargeId)->transactionTokenId);
     }
 
-    // get current charge from subscriptionId
+    // get current charge from subscription id
     public function getChargeBySubscriptionId($subscriptionId) {
         return current($this->client->getSubscription($this->token->storeId, $subscriptionId)->listCharges()->items);
     }
 
-    // get subscription
+    // get subscription by charge id
     public function getSubscriptionByChargeId($chargeId) {
         return $this->client->getSubscription($this->token->storeId, $this->getCharge($chargeId)->subscriptionId);
+    }
+
+    // get subscription by subscription id
+    public function getSubscription($subscriptionId) {
+        return $this->client->getSubscription($this->token->storeId, $subscriptionId);
     }
 }
