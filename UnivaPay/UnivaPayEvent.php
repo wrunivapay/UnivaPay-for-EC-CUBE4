@@ -79,7 +79,7 @@ class UnivaPayEvent implements EventSubscriberInterface
             if($nowSubscription && $nowSubscription !== $subscriptionId) {
                 $subscriptionId = $nowSubscription;
                 $subscription = $util->getSubscription($subscriptionId);
-                if($subscription->status->getValue() === 'current')
+                if($subscription && $subscription->status->getValue() === 'current')
                     $subscription = $subscription->cancel();
             }
         }
