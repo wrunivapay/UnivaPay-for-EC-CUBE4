@@ -13,8 +13,6 @@ class PluginManager extends AbstractPluginManager
 {
     public function enable(array $meta, ContainerInterface $container)
     {
-        // pluginディレクトリ内のcomposer.jsonはオーナーズストア以外からインストールした場合反映されないため強制的にインストール
-        exec('composer require -W univapay/php-sdk:6.0.1');
         $this->createTokenPayment($container);
         $this->createSubscriptionPayment($container);
         $this->createConfig($container);
