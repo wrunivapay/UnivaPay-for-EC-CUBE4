@@ -16,6 +16,7 @@
         form = document.querySelector("#shopping-form");
         chargeId = document.querySelector("#shopping_order_univa_pay_charge_id");
         form.appendChild(chargeId);
+        isSuccess = false;
         checkout = UnivapayCheckout.create({
             appId: "{{ config.getAppId() }}",
             checkout: "payment",
@@ -44,6 +45,7 @@
             capture: '{{ config.getCapture() }}' === '1',
             subscriptionInitialAmount: {{ Order.payment_total }},
             onSuccess: (result) => {
+                isSuccess = true;
                 chargeId.value = result.response.id;
                 form.submit();
             },
@@ -52,8 +54,10 @@
                 window.location.href = "{{ url('shopping') }}";
             },
             closed: () => {
-                alert("決済が中断されました");
-                window.location.href = "{{ url('shopping') }}";
+                if(isSuccess ==== false) {
+                    alert("決済が中断されました");
+                    window.location.href = "{{ url('shopping') }}";
+                }
             }
         });
         form.addEventListener("submit", () => {
