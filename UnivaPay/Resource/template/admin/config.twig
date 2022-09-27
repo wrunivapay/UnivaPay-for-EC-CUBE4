@@ -7,11 +7,19 @@
 
 {% form_theme form '@admin/Form/bootstrap_4_horizontal_layout.html.twig' %}
 
-{% block stylesheet %}
-
-{% endblock stylesheet %}
+{% block stylesheet %}{% endblock stylesheet %}
 
 {% block main %}
+    <script>
+        const queryString = window.location.search;
+        const urlParams = new URLSearchParams(queryString);
+        const ret = urlParams.get('ret');
+        if(ret === '0') {
+            alert("インストールに成功しました。");
+        } else {
+            alert("インストールができませんでした。サーバ内で下記コマンドを実行してください。\ncomposer require -W univapay/php-sdk:6.0.1");
+        }
+    </script>
     <form role="form" method="post">
 
         {{ form_widget(form._token) }}
@@ -85,7 +93,14 @@
                             </a>
                         </div>
                     </div>
-                    <div class="col-6">
+                    <div class="col-3">
+                        <div class="row align-items-center justify-content-end">
+                            <div class="col-auto">
+                                <a href="sdk" class="btn btn-ec-conversion">SDKのインストール/更新</a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-3">
                         <div class="row align-items-center justify-content-end">
                             <div class="col-auto">
                                 <button class="btn btn-ec-conversion px-5"

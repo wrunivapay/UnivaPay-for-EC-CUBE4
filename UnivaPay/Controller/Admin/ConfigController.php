@@ -49,4 +49,16 @@ class ConfigController extends AbstractController
             'form' => $form->createView(),
         ];
     }
+    /**
+     * @Route("/%eccube_admin_route%/univapay/sdk", name="univa_pay_admin_sdk")\
+     */
+    public function sdk(Request $request) {
+        try {
+            system("composer require -W univapay/php-sdk:6.0.1", $ret);
+
+            return $this->redirectToRoute('univa_pay_admin_config', ['ret' => $ret]);
+        } catch (Exception $e) {
+            return $this->redirectToRoute('univa_pay_admin_config', ['ret' => 1]);
+        }
+    }
 }
