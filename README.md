@@ -15,7 +15,7 @@ UnivaPayの申し込み方法
 <https://github.com/EC-CUBE/ec-cube>
 2. EC-CUBE管理画面よりプラグインをインストール
 3. EC-CUBEがインストールされているディレクトリに入り下記コマンドを実行  
-`composer require -W univapay/php-sdk:6.0.1`
+`composer require -W univapay/php-sdk`
 
 ### 管理者向け
 
@@ -25,7 +25,7 @@ cd EC-UnivaPay-for-EC-CUBE4
 cp docker-compose.sample.yml docker-compose.yml
 docker compose up -d
 docker compose exec web sh -c "composer run-script compile && bin/console eccube:install -n"
-docker compose exec web sh -c "composer require -W univapay/php-sdk:6.0.1 && bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
+docker compose exec web sh -c "composer require -W univapay/php-sdk && bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
 ```
 
 #### データベース更新したとき
