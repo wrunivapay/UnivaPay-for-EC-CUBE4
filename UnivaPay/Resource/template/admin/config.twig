@@ -18,7 +18,7 @@
             alert("インストールに成功しました。");
         } else if(ret !== null) {
             console.log(ret);
-            alert("インストールができませんでした。サーバ内で下記コマンドを実行してください。\ncomposer require -W univapay/php-sdk:6.2.1");
+            alert("インストールができませんでした。サーバ内で下記コマンドを実行してください。\nbin/console eccube:composer:require univapay/php-sdk:6.2.1");
         }
     </script>
     <form role="form" method="post">

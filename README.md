@@ -15,7 +15,7 @@ UnivaPayの申し込み方法
 <https://github.com/EC-CUBE/ec-cube>
 2. EC-CUBE管理画面よりプラグインをインストール
 3. EC-CUBEがインストールされているディレクトリに入り下記コマンドを実行  
-`composer require -W univapay/php-sdk`
+`bin/console eccube:composer:require univapay/php-sdk`
 
 ### 管理者向け
 
