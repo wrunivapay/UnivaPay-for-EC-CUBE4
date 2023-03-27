@@ -2,6 +2,7 @@
 namespace Plugin\UnivaPay\Controller\Admin;
 
 use Eccube\Controller\AbstractController;
+use Eccube\Service\Composer\ComposerServiceInterface;
 use Plugin\UnivaPay\Form\Type\Admin\ConfigType;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -16,13 +17,22 @@ class ConfigController extends AbstractController
     protected $configRepository;
 
     /**
+     * @var ComposerServiceInterface
+     */
+    protected $composerService;
+
+    /**
      * ConfigController constructor.
      *
      * @param ConfigRepository $configRepository
+     * @param ComposerServiceInterface $composerService
      */
-    public function __construct(ConfigRepository $configRepository)
-    {
+    public function __construct(
+        ConfigRepository $configRepository,
+        ComposerServiceInterface $composerService
+    ) {
         $this->configRepository = $configRepository;
+        $this->composerService = $composerService;
     }
 
     /**
@@ -54,11 +64,10 @@ class ConfigController extends AbstractController
      */
     public function sdk(Request $request) {
         try {
-            system("bin/console eccube:composer:require univapay/php-sdk:6.2.1", $ret);
-
-            return $this->redirectToRoute('univa_pay_admin_config', ['ret' => $ret]);
+            $log = $this->composerService->execRequire('univapay/php-sdk:6.2.1');
+            return $this->redirectToRoute('univa_pay_admin_config', ['error' => 0]);
         } catch (Exception $e) {
-            return $this->redirectToRoute('univa_pay_admin_config', ['ret' => 1]);
+            return $this->redirectToRoute('univa_pay_admin_config', ['error' => 1]);
         }
     }
 }
