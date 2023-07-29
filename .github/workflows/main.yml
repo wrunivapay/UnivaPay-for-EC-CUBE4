@@ -9,7 +9,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v2
       - name: Build
-        run: cd UnivaPay && tar -cvzf UnivaPay.tar.gz *
+        run: tar -cvzf UnivaPay.tar.gz *
       - name: Release
         uses: softprops/action-gh-release@v1
         if: startsWith(github.ref, 'refs/tags/')
