@@ -115,9 +115,9 @@ class CreditCard implements PaymentMethodInterface
 
             // 決済種別取得
             $util = new SDK($this->Config->findOneById(1));
-            $paymentType = $util->getTransactionTokenByChargeId($token)->paymentType->getValue();
-            // capture済みもしくはカード,paidy以外の場合は支払済みに変更
-            if($this->Config->findOneById(1)->getCapture() || !in_array($paymentType, ['card', 'paidy'])) {
+            $charge = $util->getCharge($token);
+            // キャプチャ済みの場合は支払い済みに変更
+            if($charge->status->getValue() === 'successful') {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                 $this->Order->setOrderStatus($OrderStatus);
                 $this->Order->setPaymentDate(new \DateTime());
