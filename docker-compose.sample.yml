@@ -1,10 +1,10 @@
-version: "3.8"
+version: "3.9"
 
 services:
   web:
-    image: ghcr.io/univapaycast/ec-cube4-for-univapay:latest
+    image: ghcr.io/5ym/ec-cube:4.1
     ports:
-      - 1080:80
+      - "1080:80"
     environment:
       - APP_ENV=dev
       - APP_DEBUG=1
@@ -21,7 +21,8 @@ services:
       - ECCUBE_LOCALE=ja
     volumes:
       - "./UnivaPay:/var/lib/nginx/html/app/Plugin/UnivaPay"
-
+    depends_on:
+      - db
   db:
     image: postgres:10
     environment:
@@ -29,11 +30,10 @@ services:
       POSTGRES_PASSWORD: password
     volumes:
       - db:/var/lib/postgresql/data
-
   mail:
     image: mailhog/mailhog
     ports:
-      - 2080:8025
+      - "2080:8025"
 
 volumes:
   db:

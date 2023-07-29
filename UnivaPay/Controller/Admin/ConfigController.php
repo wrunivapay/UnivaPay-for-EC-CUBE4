@@ -64,7 +64,7 @@ class ConfigController extends AbstractController
      */
     public function sdk(Request $request) {
         try {
-            $log = $this->composerService->execRequire('univapay/php-sdk:6.2.1');
+            $log = $this->composerService->execRequire('univapay/php-sdk:6.5.0');
             return $this->redirectToRoute('univa_pay_admin_config', ['error' => 0]);
         } catch (Exception $e) {
             return $this->redirectToRoute('univa_pay_admin_config', ['error' => 1]);
