@@ -98,7 +98,7 @@ class SubscriptionController extends AbstractController
         $charge = null;
         if ($data->event === 'subscription_payment' || $data->event === 'subscription_failure') {
             // SubscriptionIdからChargeを取得
-            $charge = $util->getchargeBySubscriptionId($data->data->id);
+            $charge = $util->getChargeBySubscriptionId($data->data->id);
         } elseif ( $data->event === 'charge_finished') {
             // 支払い確定したら注文ステータスを変更する
             // セキュリティのために一様UUIDを確認する
@@ -231,6 +231,7 @@ class SubscriptionController extends AbstractController
         if($config->getMail())
             $this->mailService->sendOrderMail($newOrder);
         $this->entityManager->flush();
+        return new Response();
     }
 
     /**
