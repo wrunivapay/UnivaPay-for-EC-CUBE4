@@ -1,0 +1,21 @@
+{
+  "dockerComposeFile": ["../docker-compose.yml"],
+  "service": "web",
+  "workspaceFolder": "/var/lib/nginx/html/app/Plugin/UnivaPay",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "php.validate.enable": false,
+        "php.suggest.basic": false,
+        "[php]": {
+            "editor.formatOnSave": true,
+            "editor.defaultFormatter": "bmewburn.vscode-intelephense-client"
+        }
+      },
+      "extensions": [
+        "bmewburn.vscode-intelephense-client",
+        "ms-azuretools.vscode-docker"
+      ]
+    }
+  }
+}

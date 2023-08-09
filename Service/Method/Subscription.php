@@ -109,7 +109,7 @@ class Subscription implements PaymentMethodInterface
         if ($subscriptionId) {
             // Subscription idからcharge idを取得して格納
             $util = new SDK($this->Config->findOneById(1));
-            $token = $util->getchargeBySubscriptionId($subscriptionId)->id;
+            $token = $util->getChargeBySubscriptionId($subscriptionId)->id;
             $this->Order->setUnivapaySubscriptionId($subscriptionId);
             $this->Order->setUnivapayChargeId($token);
             $items = [];

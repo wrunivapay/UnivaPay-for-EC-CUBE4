@@ -9,31 +9,28 @@ UnivaPayの申し込み方法
 
 ## 開発環境
 
-### 一般向け
-
-1. 下記を参照にEC-CUBEを構築してください。  
-<https://github.com/EC-CUBE/ec-cube>
-2. EC-CUBE管理画面よりプラグインをインストール
-3. プラグインの設定画面よりSDKをインストール
-
-### 管理者向け
+vscode devcontainerを利用しています。
 
 ```sh
-git clone https://github.com/univapaycast/UnivaPay-for-EC-CUBE4.git
-cd EC-UnivaPay-for-EC-CUBE4
+git clone https://github.com/univapay/UnivaPay-for-EC-CUBE4.git
+cd UnivaPay-for-EC-CUBE4
 cp docker-compose.sample.yml docker-compose.yml
 docker compose up -d
-docker compose exec web sh -c "composer run-script compile && bin/console eccube:install -n"
-docker compose exec web sh -c "bin/console eccube:composer:require univapay/php-sdk && bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
+code . # devcontainerで開かなかったらdevcontainerで開きなおしてください
+bin/console eccube:install -n
+bin/console eccube:composer:require univapay/php-sdk
+bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay && bin/console cache:clear
 ```
 
-#### データベース更新したとき
+<http://localhost:1080>
+
+### データベース更新したとき
 
 ```sh
-docker compose exec web sh -c "bin/console eccube:install -n && bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay"
+bin/console eccube:install -n && bin/console eccube:plugin:install --code=UnivaPay && bin/console eccube:plugin:enable --code=UnivaPay
 ```
 
-#### アップデート手順
+### 管理者向けアップデート手順
 
 1. composer.json内のversionを上げる
 2. masterにコミット後github内でバージョンタグの作成
