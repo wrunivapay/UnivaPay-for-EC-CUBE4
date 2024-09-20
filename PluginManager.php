@@ -5,8 +5,6 @@ use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\SubscriptionPeriod;
-use Plugin\UnivaPay\Service\Method\CreditCard;
-use Plugin\UnivaPay\Service\Method\Subscription;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
@@ -27,7 +25,7 @@ class PluginManager extends AbstractPluginManager
         $Payment = $paymentRepository->findOneBy([], ['sort_no' => 'DESC']);
         $sortNo = $Payment ? $Payment->getSortNo() + 1 : 1;
 
-        $Payment = $paymentRepository->findOneBy(['method_class' => CreditCard::class]);
+        $Payment = $paymentRepository->findOneBy(['method_class' => Service\Method\CreditCard::class]);
         if ($Payment) {
             return;
         }
@@ -37,7 +35,7 @@ class PluginManager extends AbstractPluginManager
         $Payment->setSortNo($sortNo);
         $Payment->setVisible(true);
         $Payment->setMethod('UnivaPay');
-        $Payment->setMethodClass(CreditCard::class);
+        $Payment->setMethodClass(Service\Method\CreditCard::class);
 
         $entityManager->persist($Payment);
         $entityManager->flush($Payment);
@@ -51,7 +49,7 @@ class PluginManager extends AbstractPluginManager
         $Payment = $paymentRepository->findOneBy([], ['sort_no' => 'DESC']);
         $sortNo = $Payment ? $Payment->getSortNo() + 1 : 1;
 
-        $Payment = $paymentRepository->findOneBy(['method_class' => Subscription::class]);
+        $Payment = $paymentRepository->findOneBy(['method_class' => Service\Method\Subscription::class]);
         if ($Payment) {
             return;
         }
@@ -61,7 +59,7 @@ class PluginManager extends AbstractPluginManager
         $Payment->setSortNo($sortNo);
         $Payment->setVisible(true);
         $Payment->setMethod('UnivaPay(Subscription)');
-        $Payment->setMethodClass(Subscription::class);
+        $Payment->setMethodClass(Service\Method\Subscription::class);
 
         $entityManager->persist($Payment);
         $entityManager->flush($Payment);

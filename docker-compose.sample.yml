@@ -20,13 +20,13 @@ services:
       - ECCUBE_TEMPLATE_CODE=default
       - ECCUBE_LOCALE=ja
       - SHELL=/bin/ash
-    volumes:
-      - ".:/var/lib/nginx/html/app/Plugin/UnivaPay"
     depends_on:
       - db
     dns:
       - 1.1.1.1
       - 1.0.0.1
+    volumes:
+      - .:/var/lib/nginx/html/app/Plugin/UnivaPay
   db:
     image: postgres:10
     environment:
@@ -41,3 +41,4 @@ services:
 
 volumes:
   db:
+  web:

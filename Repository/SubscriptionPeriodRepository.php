@@ -3,11 +3,11 @@
 
     use Eccube\Repository\AbstractRepository;
     use Plugin\UnivaPay\Entity\SubscriptionPeriod;
-    use Symfony\Bridge\Doctrine\RegistryInterface;
+    use Doctrine\Persistence\ManagerRegistry;
 
     class SubscriptionPeriodRepository extends AbstractRepository
     {
-        public function __construct(RegistryInterface $registry)
+        public function __construct(ManagerRegistry $registry)
         {
             parent::__construct($registry, SubscriptionPeriod::class);
         }

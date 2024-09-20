@@ -1,10 +1,9 @@
 <?php
 namespace Plugin\UnivaPay\Util;
 
-use Plugin\UnivaPay\Entity\Config;
-use Univapay\Resources\Authentication\AppJWT;
 use Univapay\UnivapayClient;
 use Univapay\UnivapayClientOptions;
+use Univapay\Resources\Authentication\AppJWT;
 
 class SDK {
     private $token;
@@ -13,7 +12,7 @@ class SDK {
     /**
      * SDK constructor.
      */
-    public function __construct(Config $Config)
+    public function __construct(\Plugin\UnivaPay\Entity\Config $Config)
     {
         // init client
         $clientOptions = new UnivapayClientOptions($Config->getApiUrl());
