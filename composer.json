@@ -8,6 +8,6 @@
   },
   "require": {
     "ec-cube/plugin-installer": "~0.0.6 || ^2.0",
-    "univapay/php-sdk": ">=6.5.0"
+    "univapay/php-sdk": ">=6.7.1"
   }
 }

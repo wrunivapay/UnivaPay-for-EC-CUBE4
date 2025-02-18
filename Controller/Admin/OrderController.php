@@ -5,8 +5,10 @@ use Eccube\Controller\AbstractController;
 use Eccube\Entity\Order;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Repository\Master\OrderStatusRepository;
+use Knp\Component\Pager\Paginator;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Plugin\UnivaPay\Util\SDK;
@@ -107,5 +109,13 @@ class OrderController extends AbstractController
         }
 
         throw new BadRequestHttpException();
+    }
+
+    /**
+     * @Route("/%eccube_admin_route%/univapay/webhook_events", name="univapay_webhook_events", methods={"GET"})
+     * @Template("@UnivaPay/admin/webhook_index.twig")
+     */
+    public function webhook(Request $request, Paginator $paginator)
+    {
     }
 }

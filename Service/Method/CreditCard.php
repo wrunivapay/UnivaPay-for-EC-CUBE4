@@ -9,6 +9,7 @@ use Eccube\Service\Payment\PaymentMethodInterface;
 use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
+use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Symfony\Component\Form\FormInterface;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\SDK;
@@ -102,11 +103,8 @@ class CreditCard implements PaymentMethodInterface
      */
     public function checkout()
     {
-        // 決済サーバに仮売上のリクエスト送る(設定等によって送るリクエストは異なる)
-        $token = $this->Order->getUnivapayChargeId();
-
-        if ($token) {
-            // 受注ステータスを新規受付へ変更
+        // One Time Purchase
+        if ($this->Order->getUnivapayChargeId()) { 
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
             $this->Order->setOrderStatus($OrderStatus);
 
@@ -115,7 +113,7 @@ class CreditCard implements PaymentMethodInterface
 
             // 決済種別取得
             $util = new SDK($this->Config->findOneById(1));
-            $charge = $util->getCharge($token);
+            $charge = $util->getCharge($this->Order->getUnivapayChargeId());
             // キャプチャ済みの場合は支払い済みに変更
             if($charge->status->getValue() === 'successful') {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
@@ -125,7 +123,16 @@ class CreditCard implements PaymentMethodInterface
 
             $result = new PaymentResult();
             $result->setSuccess(true);
-        } else {
+        }
+        // Subscription Purchase
+        else if($this->Order->getUnivapaySubscriptionId()) {
+            $OrderStatus = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
+            $this->Order->setOrderStatus($OrderStatus);
+
+            $result = new PaymentResult();
+            $result->setSuccess(true);
+        }
+        else {
             // 受注ステータスを購入処理中へ変更
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PROCESSING);
             $this->Order->setOrderStatus($OrderStatus);
