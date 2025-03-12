@@ -97,7 +97,7 @@ class PluginManager extends AbstractPluginManager
         $entity = new MailTemplate();
         $entity->setName('UnivaPaySubscription');
         $entity->setMailSubject('サブスクリプションのご登録ありがとうございます');
-        $entity->setFileName('UnivaPay/Resource/template/default/Mail/subscription_mail.twig');
+        $entity->setFileName('UnivaPay/Resource/template/mail/subscription_mail.twig');
 
         $entityManager->persist($entity);
         $entityManager->flush($entity);

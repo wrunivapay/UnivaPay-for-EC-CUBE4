@@ -28,6 +28,7 @@ class SubscriptionOrderEventListener implements EventSubscriberInterface
         ];
     }
 
+    // Refer to Eccube MailService class
     public function onMailOrder(EventArgs $event)
     {
         /** @var Order $order */
@@ -61,7 +62,6 @@ class SubscriptionOrderEventListener implements EventSubscriberInterface
         }
     }
  
-    // Refer to the MailService class
     public function getHtmlTemplate($templateName)
     {
         $fileName = explode('.', $templateName);

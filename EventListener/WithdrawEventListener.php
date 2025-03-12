@@ -22,7 +22,7 @@ class WithdrawEventListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return [
-            EccubeEvents::ADMIN_CUSTOMER_EDIT_INDEX_COMPLETE => 'onCustomerWithdraw',
+            // EccubeEvents::ADMIN_CUSTOMER_EDIT_INDEX_COMPLETE => 'onCustomerWithdraw',
             EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_COMPLETE => 'onCustomerWithdraw',
         ];
     }
@@ -30,7 +30,7 @@ class WithdrawEventListener implements EventSubscriberInterface
     public function onCustomerWithdraw(EventArgs $event)
     {
         // we should check if the customer has a subscription
-        // don't force it rather show error and let admin decide it
+        // maybe we should not force it rather show a warning and let use decide it
         $customer = $event->getArgument('Customer');
         if ($customer->getStatus()->getId() === CustomerStatus::WITHDRAWING) {
             log_info('customer withdraw from event listener');
