@@ -51,50 +51,31 @@ class OrderController extends AbstractController
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
             $util = new SDK($this->Config->findOneById(1));
             $chargeId = $Order->getUnivapayChargeId();
-            if ($chargeId) {
-                // charge
-                $charge = $util->getCharge($chargeId);
-                switch ($request->get("action")) {
-                    case "capture":
-                        $charge->capture();
-                        $charge->fetch();
-                        $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
-                        $Order->setPaymentDate(new \DateTime());
-                        break;
-                    case "cancel":
-                        if($charge->status->getName() === "SUCCESSFUL") {
-                            $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency.""));
-                            $charge->createRefund($money)->awaitResult();
-                        } else {
-                            $charge->cancel()->awaitResult();
-                        }
-                        $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
-                        break;
-                }
-                $Order->setOrderStatus($OrderStatus);
-                $this->entityManager->persist($Order);
-                $this->entityManager->flush();
-
-                $this->addSuccess('univa_pay.admin.order.change_status.success', 'admin');
-
-                return $this->json($charge->status);
-            } else {
-                // subscription
-                $subscriptionId = $Order->getUnivapaySubscriptionId();
-                $subscription = $util->getSubscription($subscriptionId);
-                // TODO: if already canceled, do nothing
-                if ($subscription->cancel()) {
+            $charge = $util->getCharge($chargeId);
+            switch ($request->get("action")) {
+                case "capture":
+                    $charge->capture();
+                    $charge->fetch();
+                    $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
+                    $Order->setPaymentDate(new \DateTime());
+                    break;
+                case "cancel":
+                    if($charge->status->getName() === "SUCCESSFUL") {
+                        $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency.""));
+                        $charge->createRefund($money)->awaitResult();
+                    } else {
+                        $charge->cancel()->awaitResult();
+                    }
                     $OrderStatus = $this->orderStatusRepository->find(OrderStatus::CANCEL);
-
-                    $Order->setOrderStatus($OrderStatus);
-                    $this->entityManager->persist($Order);
-                    $this->entityManager->flush();
-
-                    $this->addSuccess('univa_pay.admin.order.change_status.success', 'admin');
-
-                    return $this->json(['status' => $subscription->status]);
-                }
+                    break;
             }
+            $Order->setOrderStatus($OrderStatus);
+            $this->entityManager->persist($Order);
+            $this->entityManager->flush();
+
+            $this->addSuccess('univa_pay.admin.order.change_status.success', 'admin');
+
+            return $this->json($charge->status);
         }
 
         throw new BadRequestHttpException();
