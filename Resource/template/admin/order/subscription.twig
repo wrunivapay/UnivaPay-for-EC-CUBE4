@@ -1,19 +1,26 @@
+{% set isCancelable = false %}
+{% if Order.OrderStatus is not empty and Order.OrderStatus.id is constant('Plugin\\UnivaPay\\Entity\\Master\\UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION') %}
+    {% set isCancelable = true %}
+{% endif %}
+
 <script>
     $(function () {
         // ページ最下部に移動
         $('#univapay-info').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
 
-        // 取り消し
         $('#univapay-action__cancel').on('click', function () {
             $('#univapay-info__body button').prop('disabled', true);
             $.ajax({
-                type: 'POST',
-                url: '{{ url('univa_pay_admin_order_change', { id: Order.id }) }}',
+                type: 'DELETE',
+                url: '{{ url('univa_pay_admin_subscription_cancel', { id: Order.id }) }}',
                 data: {action: "cancel"}
+            }).always(function () {
+                location.reload();
             });
         });
     });
 </script>
+
 <div class="d-none">
     <div id="univapay-info" class="card rounded border-0 mb-4">
         <div class="card-header">
@@ -37,7 +44,7 @@
                     <div class="col">
                         <ul class="list-inline">
                             <li class="list-inline-item">
-                                <button id="univapay-action__cancel" type="button" class="btn btn-ec-regular px-5">
+                                <button id="univapay-action__cancel" type="button" class="btn btn-ec-regular px-5" {% if not isCancelable %} disabled {% endif %}>
                                     {{ 'univa_pay.admin.order_edit.payment_action_cancel'|trans }}
                                 </button>
                             </li>

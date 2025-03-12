@@ -12,6 +12,7 @@ use Plugin\UnivaPay\Repository\ConfigRepository;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
+use Univapay\Enums\SubscriptionStatus;
 
 class OrderController extends AbstractController
 {
@@ -22,6 +23,8 @@ class OrderController extends AbstractController
      * @var OrderStatusRepository
      */
     private $orderStatusRepository;
+
+    private $util;
 
     /**
      * OrderController constructor.
@@ -35,6 +38,7 @@ class OrderController extends AbstractController
     ) {
         $this->Config = $configRepository;
         $this->orderStatusRepository = $orderStatusRepository;
+        $this->util = new SDK($this->Config->findOneById(1));
     }
 
     /**
@@ -104,8 +108,7 @@ class OrderController extends AbstractController
     public function getStatus(Request $request, Order $Order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $util = new SDK($this->Config->findOneById(1));
-            $charge = $util->getCharge($Order->getUnivapayChargeId());
+            $charge = $this->util->getCharge($Order->getUnivapayChargeId());
             $ret = [
                 'status' => $charge->status->getValue(),
                 'id' => $charge->id,
@@ -123,5 +126,46 @@ class OrderController extends AbstractController
         }
 
         throw new BadRequestHttpException();
+    }
+
+    /**
+     * Cancel subscription
+     *
+     * @Route("/%eccube_admin_route%/univapay/order/{id}/subcription", requirements={"id" = "\d+"}, name="univa_pay_admin_subscription_cancel", methods={"DELETE"})
+     */
+    public function cancelSubscription(Request $request, Order $order)
+    {
+        if (!$request->isXmlHttpRequest() || !$this->isTokenValid()) {
+            return $this->json(['error' => trans('univa_pay.error.bad_request')], 400);
+        }
+
+        $subscription = $this->util->getSubscription($order->getUnivapaySubscriptionId());
+        
+        switch ($subscription->status) {
+            case SubscriptionStatus::CANCELED():
+                $this->cancelOrder($order);
+                $this->addSuccess('univa_pay.admin.order.change_status.success', 'admin');
+                return $this->json(['status' => $subscription->status->getValue()]);
+            case SubscriptionStatus::CURRENT():
+                try {
+                    $subscription->cancel();
+                    $this->cancelOrder($order);
+                    $this->addSuccess('univa_pay.admin.order.change_status.success', 'admin');
+                    return $this->json(['status' => $subscription->status->getValue()]);
+                } catch (\Exception $e) {
+                    log_error($e->getMessage());
+                }
+            default:
+                $this->addError(trans('univa_pay.error.api.subscription.cancel.failed'), 'admin');
+                return $this->json(['error' => trans('univa_pay.error.api.subscription.cancel.failed')], 400);
+        }
+    }
+
+    private function cancelOrder($order)
+    {
+        $status= $this->orderStatusRepository->find(OrderStatus::CANCEL);
+        $order->setOrderStatus($status);
+        $this->entityManager->persist($order);
+        $this->entityManager->flush();
     }
 }

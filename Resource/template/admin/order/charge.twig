@@ -36,7 +36,6 @@
                 url: '{{ url('univa_pay_admin_order_change', { id: Order.id }) }}',
                 data: {action: "capture"}
             }).always(function () {
-                // TODO: What the hell is this? seriously?
                 location.href = location.href;
             });
         });
