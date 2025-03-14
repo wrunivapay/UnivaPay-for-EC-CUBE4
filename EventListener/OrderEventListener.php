@@ -2,11 +2,15 @@
 
 namespace Plugin\UnivaPay\EventListener;
 
+use Exception;
+use Money\Currency;
+use Money\Money;
 use Symfony\Component\Workflow\Event\Event;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Plugin\UnivaPay\Util\SDK;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 
+// Listener to update charge status on Univapay
 class OrderEventListener implements EventSubscriberInterface
 {
     private $configRepository;
@@ -25,7 +29,6 @@ class OrderEventListener implements EventSubscriberInterface
         ];
     }
 
-    // Capture charge to Univapay
     public function onPayOrder(Event $event)
     {
         $order = $event->getSubject()->getOrder();
@@ -38,12 +41,12 @@ class OrderEventListener implements EventSubscriberInterface
             $util = new SDK($this->configRepository->findOneById(1));
             $charge = $util->getCharge($order->getUnivapayChargeId());
             $charge->capture()->awaitResult();
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             log_error($e->getMessage());
+            throw $e;
         }
     }
 
-    // Cancel charge to Univapay
     public function onCancelOrder(Event $event)
     {
         $order = $event->getSubject()->getOrder();
@@ -55,9 +58,17 @@ class OrderEventListener implements EventSubscriberInterface
         try {
             $util = new SDK($this->configRepository->findOneById(1));
             $charge = $util->getCharge($order->getUnivapayChargeId());
-            $charge->cancel()->awaitResult();
-        } catch (\Exception $e) {
+            if($charge->status->getName() === "SUCCESSFUL") {
+                // Capture -> Refund
+                $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency));
+                $charge->createRefund($money)->awaitResult();
+            } else {
+                // Authorized -> Cancel
+                $charge->cancel()->awaitResult();
+            }
+        } catch (Exception $e) {
             log_error($e->getMessage());
+            throw $e;
         }
     }
 }

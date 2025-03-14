@@ -108,13 +108,11 @@ class CreditCard implements PaymentMethodInterface
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
             $this->Order->setOrderStatus($OrderStatus);
 
-            // purchaseFlow::commitを呼び出し, 購入処理を完了させる.
             $this->purchaseFlow->commit($this->Order, new PurchaseContext());
 
-            // 決済種別取得
             $util = new SDK($this->Config->findOneById(1));
             $charge = $util->getCharge($this->Order->getUnivapayChargeId());
-            // キャプチャ済みの場合は支払い済みに変更
+
             if($charge->status->getValue() === 'successful') {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                 $this->Order->setOrderStatus($OrderStatus);
@@ -129,15 +127,15 @@ class CreditCard implements PaymentMethodInterface
             $OrderStatus = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
             $this->Order->setOrderStatus($OrderStatus);
 
+            $this->purchaseFlow->rollback($this->Order, new PurchaseContext());
+
             $result = new PaymentResult();
             $result->setSuccess(true);
         }
         else {
-            // 受注ステータスを購入処理中へ変更
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PROCESSING);
             $this->Order->setOrderStatus($OrderStatus);
 
-            // 失敗時はpurchaseFlow::rollbackを呼び出す.
             $this->purchaseFlow->rollback($this->Order, new PurchaseContext());
 
             $result = new PaymentResult();

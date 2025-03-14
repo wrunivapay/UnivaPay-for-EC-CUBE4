@@ -36,18 +36,19 @@ class WithdrawEventListener implements EventSubscriberInterface
             log_info('customer withdraw from event listener');
         }
 
-        // TODO: Update below logic
-        $subscriptionId = '';
-        $config = $this->configRepository->findOneById(1);
-        $util = new SDK($config);
-        foreach($customer->getOrders() as $Order) {
-            $nowSubscription = $Order->getUnivaPaySubscriptionId();
-            if($nowSubscription && $nowSubscription !== $subscriptionId) {
-                $subscriptionId = $nowSubscription;
-                $subscription = $util->getSubscription($subscriptionId);
-                if($subscription && $subscription->status->getValue() === 'current')
-                    $subscription = $subscription->cancel();
-            }
-        }
+        // TODO: if customer is withdrawing, show a warning that they have a subscription and stop the process
+
+        // $subscriptionId = '';
+        // $config = $this->configRepository->findOneById(1);
+        // $util = new SDK($config);
+        // foreach($customer->getOrders() as $Order) {
+        //     $nowSubscription = $Order->getUnivaPaySubscriptionId();
+        //     if($nowSubscription && $nowSubscription !== $subscriptionId) {
+        //         $subscriptionId = $nowSubscription;
+        //         $subscription = $util->getSubscription($subscriptionId);
+        //         if($subscription && $subscription->status->getValue() === 'current')
+        //             $subscription = $subscription->cancel();
+        //     }
+        // }
     }
 }

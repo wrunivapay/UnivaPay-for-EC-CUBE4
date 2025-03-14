@@ -61,7 +61,7 @@ class OrderController extends AbstractController
                     break;
                 case "cancel":
                     if($charge->status->getName() === "SUCCESSFUL") {
-                        $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency.""));
+                        $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency));
                         $charge->createRefund($money)->awaitResult();
                     } else {
                         $charge->cancel()->awaitResult();
