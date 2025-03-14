@@ -2,13 +2,15 @@
 
 namespace Plugin\UnivaPay\EventListener;
 
+use Eccube\Common\Constant;
 use Eccube\Entity\Order;
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
 use Eccube\Repository\MailTemplateRepository;
+use Plugin\UnivaPay\Resource\Constants;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class SubscriptionOrderEventListener implements EventSubscriberInterface
+class MailEventListener implements EventSubscriberInterface
 {
     private $mailTemplateRepository;
     private $twig;
@@ -38,7 +40,7 @@ class SubscriptionOrderEventListener implements EventSubscriberInterface
             $msg = $event->getArgument('message');
 
             $subscriptionMailTemplate = $this->mailTemplateRepository->findOneBy([
-                'name' => 'UnivaPaySubscription'
+                'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME
             ]);
 
             $msg->setSubject($subscriptionMailTemplate->getMailSubject());

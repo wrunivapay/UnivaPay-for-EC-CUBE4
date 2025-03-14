@@ -1,5 +1,5 @@
 <?php
-namespace Plugin\UnivaPay\Controller;
+namespace Plugin\UnivaPay\Controller\Api;
 
 use DateTime;
 use Eccube\Controller\AbstractController;
@@ -96,8 +96,8 @@ class SubscriptionController extends AbstractController
         if (!$this->isHeaderAuthValid($request, $config)) {
             return new Response(trans('univa_pay.error.webhook.authorization'), 401);
         }
+
         $data = json_decode($request->getContent());
-        $config = $this->Config->findOneById(1);
         $util = new SDK($config);
 
         $charge = $util->getChargeBySubscriptionId($data->data->id);

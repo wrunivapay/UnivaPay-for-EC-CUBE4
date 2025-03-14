@@ -1,6 +1,7 @@
 <?php
 namespace Plugin\UnivaPay;
 
+use Eccube\Common\Constant;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Master\OrderStatusColor;
 use Eccube\Entity\Master\CustomerOrderStatus;
@@ -10,6 +11,7 @@ use Eccube\Plugin\AbstractPluginManager;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\SubscriptionPeriod;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
+use Plugin\UnivaPay\Resource\Constants;
 use Plugin\UnivaPay\Service\Method\CreditCard;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -40,7 +42,7 @@ class PluginManager extends AbstractPluginManager
         $entity->setId(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
         $entity->setDisplayOrderCount(false);
         $entity->setSortNo(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setName('UnivaPayサブスクリプション');
+        $entity->setName(Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME);
 
         $entityManager->persist($entity);
         $entityManager->flush($entity);
@@ -78,7 +80,7 @@ class PluginManager extends AbstractPluginManager
         $entity = new CustomerOrderStatus();
         $entity->setId(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
         $entity->setSortNo(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setName('UnivaPayサブスクリプション');
+        $entity->setName(Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME);
 
         $entityManager->persist($entity);
         $entityManager->flush($entity);
@@ -90,12 +92,12 @@ class PluginManager extends AbstractPluginManager
         $mailTemplateRepository = $entityManager->getRepository(\Eccube\Entity\MailTemplate::class);
 
         // Add master data if not exists
-        if ($mailTemplateRepository->findOneBy(['name' => 'UnivaPaySubscription'])) {
+        if ($mailTemplateRepository->findOneBy(['name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME])) {
             return;
         }
 
         $entity = new MailTemplate();
-        $entity->setName('UnivaPaySubscription');
+        $entity->setName(Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME);
         $entity->setMailSubject('サブスクリプションのご登録ありがとうございます');
         $entity->setFileName('UnivaPay/Resource/template/mail/subscription_mail.twig');
 
@@ -120,7 +122,7 @@ class PluginManager extends AbstractPluginManager
         $Payment->setCharge(0);
         $Payment->setSortNo($sortNo);
         $Payment->setVisible(true);
-        $Payment->setMethod('UnivaPay');
+        $Payment->setMethod(Constants::UNIVAPAY_PAYMENT_METHOD);
         $Payment->setMethodClass(CreditCard::class);
 
         $entityManager->persist($Payment);
@@ -138,8 +140,8 @@ class PluginManager extends AbstractPluginManager
         $Config = new Config();
         $Config->setAppId('');
         $Config->setAppSecret('');
-        $Config->setWidgetUrl('https://widget.univapay.com');
-        $Config->setApiUrl('https://api.univapay.com');
+        $Config->setWidgetUrl(Constants::UNIVAPAY_WIDGET_URL);
+        $Config->setApiUrl(Constants::UNIVAPAY_API_URL);
         $Config->setCapture(false);
 
         $entityManager->persist($Config);
