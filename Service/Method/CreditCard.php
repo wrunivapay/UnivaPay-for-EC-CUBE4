@@ -13,6 +13,7 @@ use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Symfony\Component\Form\FormInterface;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\SDK;
+use Univapay\Enums\ChargeStatus;
 
 /**
  * クレジットカード(トークン決済)の決済処理を行う.
@@ -113,7 +114,7 @@ class CreditCard implements PaymentMethodInterface
             $util = new SDK($this->Config->findOneById(1));
             $charge = $util->getCharge($this->Order->getUnivapayChargeId());
 
-            if($charge->status->getValue() === 'successful') {
+            if($charge->status === ChargeStatus::SUCCESSFUL()) {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                 $this->Order->setOrderStatus($OrderStatus);
                 $this->Order->setPaymentDate(new \DateTime());

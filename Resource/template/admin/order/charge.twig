@@ -2,55 +2,6 @@
     $(function () {
         // ページ最下部に移動
         $('#univapay-info').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
-
-        // 決済状況取得
-        $.ajax({
-            type: 'GET',
-            url: '{{ url('univa_pay_admin_order_get', { id: Order.id }) }}',
-        }).always(function(e) {
-            $('#univapay-status').text(e.status);
-            switch(e.status) {
-                case "authorized":
-                    $('#univapay-action__capture').prop('disabled', false)
-                    $('#univapay-action__cancel').prop('disabled', false)
-                    $('#univapay-status').text('{{ 'univa_pay.admin.status.authorized'|trans }}')
-                    break;
-                case "successful":
-                    $('#univapay-action__cancel').prop('disabled', false)
-                    $('#univapay-status').text('{{ 'univa_pay.admin.status.successful'|trans }}')
-                    break;
-                case "refund":
-                    $('#univapay-status').text('{{ 'univa_pay.admin.status.refund'|trans }}')
-                    break;
-            }
-            $('#univapay-charge').text(e.id);
-            $('#univapay-subscription').text(e.subscription_id);
-            if(e.subscription_id) $('#univapay-subscription').parent().removeClass("d-none");
-        });
-
-        // キャプチャ
-        $('#univapay-action__capture').on('click', function () {
-            $('#univapay-info__body button').prop('disabled', true);
-            $.ajax({
-                type: 'POST',
-                url: '{{ url('univa_pay_admin_order_change', { id: Order.id }) }}',
-                data: {action: "capture"}
-            }).always(function () {
-                location.href = location.href;
-            });
-        });
-
-        // 取り消し
-        $('#univapay-action__cancel').on('click', function () {
-            $('#univapay-info__body button').prop('disabled', true);
-            $.ajax({
-                type: 'POST',
-                url: '{{ url('univa_pay_admin_order_change', { id: Order.id }) }}',
-                data: {action: "cancel"}
-            }).always(function () {
-                location.href = location.href;
-            });
-        });
     });
 </script>
 <div class="d-none">
@@ -69,35 +20,12 @@
             <div class="card-body">
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_status'|trans }}</span></div>
-                    <div class="col" id="univapay-status">{{ 'univa_pay.admin.status.inprogress'|trans }}</div>
+                    <div class="col" id="univapay-status">{{ Order.univapayChargeStatus }}</div>
                 </div>
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.charge_id'|trans }}</span></div>
-                    <div class="col" id="univapay-charge">{{ 'univa_pay.admin.status.inprogress'|trans }}</div>
+                    <div class="col" id="univapay-charge">{{ Order.univapayCharge.id }}</div>
                 </div>
-                <div class="row mb-2 d-none">
-                    <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.subscription_id'|trans }}</span></div>
-                    <div class="col" id="univapay-subscription"></div>
-                </div>
-                {# <div class="row mb-2">
-                    <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_action'|trans }}</span></div>
-                    <div class="col">
-                        <ul class="list-inline">
-                            <li class="list-inline-item">
-                                <button id="univapay-action__capture" type="button"
-                                        class="btn btn-ec-regular px-5" disabled>
-                                    {{ 'univa_pay.admin.order_edit.payment_action_capture'|trans }}
-                                </button>
-                            </li>
-                            <li class="list-inline-item">
-                                <button id="univapay-action__cancel" type="button"
-                                        class="btn btn-ec-regular px-5" disabled>
-                                    {{ 'univa_pay.admin.order_edit.payment_action_cancel'|trans }}
-                                </button>
-                            </li>
-                        </ul>
-                    </div>
-                </div> #}
             </div>
         </div>
     </div>
