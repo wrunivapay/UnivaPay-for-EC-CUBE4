@@ -39,7 +39,7 @@
             subscriptionOrderNo: "{{ Order.order_no }}",
             items: [
                 {% for item in Order.getOrderItems() %}
-                `productName: {{ item.product_name }}, price: {{ item.price }}, quantity: {{ item.quantity }}`{% if not loop.last %},{% endif %}
+                `productName: {{ item.product_name }}, price: {{ item.total_price }}, quantity: {{ item.quantity }}`{% if not loop.last %},{% endif %}
                 {% endfor %}
             ]
         },
