@@ -90,7 +90,7 @@ class SubscriptionEventListener implements EventSubscriberInterface
                 null,
                 null,
                 null,
-                SubscriptionStatus::CURRENT()
+                SubscriptionStatus::UNPAID()
             );
             $subscription->awaitResult(5);
         } catch (Exception $e) {
