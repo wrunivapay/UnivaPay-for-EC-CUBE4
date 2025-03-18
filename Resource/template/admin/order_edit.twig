@@ -1,4 +1,10 @@
 {% if Order.payment_method == 'UnivaPay' %}
+    <script>
+        $(function () {
+            // ページ最下部に移動
+            $('#univapay-info').appendTo($('#form1 > div.c-contentsArea__cols > div > div'));
+        });
+    </script>
     {% if Order.univa_pay_charge_id %}
         {% include '@UnivaPay/admin/order/charge.twig' %}
     {% else %}

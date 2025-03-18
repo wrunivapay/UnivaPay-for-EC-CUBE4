@@ -1,7 +1,6 @@
 <?php
 namespace Plugin\UnivaPay;
 
-use Eccube\Common\Constant;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Master\OrderStatusColor;
 use Eccube\Entity\Master\CustomerOrderStatus;
@@ -30,60 +29,35 @@ class PluginManager extends AbstractPluginManager
 
     private function addMasterOrderStatus(ContainerInterface $container)
     {
-        $entityManager = $container->get('doctrine')->getManager();
-        $orderStatusRepository = $entityManager->getRepository(OrderStatus::class);
+        $data = [
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION => Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME,
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL => Constants::MASTER_DATA_UNIVAPAY_CANCEL_NAME,
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND => Constants::MASTER_DATA_UNIVAPAY_SUSPEND_NAME
+        ];
 
-        // Add master data if not exists
-        if ($orderStatusRepository->findOneBy(['id' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION])) {
-            return;
-        }
-
-        $entity = new OrderStatus();
-        $entity->setId(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setDisplayOrderCount(false);
-        $entity->setSortNo(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setName(Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME);
-
-        $entityManager->persist($entity);
-        $entityManager->flush($entity);
+        $this->createMasterData($container, $data, OrderStatus::class);
     }
 
     private function addMasterOrderStatusColor(ContainerInterface $container)
     {
-        $entityManager = $container->get('doctrine')->getManager();
-        $orderStatusColorRepository = $entityManager->getRepository(OrderStatusColor::class);
+        $data = [
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION => '#A3A3A3',
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL => '#A3A3A3',
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND => '#A3A3A3'
+        ];
 
-        // Add master data if not exists
-        if ($orderStatusColorRepository->findOneBy(['id' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION])) {
-            return;
-        }
-
-        $entity = new OrderStatusColor();
-        $entity->setId(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setSortNo(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setName('#A3A3A3');
-
-        $entityManager->persist($entity);
-        $entityManager->flush($entity);
+        $this->createMasterData($container, $data, OrderStatusColor::class);
     }
 
     private function addMasterCustomerOrderStatus(ContainerInterface $container)
     {
-        $entityManager = $container->get('doctrine')->getManager();
-        $customerOrderStatusRepository = $entityManager->getRepository(CustomerOrderStatus::class);
+        $data = [
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION => Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME,
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL => Constants::MASTER_DATA_UNIVAPAY_CANCEL_NAME,
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND => Constants::MASTER_DATA_UNIVAPAY_SUSPEND_NAME
+        ];
 
-        // Add master data if not exists
-        if ($customerOrderStatusRepository->findOneBy(['id' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION])) {
-            return;
-        }
-
-        $entity = new CustomerOrderStatus();
-        $entity->setId(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setSortNo(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION);
-        $entity->setName(Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME);
-
-        $entityManager->persist($entity);
-        $entityManager->flush($entity);
+        $this->createMasterData($container, $data, CustomerOrderStatus::class);
     }
 
     private function addSubscriptionMailTemplate(ContainerInterface $container)

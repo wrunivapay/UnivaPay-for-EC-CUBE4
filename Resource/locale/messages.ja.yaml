@@ -39,9 +39,9 @@ univa_pay.admin.subscription.status.unverified: 未確認
 univa_pay.admin.subscription.status.unconfirmed: 未確認
 univa_pay.admin.subscription.status.unpaid: 未払い
 univa_pay.admin.subscription.status.authorized: オーソライズ済
-univa_pay.admin.subscription.status.current: 現在
+univa_pay.admin.subscription.status.current: 継続中
 univa_pay.admin.subscription.status.suspended: 一時停止
-univa_pay.admin.subscription.status.canceled: キャンセル済
+univa_pay.admin.subscription.status.canceled: 永久停止
 univa_pay.admin.subscription.status.completed: 完了
 univa_pay.shopping.checkout.close: 決済が中断されました
 univa_pay.shopping.checkout.error: カード決済に失敗しました。
