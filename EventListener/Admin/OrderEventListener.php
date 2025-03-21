@@ -92,38 +92,7 @@ class OrderEventListener implements EventSubscriberInterface
         $this->util = new SDK($this->configRepository->find(1));
         $charge = $this->util->getCharge($chargeId);
         $order->univapayCharge = $charge;
-        $refund = current($charge->listRefunds());
-        if ($refund) {
-            $order->univapayChargeStatus = trans('univa_pay.admin.order.status.refund');
-        } else {
-            switch($charge->status)
-            {
-                case ChargeStatus::PENDING():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.pending');
-                    break;
-                case ChargeStatus::AUTHORIZED():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.authorized');
-                    break;
-                case ChargeStatus::SUCCESSFUL():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.successful');
-                    break;
-                case ChargeStatus::FAILED():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.failed');
-                    break;
-                case ChargeStatus::ERROR():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.error');
-                    break;
-                case ChargeStatus::CANCELED():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.canceled');
-                    break;
-                case ChargeStatus::AWAITING():
-                    $order->univapayChargeStatus = trans('univa_pay.admin.order.status.awaiting');
-                    break;
-                default:
-                    $order->univapayChargeStatus = '';
-            }
-        }
-
+        $order->univapayRefund = $charge->listRefunds();
         return $order;
     }
 }

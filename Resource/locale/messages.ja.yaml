@@ -19,6 +19,9 @@ univa_pay.admin.config.capture: キャプチャを行う
 univa_pay.admin.config.mail: 定期購入決済時に受注メールを送信する
 univa_pay.admin.order_edit.title: 決済情報
 univa_pay.admin.order_edit.payment_status: ステータス
+univa_pay.admin.order_edit.refund: 返金
+univa_pay.admin.order_edit.id: ID
+univa_pay.admin.order_edit.amount: 金額
 univa_pay.admin.order_edit.payment_action: 決済操作
 univa_pay.admin.order_edit.payment_action_capture: キャプチャ
 univa_pay.admin.order_edit.payment_action_cancel: 取消
@@ -29,12 +32,11 @@ univa_pay.admin.order.webhook.events.title: ウェブフックエベント一覧
 univa_pay.admin.order.webhook.events.sub_title: ウェブフック管理
 univa_pay.admin.order.status.pending: 保留
 univa_pay.admin.order.status.authorized: オーソライズ済
-univa_pay.admin.order.status.successful: 課金成功
+univa_pay.admin.order.status.successful: 成功
 univa_pay.admin.order.status.failed: 失敗
 univa_pay.admin.order.status.error: エラー
 univa_pay.admin.order.status.canceled: キャンセル済
 univa_pay.admin.order.status.awaiting: 処理待ち
-univa_pay.admin.order.status.refund: 返金
 univa_pay.admin.subscription.status.unverified: 未確認
 univa_pay.admin.subscription.status.unconfirmed: 未確認
 univa_pay.admin.subscription.status.unpaid: 未払い
