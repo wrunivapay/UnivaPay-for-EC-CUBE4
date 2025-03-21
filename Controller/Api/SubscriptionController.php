@@ -111,7 +111,7 @@ class SubscriptionController extends AbstractController
 
         $subscriptionOrder = $this->Order->findOneBy([
             "univa_pay_subscription_id" => $data->data->id,
-            "OrderStatus" => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION
+            "OrderStatus" => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE
         ]);
 
         if (is_null($subscriptionOrder)) {

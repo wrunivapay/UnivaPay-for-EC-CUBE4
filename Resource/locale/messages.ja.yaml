@@ -53,6 +53,7 @@ univa_pay.subscription.period: 課金周期
 univa_pay.error.bad_request: リクエストが不正です。
 univa_pay.error.webhook.authorization: ウェブフックの認証に失敗しました。
 univa_pay.error.webhook.subscription.not_found: サブスクリプションが見つかりません。
-univa_pay.error.cart.subscription.only_one_item: サブスクリプションが追加された場合、カートには1つのアイテムのみ許可されます。
+univa_pay.error.cart.subscription.only_one_item: サブスクリプションがカートに追加されている場合、他のアイテムを追加することはできません。
+univa_pay.error.customer.withdraw.has_subscription: サブスクリプションが存在するため、アカウントを削除する前に解約してください。
 
 univa_pay.error.api.subscription.cancel.failed: サブスクリプションの解約に失敗しました。

@@ -10,8 +10,8 @@ use Eccube\Plugin\AbstractPluginManager;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\SubscriptionPeriod;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
-use Plugin\UnivaPay\Resource\Constants;
 use Plugin\UnivaPay\Service\Method\CreditCard;
+use Plugin\UnivaPay\Util\Constants;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
@@ -30,7 +30,7 @@ class PluginManager extends AbstractPluginManager
     private function addMasterOrderStatus(ContainerInterface $container)
     {
         $data = [
-            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION => Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME,
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE => Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME,
             UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL => Constants::MASTER_DATA_UNIVAPAY_CANCEL_NAME,
             UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND => Constants::MASTER_DATA_UNIVAPAY_SUSPEND_NAME
         ];
@@ -41,7 +41,7 @@ class PluginManager extends AbstractPluginManager
     private function addMasterOrderStatusColor(ContainerInterface $container)
     {
         $data = [
-            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION => '#A3A3A3',
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE => '#A3A3A3',
             UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL => '#A3A3A3',
             UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND => '#A3A3A3'
         ];
@@ -52,7 +52,7 @@ class PluginManager extends AbstractPluginManager
     private function addMasterCustomerOrderStatus(ContainerInterface $container)
     {
         $data = [
-            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION => Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME,
+            UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE => Constants::MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME,
             UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL => Constants::MASTER_DATA_UNIVAPAY_CANCEL_NAME,
             UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND => Constants::MASTER_DATA_UNIVAPAY_SUSPEND_NAME
         ];

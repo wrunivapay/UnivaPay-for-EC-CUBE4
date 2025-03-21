@@ -1,6 +1,6 @@
 <?php
 
-namespace Plugin\UnivaPay\Resource;
+namespace Plugin\UnivaPay\Util;
 
 class Constants {
     const UNIVAPAY_PAYMENT_METHOD = "UnivaPay";

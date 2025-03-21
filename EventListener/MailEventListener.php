@@ -7,7 +7,7 @@ use Eccube\Entity\Order;
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
 use Eccube\Repository\MailTemplateRepository;
-use Plugin\UnivaPay\Resource\Constants;
+use Plugin\UnivaPay\Util\Constants;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
 class MailEventListener implements EventSubscriberInterface

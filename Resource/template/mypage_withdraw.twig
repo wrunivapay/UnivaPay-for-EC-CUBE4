@@ -1,0 +1,8 @@
+<script>
+    let form = document.querySelector('form[action="{{ url("mypage_withdraw") }}"]');
+        let button = form.querySelector('button[type="submit"]');
+        let warnings = document.querySelector('.ec-alert-warning');
+        if (warnings) {
+            button.disabled = true;
+        }
+</script>

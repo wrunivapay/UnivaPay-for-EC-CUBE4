@@ -16,8 +16,8 @@ class CartValidationEventListener implements EventSubscriberInterface
     private $session;
 
     public function __construct(
-        SessionInterface $session,
-        CartService $cartService
+        CartService $cartService,
+        SessionInterface $session
     ) {
         $this->cartService = $cartService;
         $this->session = $session;

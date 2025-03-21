@@ -2,53 +2,76 @@
 
 namespace Plugin\UnivaPay\EventListener;
 
-use Eccube\Entity\Master\CustomerStatus;
+use Exception;
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
-use Plugin\UnivaPay\Repository\ConfigRepository;
-use Plugin\UnivaPay\Util\SDK;
+use Eccube\Repository\OrderRepository;
+use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class WithdrawEventListener implements EventSubscriberInterface
 {
-    private $configRepository;
+    private $orderRepository;
+    private $tokenStorage;
+    private $session;
 
     public function __construct(
-        ConfigRepository $configRepository
+        OrderRepository $orderRepository,
+        TokenStorageInterface $tokenStorage,
+        SessionInterface $session
     ) {
-        $this->configRepository = $configRepository;
+        $this->orderRepository = $orderRepository;
+        $this->tokenStorage = $tokenStorage;
+        $this->session = $session;
     }
 
     public static function getSubscribedEvents()
     {
         return [
-            // EccubeEvents::ADMIN_CUSTOMER_EDIT_INDEX_COMPLETE => 'onCustomerWithdraw',
-            EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_COMPLETE => 'onCustomerWithdraw',
+            EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_INITIALIZE => 'onCustomerWithdrawInitialize',
+            EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_COMPLETE => 'onCustomerWithdraw'
         ];
+    }
+
+    private function getCustomer()
+    {
+        $token = $this->tokenStorage->getToken();
+        if ($token && $token->getUser() instanceof \Eccube\Entity\Customer) {
+            return $token->getUser();
+        }
+
+        return null;
+    }
+
+    public function onCustomerWithdrawInitialize(EventArgs $event)
+    {
+        $customer = $this->getCustomer();
+
+        $activeSubscriptions = $this->orderRepository->findBy([
+            'Customer' => $customer,
+            'OrderStatus' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
+        ]);
+
+        if (count($activeSubscriptions) > 0) {
+            $this->session->getFlashBag()->add('eccube.front.warning', trans('univa_pay.error.customer.withdraw.has_subscription'));
+        }
     }
 
     public function onCustomerWithdraw(EventArgs $event)
     {
-        // we should check if the customer has a subscription
-        // maybe we should not force it rather show a warning and let use decide it
         $customer = $event->getArgument('Customer');
-        if ($customer->getStatus()->getId() === CustomerStatus::WITHDRAWING) {
-            log_info('customer withdraw from event listener');
+
+        $activeSubscriptions = $this->orderRepository->findBy([
+            'Customer' => $customer,
+            'order_status_id' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
+        ]);
+
+        if (count($activeSubscriptions) > 0) {
+            log_info('Customer: '.$customer->getId().' has active subscriptions');
+            $this->session->getFlashBag()->add('eccube.front.error', trans('univa_pay.error.customer.withdraw.has_subscription'));
+            throw new Exception(trans('univa_pay.error.customer.withdraw.has_subscription'));
         }
-
-        // TODO: if customer is withdrawing, show a warning that they have a subscription and stop the process
-
-        // $subscriptionId = '';
-        // $config = $this->configRepository->findOneById(1);
-        // $util = new SDK($config);
-        // foreach($customer->getOrders() as $Order) {
-        //     $nowSubscription = $Order->getUnivaPaySubscriptionId();
-        //     if($nowSubscription && $nowSubscription !== $subscriptionId) {
-        //         $subscriptionId = $nowSubscription;
-        //         $subscription = $util->getSubscription($subscriptionId);
-        //         if($subscription && $subscription->status->getValue() === 'current')
-        //             $subscription = $subscription->cancel();
-        //     }
-        // }
     }
 }

@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class UnivaPayOrderStatus extends OrderStatus
 {
-    const UNIVAPAY_SUBSCRIPTION = 100;
+    const UNIVAPAY_SUBSCRIPTION_ACTIVE = 100;
     const UNIVAPAY_SUBSCRIPTION_CANCEL = 101;
     const UNIVAPAY_SUBSCRIPTION_SUSPEND = 102;
 }
