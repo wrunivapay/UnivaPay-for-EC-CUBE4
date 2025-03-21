@@ -125,7 +125,6 @@ class PluginManager extends AbstractPluginManager
     private function createMasterData(ContainerInterface $container, array $statuses, $class)
     {
         $entityManager = $container->get('doctrine')->getManager();
-        $i = 0;
         foreach ($statuses as $id => $name) {
             $PaymentStatus = $entityManager->find($class, $id);
             if (!$PaymentStatus) {
@@ -133,7 +132,7 @@ class PluginManager extends AbstractPluginManager
             }
             $PaymentStatus->setId($id);
             $PaymentStatus->setName($name);
-            $PaymentStatus->setSortNo($i++);
+            $PaymentStatus->setSortNo($id);
             $entityManager->persist($PaymentStatus);
             $entityManager->flush($PaymentStatus);
         }
