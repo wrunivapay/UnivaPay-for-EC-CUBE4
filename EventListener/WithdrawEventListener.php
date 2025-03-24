@@ -65,7 +65,7 @@ class WithdrawEventListener implements EventSubscriberInterface
 
         $activeSubscriptions = $this->orderRepository->findBy([
             'Customer' => $customer,
-            'order_status_id' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
+            'OrderStatus' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
         ]);
 
         if (count($activeSubscriptions) > 0) {

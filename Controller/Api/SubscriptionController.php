@@ -2,13 +2,16 @@
 namespace Plugin\UnivaPay\Controller\Api;
 
 use DateTime;
+use Exception;
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
+use Eccube\Event\EventArgs;
 use Eccube\Repository\Master\OrderStatusRepository;
 use Eccube\Repository\OrderRepository;
 use Eccube\Service\MailService;
 use Eccube\Service\OrderHelper;
+use Eccube\Service\OrderStateMachine;
 use Eccube\Service\PurchaseFlow\Processor\AddPointProcessor;
 use Eccube\Service\PurchaseFlow\Processor\OrderNoProcessor;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
@@ -17,7 +20,6 @@ use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\SDK;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -26,31 +28,15 @@ use Univapay\Enums\WebhookEvent;
 
 class SubscriptionController extends AbstractController
 {
-    /** @var ConfigRepository */
-    protected $Config;
-
-    /** @var OrderRepository */
-    protected $Order;
-
-    /**
-     * @var OrderStatusRepository
-     */
+    private $Config;
+    private $Order;
     private $orderStatusRepository;
-
-    /**
-     * @var PurchaseFlow
-     */
     private $purchaseFlow;
-
-    /**
-     * @var OrderHelper
-     */
     private $orderHelper;
-
-    /**
-     * @var MailService
-     */
-    protected $mailService;
+    private $mailService;
+    private $orderNoProcessor;
+    private $addPointProcessor;
+    private $orderStateMachine;
 
     /**
      * OrderController constructor.
@@ -63,16 +49,18 @@ class SubscriptionController extends AbstractController
      * @param OrderNoProcessor $orderNoProcessor
      * @param AddPointProcessor $addPointProcessor
      * @param MailService $mailService
+     * @param OrderStateMachine $orderStateMachine
      */
     public function __construct(
+        AddPointProcessor $addPointProcessor,
         ConfigRepository $configRepository,
         OrderRepository $orderRepository,
         OrderStatusRepository $orderStatusRepository,
         PurchaseFlow $shoppingPurchaseFlow,
         OrderHelper $orderHelper,
         OrderNoProcessor $orderNoProcessor,
-        AddPointProcessor $addPointProcessor,
-        MailService $mailService
+        MailService $mailService,
+        OrderStateMachine $orderStateMachine
     ) {
         $this->Config = $configRepository;
         $this->Order = $orderRepository;
@@ -82,6 +70,7 @@ class SubscriptionController extends AbstractController
         $this->orderNoProcessor = $orderNoProcessor;
         $this->addPointProcessor = $addPointProcessor;
         $this->mailService = $mailService;
+        $this->orderStateMachine = $orderStateMachine;
     }
 
     /**
@@ -272,17 +261,26 @@ class SubscriptionController extends AbstractController
     /**
      * subscription cancel action
      *
-     * @Method("POST")
-     * @Route("/univapay/subscription/cancel/{id}", requirements={"id" = "\d+"}, name="univa_pay_cancel_subscription")
+     * @Route("api/subscription/{id}", requirements={"id" = "\d+"}, name="univa_pay_cancel_subscription", methods={"PUT"})
      */
-    public function cancelSubscription(Request $request, Order $Order)
+    public function cancelSubscription(Request $request, Order $order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $util = new SDK($this->Config->findOneById(1));
-            $subscription = $util->getSubscriptionByChargeId($Order->getUnivapayChargeId());
-            $subscription = $subscription->cancel()->awaitResult(5);
+            $status = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL);
+            $order->setOrderStatus($status);
 
-            return $this->json($subscription->status);
+            log_info('Subscription canceled', ['order_id' => $order->getId()]);
+            try {
+                $this->orderStateMachine->apply($order, $status);
+            } catch (Exception $e) {
+                log_info('why: '. $e->getMessage());
+                return $this->json(['status' => "error"], 500);
+            }
+
+            $this->entityManager->persist($order);
+            $this->entityManager->flush();
+
+            return $this->json(['status' => "ok"]);
         }
 
         throw new BadRequestHttpException();
@@ -291,7 +289,7 @@ class SubscriptionController extends AbstractController
     /**
      * subscription get action
      *
-     * @Route("/univapay/subscription/get/{id}", requirements={"id" = "\d+"}, name="univa_pay_get_subscription", methods={"GET"})
+     * @Route("/univapay/subscription/{id}", requirements={"id" = "\d+"}, name="univa_pay_get_subscription", methods={"GET"})
      */
     public function getSubscription(Request $request, Order $Order)
     {
