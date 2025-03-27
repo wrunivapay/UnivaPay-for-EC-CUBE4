@@ -182,34 +182,12 @@ class SubscriptionController extends AbstractController
         $newOrder->setDeviceType($existOrder->getDeviceType());
         $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
         $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
-        // 商品ごとの今回課金金額を取得
-        $amount = json_decode($existOrder->getUnivapayChargeAmount());
-        // 商品金額が存在しなかったらその時点のデータを作成する
-        if(!$amount) {
-            $items = [];
-            foreach($existOrder->getOrderItems() as $value) {
-                // 商品単位で金額を取得
-                if($value->isProduct()) {
-                    $class = $value->getProductClass();
-                    $items[$class->getId()] = ['price' => $class->getPrice01(), 'tax' => $class->getPrice01IncTax() - $class->getPrice01()];
-                }
-            }
-            $newOrder->setUnivapayChargeAmount(json_encode($items));
-            $amount = json_decode($newOrder->getUnivapayChargeAmount());
-        }
-        $amount = get_object_vars($amount);
+
         foreach($existOrder->getOrderItems() as $value) {
             $newOrderItem = clone $value;
             // 値引きは引き継がない
             if($newOrderItem->isDiscount() || $newOrderItem->isPoint())
                 continue;
-            // OrderItemごとの金額を修正する
-            if($newOrderItem->isProduct()) {
-                // 二回目は通常金額を取得する
-                $class = $newOrderItem->getProductClass();
-                $newOrderItem->setPrice($amount[$class->getId()]->price);
-                $newOrderItem->setTax($amount[$class->getId()]->tax);
-            }
             $newOrderItem->setOrder($newOrder);
             $newOrder->addOrderItem($newOrderItem);
         }
