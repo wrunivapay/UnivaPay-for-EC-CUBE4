@@ -26,8 +26,7 @@ $container->loadFromExtension('framework', [
                 ],
                 'subscription_resume' => [
                     'from' => [
-                        (string) UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND,
-                        (string) UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL
+                        (string) UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND
                     ],
                     'to' => (string) UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE
                 ],
