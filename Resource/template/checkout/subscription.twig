@@ -35,6 +35,7 @@
         amount: {{ subscriptionTotal }},
         currency: "{{ Order.currency_code }}",
         email: "{{ Order.email }}",
+        phoneNumber: "{{ Order.getPhoneNumber() }}",
         metadata: { 
             subscriptionOrderNo: "{{ Order.order_no }}",
             items: [

@@ -13,6 +13,7 @@
         amount: {{ Order.payment_total }},
         currency: "{{ Order.currency_code }}",
         email: "{{ Order.email }}",
+        phoneNumber: "{{ Order.getPhoneNumber() }}",
         metadata: {
             orderNo: "{{ Order.order_no }}",
             items: [
