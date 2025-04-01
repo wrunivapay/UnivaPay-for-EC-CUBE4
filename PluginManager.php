@@ -89,7 +89,7 @@ class PluginManager extends AbstractPluginManager
             Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL =>
             [
                 "subject" => 'サブスクリプション停止',
-                "fileName" => 'UnivaPay/Resource/template/mail/subscription_cancel_mail.twig'
+                "fileName" => 'UnivaPay/Resource/template/mail/subscription_mail_cancel.twig'
             ]
         ];
         $this->createMailTemplate($container, $data, MailTemplate::class);
