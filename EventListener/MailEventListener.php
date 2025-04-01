@@ -40,7 +40,7 @@ class MailEventListener implements EventSubscriberInterface
             $msg = $event->getArgument('message');
 
             $subscriptionMailTemplate = $this->mailTemplateRepository->findOneBy([
-                'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME
+                'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_ACTIVE
             ]);
 
             $msg->setSubject($subscriptionMailTemplate->getMailSubject());

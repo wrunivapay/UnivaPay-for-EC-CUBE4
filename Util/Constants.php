@@ -10,5 +10,6 @@ class Constants {
     const MASTER_DATA_UNIVAPAY_SUBSCRIPTION_NAME = "UnivaPayサブスクリプション";
     const MASTER_DATA_UNIVAPAY_CANCEL_NAME = "UnivaPayサブスクリプション永久停止";
     const MASTER_DATA_UNIVAPAY_SUSPEND_NAME = "UnivaPayサブスクリプション一時停止";
-    const MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME = "UnivaPaySubscription";
+    const MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_ACTIVE = "UnivaPaySubscription";
+    const MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL = "UnivaPaySubscription停止";
 }

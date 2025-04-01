@@ -60,23 +60,39 @@ class PluginManager extends AbstractPluginManager
         $this->createMasterData($container, $data, CustomerOrderStatus::class);
     }
 
-    private function addSubscriptionMailTemplate(ContainerInterface $container)
+    private function createMailTemplate(ContainerInterface $container, array $data, $class)
     {
         $entityManager = $container->get('doctrine')->getManager();
-        $mailTemplateRepository = $entityManager->getRepository(\Eccube\Entity\MailTemplate::class);
+        $repository = $entityManager->getRepository($class);
 
-        // Add master data if not exists
-        if ($mailTemplateRepository->findOneBy(['name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME])) {
-            return;
+        foreach ($data as $name => $item) {
+            $entity = $repository->findOneBy(['name' => $name]);
+            if (!$entity) {
+                $entity= new $class();
+            }
+            $entity->setName($name);
+            $entity->setMailSubject($item['subject']);
+            $entity->setFileName($item['fileName']);
+            $entityManager->persist($entity);
+            $entityManager->flush($entity);
         }
+    }
 
-        $entity = new MailTemplate();
-        $entity->setName(Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_NAME);
-        $entity->setMailSubject('サブスクリプションのご登録ありがとうございます');
-        $entity->setFileName('UnivaPay/Resource/template/mail/subscription_mail.twig');
-
-        $entityManager->persist($entity);
-        $entityManager->flush($entity);
+    private function addSubscriptionMailTemplate(ContainerInterface $container)
+    {
+        $data = [
+            Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_ACTIVE =>
+            [
+                "subject" => 'サブスクリプションのご登録ありがとうございます',
+                "fileName" => 'UnivaPay/Resource/template/mail/subscription_mail.twig'
+            ],
+            Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL =>
+            [
+                "subject" => 'サブスクリプション停止',
+                "fileName" => 'UnivaPay/Resource/template/mail/subscription_cancel_mail.twig'
+            ]
+        ];
+        $this->createMailTemplate($container, $data, MailTemplate::class);
     }
 
     private function createTokenPayment(ContainerInterface $container)
