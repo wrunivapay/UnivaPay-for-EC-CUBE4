@@ -50,13 +50,10 @@ jobs:
         repository: EC-CUBE/ec-cube
         ref: '4.0'
 
-    - name: Checkout EC-CUBE plugin
+    - name: Checkout UnivaPay Plugin
       uses: actions/checkout@v4
       with:
         path: app/Plugin/${{ matrix.plugin-code }}
-
-    - name: Downgrade composer
-      run: sudo composer self-update --1
 
     - name: Get Composer Cache Directory
       id: composer-cache
