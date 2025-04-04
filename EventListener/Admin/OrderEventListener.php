@@ -52,7 +52,7 @@ class OrderEventListener implements EventSubscriberInterface
 
     private function handleSubscription($order, $subscriptionId): object
     {
-        $this->util = new SDK($this->configRepository->find(1));
+        $this->util = new SDK($this->configRepository->findAll()[0]);
         $subscription = $this->util->getSubscription($subscriptionId);
         $order->univapaySubscription = $subscription;
         switch($subscription->status)
@@ -89,7 +89,7 @@ class OrderEventListener implements EventSubscriberInterface
 
     private function handleCharge($order, $chargeId): object
     {
-        $this->util = new SDK($this->configRepository->find(1));
+        $this->util = new SDK($this->configRepository->findAll()[0]);
         $charge = $this->util->getCharge($chargeId);
         $order->univapayCharge = $charge;
         $order->univapayRefund = $charge->listRefunds();

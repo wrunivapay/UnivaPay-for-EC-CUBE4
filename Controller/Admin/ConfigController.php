@@ -1,6 +1,7 @@
 <?php
 namespace Plugin\UnivaPay\Controller\Admin;
 
+use Exception;
 use Eccube\Controller\AbstractController;
 use Eccube\Service\Composer\ComposerServiceInterface;
 use Plugin\UnivaPay\Form\Type\Admin\ConfigType;
