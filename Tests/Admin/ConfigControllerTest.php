@@ -1,8 +1,12 @@
 <?php
+
 namespace Plugin\UnivaPay\Tests\Admin;
 
 use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 
+/**
+ * Test UnivaPay Config
+ */
 class ConfigControllerTest extends AbstractAdminWebTestCase
 {
     protected $faker;
