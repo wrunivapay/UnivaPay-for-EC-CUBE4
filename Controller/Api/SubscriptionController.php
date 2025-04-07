@@ -244,19 +244,15 @@ class SubscriptionController extends AbstractController
     public function cancelSubscription(Request $request, Order $order)
     {
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
-            $status = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL);
-            $order->setOrderStatus($status);
-
-            log_info('Subscription canceled', ['order_id' => $order->getId()]);
             try {
+                $status = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL);
                 $this->orderStateMachine->apply($order, $status);
+                $this->entityManager->persist($order);
+                $this->entityManager->flush();
             } catch (Exception $e) {
                 log_info('why: '. $e->getMessage());
                 return $this->json(['status' => "error"], 500);
             }
-
-            $this->entityManager->persist($order);
-            $this->entityManager->flush();
 
             return $this->json(['status' => "ok"]);
         }

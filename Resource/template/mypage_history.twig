@@ -22,7 +22,7 @@
             $('#univapay-action__cancel').on('click', function () {
                 $('#univapay-subscription button').prop('disabled', true);
                 $.ajax({
-                    type: 'POST',
+                    type: 'PUT',
                     url: '{{ url('univa_pay_cancel_subscription', { id: Order.id }) }}',
                     data: {
                         mode: 'cancel'

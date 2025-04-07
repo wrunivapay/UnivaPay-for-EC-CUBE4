@@ -25,7 +25,7 @@ class UnivaPayEvent implements EventSubscriberInterface
     {
         return [
             '@admin/Order/edit.twig' => 'onAdminOrderEditTwig',
-            // 'Mypage/history.twig' => 'onMypageHistoryTwig',
+            'Mypage/history.twig' => 'onMypageHistoryTwig',
             'Mypage/withdraw.twig' => 'onMyPageWithdrawTwig',
             'Shopping/confirm.twig' => 'onShoppingConfirmTwig'
         ];
