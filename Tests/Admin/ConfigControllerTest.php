@@ -24,7 +24,7 @@ class ConfigControllerTest extends AbstractAdminWebTestCase
         $this->assertContains('トークン', $crawler->html());
     }
 
-    public function testConfigSuccess()
+    public function testSaveConfigSuccessfully()
     {
         $crawler = $this->client->request('GET', $this->generateUrl('univa_pay_admin_config'));
         $form = $crawler->selectButton(trans('univa_pay.admin.config.save'))->form();

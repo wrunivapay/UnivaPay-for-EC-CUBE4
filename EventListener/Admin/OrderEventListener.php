@@ -4,11 +4,10 @@ namespace Plugin\UnivaPay\EventListener\Admin;
 
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
-use Univapay\Enums\ChargeStatus;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Univapay\Enums\SubscriptionStatus;
 
 class OrderEventListener implements EventSubscriberInterface

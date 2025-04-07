@@ -40,7 +40,7 @@ class OrderControllerTest extends AbstractAdminWebTestCase
     }
 
     // Should be able to search by UnivaPay Charge / Subscription ID
-    public function testAdminOrderListSearchByUnivapayId()
+    public function testSearchOrdersByUnivapayIds()
     {
         $crawler = $this->client->request('GET', $this->generateUrl('admin_order'));
 

@@ -1,17 +1,17 @@
 volumes:
   db:
   git:
+  ide:
   vendor:
-  idea:
 
 services:
   web:
-    image: ghcr.io/nanasess/ec-cube-php:7.2-apache-4.0
+    image: ghcr.io/nanasess/ec-cube-php:7.4-apache-4.0
     ports:
       - "1080:80"
     environment:
       - APP_ENV=dev
-      - DATABASE_URL=mysql://root:password@db:3306/eccube
+      - DATABASE_URL=mysql://root:@db:3306/eccubedb
       - DATABASE_SERVER_VERSION=5.7
       - MAILER_URL=smtp://mail:1025
       - ECCUBE_TIMEZONE=Asia/Tokyo
@@ -28,11 +28,11 @@ services:
     volumes:
       - ".:/var/www/html/app/Plugin/UnivaPay"
       - "git:/var/www/html/app/Plugin/UnivaPay/.git"
-      - "idea:/var/www/html/app/Plugin/UnivaPay/IDEA"
-      - "vendor:/var/www/html/app/vendor"
+      - "ide:/var/www/html/app/Plugin/UnivaPay/IDE"
+      - "vendor:/var/www/html/vendor"
     depends_on:
-      - db
-      - package
+      db:
+        condition: service_healthy
     networks:
       - backend
     extra_hosts:
@@ -53,11 +53,14 @@ services:
   db:
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: password
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: password
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
     volumes:
       - db:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "--silent"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
     networks:
       - backend
 
@@ -68,7 +71,6 @@ services:
     environment:
       - PMA_HOST=db
       - PMA_USER=root
-      - PMA_PASSWORD=password
       - PMA_PORT=3306
     depends_on:
       - db
