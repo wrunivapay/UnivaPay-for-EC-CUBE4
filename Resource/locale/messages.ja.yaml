@@ -52,7 +52,7 @@ univa_pay.subscription.change: カード変更
 univa_pay.subscription.period: 課金周期
 
 # error
-univa_pay.error.bad_request: リクエストが不正です。
+univa_pay.error.request: Univapayへのリクエストが失敗しました。EC-CUBEで注文ステータスを変更しないでください。
 univa_pay.error.webhook.authorization: ウェブフックの認証に失敗しました。
 univa_pay.error.webhook.subscription.not_found: サブスクリプションが見つかりません。
 univa_pay.error.cart.subscription.only_one_item: サブスクリプションがカートに追加されている場合、他のアイテムを追加することはできません。

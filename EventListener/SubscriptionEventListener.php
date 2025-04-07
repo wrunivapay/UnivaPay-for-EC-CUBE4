@@ -134,7 +134,7 @@ class SubscriptionEventListener implements EventSubscriberInterface
 
         $body = $this->twig->render($MailTemplate->getFileName(), [
             'BaseInfo' => $this->baseInfo,
-            // 'Customer'
+            'Customer' => $order->getCustomer(),
             'Order' => $order,
         ]);
 
