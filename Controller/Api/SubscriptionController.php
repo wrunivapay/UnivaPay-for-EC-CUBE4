@@ -111,11 +111,11 @@ class SubscriptionController extends AbstractController
             case WebhookEvent::SUBSCRIPTION_PAYMENT():
                 $order = $this->createOrder($subscriptionOrder, $data, $charge, WebhookEvent::SUBSCRIPTION_PAYMENT());
                 $charge->patch(['orderNo' => $order->getId()]);
-                return new Response("succefully accepted", 201);
+                return new Response("successfully accepted", 201);
             case WebhookEvent::SUBSCRIPTION_FAILURE():
                 $order = $this->createOrder($subscriptionOrder, $data, $charge, WebhookEvent::SUBSCRIPTION_FAILURE());
                 $charge->patch(['orderNo' => $order->getId()]);
-                return new Response("succefully accepted", 201);
+                return new Response("successfully accepted", 201);
             default:
         }
 
@@ -243,6 +243,7 @@ class SubscriptionController extends AbstractController
      */
     public function cancelSubscription(Request $request, Order $order)
     {
+
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
             try {
                 $status = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL);
@@ -250,7 +251,10 @@ class SubscriptionController extends AbstractController
                 $this->entityManager->persist($order);
                 $this->entityManager->flush();
             } catch (Exception $e) {
-                log_info('why: '. $e->getMessage());
+                log_info('Failed to cancel subscription', [
+                    'order_id' => $order->getId(),
+                    'error' => $e->getMessage()
+                ]);
                 return $this->json(['status' => "error"], 500);
             }
 
