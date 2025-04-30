@@ -50,6 +50,7 @@ univa_pay.shopping.checkout.error: カード決済に失敗しました。
 univa_pay.subscription.cancel: 解約
 univa_pay.subscription.change: カード変更
 univa_pay.subscription.period: 課金周期
+univa_pay.mypage.subscription.cancel.confirm: サブスクリプションをキャンセルしますか？
 
 # error
 univa_pay.error.request: Univapayへのリクエストが失敗しました。EC-CUBEで注文ステータスを変更しないでください。
