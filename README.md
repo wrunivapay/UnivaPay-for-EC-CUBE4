@@ -22,10 +22,6 @@ docker-compose up
 #### 開発環境用
 以下のコマンドを実行して、開発環境をセットアップします:
 ```bash
-# php-sdk
-bin/console eccube:composer:require univapay/php-sdk:^6.7
-# Eccube & プラグイン
-bin/console eccube:install -n
 bin/console eccube:plugin:install --code=UnivaPay && \
 bin/console eccube:plugin:enable --code=UnivaPay && \
 bin/console cache:clear --no-warmup
