@@ -4,62 +4,77 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInit12493b5c16369570b1b74c7bc935da64
+class ComposerStaticInitbdb475dd6715209f9eda0f23de6f6b9b
 {
-    public static $files = array (
-        '941748b3c8cae4466c827dfb5ca9602a' => __DIR__ . '/..' . '/rmccue/requests/library/Deprecated.php',
-    );
-
     public static $prefixLengthsPsr4 = array (
-        'W' => 
+        'a' =>
         array (
-            'WpOrg\\Requests\\' => 15,
+            'apimatic\\jsonmapper\\' => 20,
         ),
-        'M' => 
+        'U' =>
         array (
-            'Money\\' => 6,
+            'UnivaPay\\' => 9,
+            'Unirest\\' => 8,
+        ),
+        'P' =>
+        array (
+            'Psr\\Log\\' => 8,
+        ),
+        'C' =>
+        array (
+            'Core\\' => 5,
+            'CoreInterfaces\\' => 15,
         ),
     );
 
     public static $prefixDirsPsr4 = array (
-        'WpOrg\\Requests\\' => 
+        'apimatic\\jsonmapper\\' =>
         array (
-            0 => __DIR__ . '/..' . '/rmccue/requests/src',
+            0 => __DIR__ . '/..' . '/apimatic/jsonmapper/src',
         ),
-        'Money\\' => 
+        'UnivaPay\\' =>
         array (
-            0 => __DIR__ . '/..' . '/moneyphp/money/src',
+            0 => __DIR__ . '/..' . '/univapay/client-sdk/src',
+        ),
+        'Unirest\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/apimatic/unirest-php/src',
+        ),
+        'Psr\\Log\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/psr/log/Psr/Log',
+        ),
+        'Core\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/apimatic/core/src',
+        ),
+        'CoreInterfaces\\' =>
+        array (
+            0 => __DIR__ . '/..' . '/apimatic/core-interfaces/src',
         ),
     );
 
     public static $prefixesPsr0 = array (
-        'U' => 
+        'R' =>
         array (
-            'Univapay' => 
+            'Rs\\Json' =>
             array (
-                0 => __DIR__ . '/..' . '/univapay/php-sdk/src',
-            ),
-        ),
-        'E' => 
-        array (
-            'Eccube' => 
-            array (
-                0 => __DIR__ . '/..' . '/ec-cube/plugin-installer/src',
+                0 => __DIR__ . '/..' . '/php-jsonpointer/php-jsonpointer/src',
             ),
         ),
     );
 
     public static $classMap = array (
-        'Requests' => __DIR__ . '/..' . '/rmccue/requests/library/Requests.php',
+        'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
     );
 
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInit12493b5c16369570b1b74c7bc935da64::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInit12493b5c16369570b1b74c7bc935da64::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInit12493b5c16369570b1b74c7bc935da64::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInit12493b5c16369570b1b74c7bc935da64::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInitbdb475dd6715209f9eda0f23de6f6b9b::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInitbdb475dd6715209f9eda0f23de6f6b9b::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInitbdb475dd6715209f9eda0f23de6f6b9b::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInitbdb475dd6715209f9eda0f23de6f6b9b::$classMap;
 
         }, null, ClassLoader::class);
     }
