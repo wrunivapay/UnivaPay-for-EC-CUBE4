@@ -2,28 +2,22 @@
 
 namespace Plugin\UnivaPay\EventListener;
 
-use Exception;
-use Money\Currency;
-use Money\Money;
-use Symfony\Component\Workflow\Event\Event;
-use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Eccube\Entity\Order;
+use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
 use Plugin\UnivaPay\Repository\ConfigRepository;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Univapay\Enums\ChargeStatus;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\Workflow\Event\Event;
 
 // Listener to update charge status on Univapay
 class OrderEventListener implements EventSubscriberInterface
 {
     private $configRepository;
-    private $session;
 
     public function __construct(
-        ConfigRepository $configRepository,
-        SessionInterface $session
+        ConfigRepository $configRepository
     ) {
         $this->configRepository = $configRepository;
-        $this->session = $session;
     }
 
     public static function getSubscribedEvents()
@@ -33,58 +27,43 @@ class OrderEventListener implements EventSubscriberInterface
             'workflow.order.transition.cancel' => 'onCancelOrder',
         ];
     }
+    
+    private function isUnivapayPayment(Order $order) : bool {
+        return $order->getPaymentMethod() === Constants::UNIVAPAY_PAYMENT_METHOD;
+    }
 
     public function onPayOrder(Event $event)
     {
         $order = $event->getSubject()->getOrder();
 
-        if ($order->getPaymentMethod() !== 'UnivaPay') {
-            return;
-        }
+        if (!$this->isUnivapayPayment($order)) return;
 
-        try {
-            $util = new SDK($this->configRepository->findOneById(1));
-            $charge = $util->getCharge($order->getUnivapayChargeId());
-            $charge->capture();
-            $charge->awaitResult(5);
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
-        }
+        $util = new SDK($this->configRepository->findOneById(1));
+        $charge = $util->getCharge($order->getUnivapayChargeId());
+        $util->captureCharge($charge);
     }
 
     public function onCancelOrder(Event $event)
     {
         $order = $event->getSubject()->getOrder();
 
-        if ($order->getPaymentMethod() !== 'UnivaPay') {
-            return;
-        }
+        if (!$this->isUnivapayPayment($order)) return;
 
-        try {
-            $util = new SDK($this->configRepository->findOneById(1));
-            $charge = $util->getCharge($order->getUnivapayChargeId());
-            if($charge->status === ChargeStatus::SUCCESSFUL()) {
-                // Capture -> Refund
-                $money = new Money($charge->chargedAmountFormatted, new Currency($charge->chargedCurrency.""));
-                $charge->createRefund($money);
-                $charge->awaitResult(5);
-            } else {
-                // Authorized -> Cancel
-                $charge->cancel();
-                $charge->awaitResult(5);
-            }
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
-        }
-    }
+        $util = new SDK($this->configRepository->findOneById(1));
+        $charge = $util->getCharge($order->getUnivapayChargeId());
+        
+        switch($charge->getStatus()) {
+            case 'authorized':
+                $util->createCancel($charge);
+                break;
+            case 'successful':
+                $refund = $util->getRefunds($charge->getId());
+                if ($refund->getTotalHits() > 0) break;
 
-    private function handleError($message)
-    {
-        log_error($message);
-        if ($this->session->has('_security_admin')) {
-            $this->session->getFlashBag()->add('eccube.admin.error', $message);
-        } else {
-            $this->session->getFlashBag()->add('eccube.front.error', $message);
+                $util->createRefund($charge);
+                break;
+            default:
+                break;
         }
     }
 }

@@ -59,8 +59,7 @@ class OrderEventListener implements EventSubscriberInterface
             $util = new SDK($this->configRepository->findAll()[0]);
             $subscription = $util->getSubscription($subscriptionId);
             $order->univapaySubscription = $subscription;
-            switch($subscription->status)
-            {
+            switch ($subscription->status) {
                 case SubscriptionStatus::UNVERIFIED():
                     $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unverified');
                     break;
@@ -99,17 +98,11 @@ class OrderEventListener implements EventSubscriberInterface
 
     private function handleCharge($order, $chargeId): object
     {
-        try {
-            $util = new SDK($this->configRepository->findAll()[0]);
-            $charge = $util->getCharge($chargeId);
-            $order->univapayCharge = $charge;
-            $order->univapayRefund = $charge->listRefunds();
-        } catch (Exception $e) {
-            log_error($e->getMessage());
-            $order->univapayCharge = null;
-            $order->univapayRefund = null;
-            $this->session->getFlashBag()->set('eccube.admin.error', trans('univa_pay.error.request').$e->getMessage());
-        }
+        $util = new SDK($this->configRepository->findAll()[0]);
+        $charge = $util->getCharge($chargeId);
+        $order->univapayCharge = $charge;
+        $order->univapayRefund = $util->getRefunds($chargeId);
+
         return $order;
     }
 }

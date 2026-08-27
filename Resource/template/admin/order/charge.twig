@@ -24,7 +24,7 @@
                 <div class="row mb-2">
                     <div class="col-2"><span>{{ 'univa_pay.admin.order_edit.payment_status'|trans }}</span></div>
                     <div class="col" id="univapay-status">
-                        {{ univapayStatusMap[Order.univapayCharge.status.value] | default('univa_pay.admin.order.status.unknown'|trans) }}
+                        {{ univapayStatusMap[Order.univapayCharge.status] | default('univa_pay.admin.order.status.unknown'|trans) }}
                     </div>
                 </div>
                 <div class="row mb-2">
@@ -45,7 +45,7 @@
                             {% for refund in Order.univapayRefund.items %}
                                 <tr>
                                     <td>{{ refund.id }}</td>
-                                    <td>{{ univapayStatusMap[refund.status.value] | default('univa_pay.admin.order.status.unknown'|trans) }}</td>
+                                    <td>{{ univapayStatusMap[refund.status] | default('univa_pay.admin.order.status.unknown'|trans) }}</td>
                                     <td>{{ refund.amountFormatted }}</td>
                                 </tr>
                             {% endfor %}

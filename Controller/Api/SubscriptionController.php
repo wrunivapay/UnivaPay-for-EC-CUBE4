@@ -1,12 +1,10 @@
 <?php
+
 namespace Plugin\UnivaPay\Controller\Api;
 
-use DateTime;
-use Exception;
 use Eccube\Controller\AbstractController;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Order;
-use Eccube\Event\EventArgs;
 use Eccube\Repository\Master\OrderStatusRepository;
 use Eccube\Repository\OrderRepository;
 use Eccube\Service\MailService;
@@ -16,6 +14,7 @@ use Eccube\Service\PurchaseFlow\Processor\AddPointProcessor;
 use Eccube\Service\PurchaseFlow\Processor\OrderNoProcessor;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
+use Exception;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Plugin\UnivaPay\Repository\ConfigRepository;
@@ -33,21 +32,21 @@ class SubscriptionController extends AbstractController
     private $orderStatusRepository;
     private $purchaseFlow;
     private $orderHelper;
-    private $mailService;
     private $orderNoProcessor;
     private $addPointProcessor;
+    private $mailService;
     private $orderStateMachine;
 
     /**
      * OrderController constructor.
      *
+     * @param AddPointProcessor $addPointProcessor
      * @param ConfigRepository $configRepository
      * @param OrderRepository $orderRepository
      * @param OrderStatusRepository $orderStatusRepository
      * @param PurchaseFlow $shoppingPurchaseFlow
      * @param OrderHelper $orderHelper
      * @param OrderNoProcessor $orderNoProcessor
-     * @param AddPointProcessor $addPointProcessor
      * @param MailService $mailService
      * @param OrderStateMachine $orderStateMachine
      */
@@ -91,31 +90,33 @@ class SubscriptionController extends AbstractController
 
         $charge = $util->getChargeBySubscriptionId($data->data->id);
         if (is_null($charge)) {
-            return new Response("Charge not found", 404);
+            return new Response('Charge not found', 404);
         }
 
         if ($this->Order->findOneBy(['univa_pay_charge_id' => $charge->id])) {
-            return new Response("Order already created", 200);
+            return new Response('Order already created', 200);
         }
 
         $subscriptionOrder = $this->Order->findOneBy([
-            "univa_pay_subscription_id" => $data->data->id,
-            "OrderStatus" => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE
+            'univa_pay_subscription_id' => $data->data->id,
+            'OrderStatus' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
         ]);
 
         if (is_null($subscriptionOrder)) {
             return new Response(trans('univa_pay.error.webhook.subscription.not_found'), 404);
         }
 
-        switch(WebhookEvent::fromValue($data->event)) {
+        switch (WebhookEvent::fromValue($data->event)) {
             case WebhookEvent::SUBSCRIPTION_PAYMENT():
                 $order = $this->createOrder($subscriptionOrder, $data, $charge, WebhookEvent::SUBSCRIPTION_PAYMENT());
                 $charge->patch(['orderNo' => $order->getId()]);
-                return new Response("successfully accepted", 201);
+
+                return new Response('successfully accepted', 201);
             case WebhookEvent::SUBSCRIPTION_FAILURE():
                 $order = $this->createOrder($subscriptionOrder, $data, $charge, WebhookEvent::SUBSCRIPTION_FAILURE());
                 $charge->patch(['orderNo' => $order->getId()]);
-                return new Response("successfully accepted", 201);
+
+                return new Response('successfully accepted', 201);
             default:
         }
 
@@ -128,8 +129,11 @@ class SubscriptionController extends AbstractController
             return true;
         }
 
-        if ($config->getWebhookAuth() !== $request->headers->get('Authorization')) {
-            log_info('Invalid webhook authorization attempt', ['provided' => $request->headers->get('Authorization')]);
+        $authHeader = $request->headers->get('Authorization') || $request->headers->get('authorization');
+
+        if ($config->getWebhookAuth() !== $authHeader) {
+            log_info('Invalid webhook authorization attempt', ['provided' => $authHeader]);
+
             return false;
         }
 
@@ -139,7 +143,7 @@ class SubscriptionController extends AbstractController
     private function createOrder($existOrder, $data, $charge, $event)
     {
         // cloneで注文を複製してもidが変更できないため一から作成
-        $newOrder = new Order;
+        $newOrder = new Order();
         // 今回での決済の課金ID取得
         $newOrder->setUnivapayChargeId($charge->id);
         $newOrder->setUnivapaySubscriptionId($existOrder->getUnivapaySubscriptionId());
@@ -183,28 +187,29 @@ class SubscriptionController extends AbstractController
         $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
         $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
 
-        foreach($existOrder->getOrderItems() as $value) {
+        foreach ($existOrder->getOrderItems() as $value) {
             $newOrderItem = clone $value;
             // 値引きは引き継がない
-            if($newOrderItem->isDiscount() || $newOrderItem->isPoint())
+            if ($newOrderItem->isDiscount() || $newOrderItem->isPoint()) {
                 continue;
+            }
             $newOrderItem->setOrder($newOrder);
             $newOrder->addOrderItem($newOrderItem);
         }
-        foreach($existOrder->getShippings() as $value) {
+        foreach ($existOrder->getShippings() as $value) {
             $newShipping = clone $value;
-            $newShipping->setShippingDeliveryDate(NULL);
-            $newShipping->setShippingDeliveryTime(NULL);
-            $newShipping->setTimeId(NULL);
-            $newShipping->setShippingDate(NULL);
-            $newShipping->setTrackingNumber(NULL);
+            $newShipping->setShippingDeliveryDate(null);
+            $newShipping->setShippingDeliveryTime(null);
+            $newShipping->setTimeId(null);
+            $newShipping->setShippingDate(null);
+            $newShipping->setTrackingNumber(null);
             $newShipping->setOrder($newOrder);
             // 循環参照してしまい正常に発送データがセットできないため
-            foreach($newShipping->getOrderItems() as $v) {
+            foreach ($newShipping->getOrderItems() as $v) {
                 $newShipping->removeOrderItem($v);
             }
-            foreach($newOrder->getOrderItems() as $v) {
-                if($v->getShipping() && $v->getShipping()->getId() == $value->getId()) {
+            foreach ($newOrder->getOrderItems() as $v) {
+                if ($v->getShipping() && $v->getShipping()->getId() == $value->getId()) {
                     $v->setShipping($newShipping);
                     $newShipping->addOrderItem($v);
                 }
@@ -230,7 +235,7 @@ class SubscriptionController extends AbstractController
         $newOrder->setOrderStatus($OrderStatus);
         if ($event === WebhookEvent::SUBSCRIPTION_PAYMENT()) {
             $this->mailService->sendOrderMail($newOrder);
-        }   
+        }
         $this->entityManager->flush();
 
         return $newOrder;
@@ -243,7 +248,6 @@ class SubscriptionController extends AbstractController
      */
     public function cancelSubscription(Request $request, Order $order)
     {
-
         if ($request->isXmlHttpRequest() && $this->isTokenValid()) {
             try {
                 $status = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL);
@@ -253,12 +257,13 @@ class SubscriptionController extends AbstractController
             } catch (Exception $e) {
                 log_info('Failed to cancel subscription', [
                     'order_id' => $order->getId(),
-                    'error' => $e->getMessage()
+                    'error' => $e->getMessage(),
                 ]);
-                return $this->json(['status' => "error"], 500);
+
+                return $this->json(['status' => 'error'], 500);
             }
 
-            return $this->json(['status' => "ok"]);
+            return $this->json(['status' => 'ok']);
         }
 
         throw new BadRequestHttpException();
@@ -280,7 +285,7 @@ class SubscriptionController extends AbstractController
 
         throw new BadRequestHttpException();
     }
-    
+
     /**
      * subscription update action
      *
