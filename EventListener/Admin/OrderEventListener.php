@@ -4,25 +4,20 @@ namespace Plugin\UnivaPay\EventListener\Admin;
 
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
-use Exception;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
-use Symfony\Component\HttpFoundation\Session\SessionInterface;
-use Univapay\Enums\SubscriptionStatus;
 
 class OrderEventListener implements EventSubscriberInterface
 {
+    /** @var ConfigRepository */
     private $configRepository;
-    private $session;
 
     public function __construct(
-        ConfigRepository $configRepository,
-        SessionInterface $session
+        ConfigRepository $configRepository
     ) {
         $this->configRepository = $configRepository;
-        $this->session = $session;
     }
 
     public static function getSubscribedEvents()
@@ -55,48 +50,42 @@ class OrderEventListener implements EventSubscriberInterface
 
     private function handleSubscription($order, $subscriptionId): object
     {
-        try {
-            $util = new SDK($this->configRepository->findAll()[0]);
-            $subscription = $util->getSubscription($subscriptionId);
-            $order->univapaySubscription = $subscription;
-            switch ($subscription->status) {
-                case SubscriptionStatus::UNVERIFIED():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unverified');
-                    break;
-                case SubscriptionStatus::UNCONFIRMED():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unconfirmed');
-                    break;
-                case SubscriptionStatus::UNPAID():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unpaid');
-                    break;
-                case SubscriptionStatus::AUTHORIZED():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unauthorized');
-                    break;
-                case SubscriptionStatus::CURRENT():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.current');
-                    break;
-                case SubscriptionStatus::SUSPENDED():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.suspended');
-                    break;
-                case SubscriptionStatus::CANCELED():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.canceled');
-                    break;
-                case SubscriptionStatus::COMPLETED():
-                    $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.completed');
-                    break;
-                default:
-                    $order->univapaySubscriptionStatus = '';
-            }
-        } catch (Exception $e) {
-            log_error($e->getMessage());
-            $order->univapaySubscriptionStatus = null;
-            $this->session->getFlashBag()->set('eccube.admin.error', trans('univa_pay.error.request').$e->getMessage());
+        $util = new SDK($this->configRepository->findAll()[0]);
+        $subscription = $util->getSubscription($subscriptionId);
+        $order->univapaySubscription = $subscription;
+        switch ($subscription->getStatus()) {
+            case 'unverified':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unverified');
+                break;
+            case 'unconfirmed':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unconfirmed');
+                break;
+            case 'unpaid':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unpaid');
+                break;
+            case 'authorized':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unauthorized');
+                break;
+            case 'current':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.current');
+                break;
+            case 'suspended':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.suspended');
+                break;
+            case 'canceled':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.canceled');
+                break;
+            case 'completed':
+                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.completed');
+                break;
+            default:
+                $order->univapaySubscriptionStatus = '';
         }
 
         return $order;
     }
 
-    private function handleCharge($order, $chargeId): object
+    private function handleCharge($order, string $chargeId): object
     {
         $util = new SDK($this->configRepository->findAll()[0]);
         $charge = $util->getCharge($chargeId);

@@ -54,13 +54,13 @@ class OrderEventListener implements EventSubscriberInterface
         
         switch($charge->getStatus()) {
             case 'authorized':
-                $util->createCancel($charge);
+                $util->createChargeCancel($charge);
                 break;
             case 'successful':
                 $refund = $util->getRefunds($charge->getId());
                 if ($refund->getTotalHits() > 0) break;
 
-                $util->createRefund($charge);
+                $util->createChargeRefund($charge);
                 break;
             default:
                 break;

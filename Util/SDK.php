@@ -17,9 +17,9 @@ use UnivaPay\UnivapayClientSdkClientBuilder;
 
 class SDK
 {
-    // @UnivapayClientSdkClient 
+    /** @var univapayclientsdkclient */
     private $client;
-    // @LoggerInterface
+    /** @var LoggerInterface */
     private $logger;
 
     public function __construct(Config $config)
@@ -103,7 +103,7 @@ class SDK
         });
     }
 
-    public function createRefund(Charge $charge)
+    public function createChargeRefund(Charge $charge)
     {
         $refund = $this->execute('create refund', $charge->getId(), function () use ($charge) {
             return $this->client->getRefundsApi()->createRefund(
@@ -126,7 +126,7 @@ class SDK
         });
     }
     
-    public function createCancel(Charge $charge)
+    public function createChargeCancel(Charge $charge)
     {
         $cancel = $this->execute('create cancel', $charge->getId(), function () use ($charge) {
             return $this->client->getCancelsApi()->createCancel(
@@ -161,10 +161,40 @@ class SDK
         });
     }
 
-    public function getSubscription($subscriptionId)
+    public function getSubscription(string $subscriptionId)
     {
         return $this->execute('get subscription', $subscriptionId, function () use ($subscriptionId) {
             return $this->client->getSubscriptionsApi()->getSubscription($this->client->getCurrentStoreId(), $subscriptionId);
+        });
+    }
+    
+    public function suspendSubscription(string $subscriptionId)
+    {
+        return $this->execute('suspend subscription', $subscriptionId, function () use ($subscriptionId) {
+            return $this->client->getSubscriptionsApi()->suspendSubscription(
+                $this->client->getCurrentStoreId(),
+                $subscriptionId
+            );
+        });        
+    }
+    
+    public function unsuspendSubscription(string $subscriptionId)
+    {
+        return $this->execute('unsuspend subscription', $subscriptionId, function () use ($subscriptionId) {
+            return $this->client->getSubscriptionsApi()->unsuspendSubscription(
+                $this->client->getCurrentStoreId(),
+                $subscriptionId
+            );
+        });        
+    }
+    
+    public function cancelSubscription(string $subscriptionId)
+    {
+        return $this->execute('cancel subscription', $subscriptionId, function () use ($subscriptionId) {
+            return $this->client->getSubscriptionsApi()->cancelSubscription(
+                $this->client->getCurrentStoreId(),
+                $subscriptionId
+            );
         });
     }
 }
