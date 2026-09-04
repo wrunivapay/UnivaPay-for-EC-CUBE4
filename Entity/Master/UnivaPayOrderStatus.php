@@ -2,8 +2,8 @@
 
 namespace Plugin\UnivaPay\Entity\Master;
 
-use Eccube\Entity\Master\OrderStatus;
 use Doctrine\ORM\Mapping as ORM;
+use Eccube\Entity\Master\OrderStatus;
 
 /**
  * @ORM\Entity

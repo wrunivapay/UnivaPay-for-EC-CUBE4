@@ -1,5 +1,6 @@
 <?php
-    namespace Plugin\UnivaPay\Repository;
+
+namespace Plugin\UnivaPay\Repository;
 
     use Eccube\Repository\AbstractRepository;
     use Plugin\UnivaPay\Entity\SubscriptionPeriod;

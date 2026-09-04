@@ -43,7 +43,7 @@ class MailEventListener implements EventSubscriberInterface
             $msg = $event->getArgument('message');
 
             $subscriptionMailTemplate = $this->mailTemplateRepository->findOneBy([
-                'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_ACTIVE
+                'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_ACTIVE,
             ]);
 
             $msg->setSubject('['.$this->baseInfo->getShopName().'] '.$subscriptionMailTemplate->getMailSubject());
@@ -66,7 +66,7 @@ class MailEventListener implements EventSubscriberInterface
             }
         }
     }
- 
+
     public function getHtmlTemplate($templateName)
     {
         $fileName = explode('.', $templateName);

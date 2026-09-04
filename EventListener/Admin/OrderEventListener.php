@@ -8,9 +8,9 @@ use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
 use Plugin\UnivaPay\Util\UnivaPayApiException;
-use UnivaPay\Models\SubscriptionStatus;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
+use UnivaPay\Models\SubscriptionStatus;
 
 class OrderEventListener implements EventSubscriberInterface
 {
@@ -66,7 +66,6 @@ class OrderEventListener implements EventSubscriberInterface
             return null;
         }
     }
-
 
     private function fetchSubscription($order, string $subscriptionId): object
     {

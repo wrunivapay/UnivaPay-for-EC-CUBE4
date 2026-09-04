@@ -1,4 +1,5 @@
 <?php
+
 namespace Plugin\UnivaPay\Form\Extension;
 
 use Eccube\Entity\Order;
@@ -40,9 +41,6 @@ class CreditCardExtention extends AbstractTypeExtension
         return OrderType::class;
     }
 
-    /**
-     * @return iterable
-     */
     public static function getExtendedTypes(): iterable
     {
         return [OrderType::class];

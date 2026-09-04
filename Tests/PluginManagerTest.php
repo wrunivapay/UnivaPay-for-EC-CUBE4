@@ -8,10 +8,10 @@ use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Master\OrderStatusColor;
 use Eccube\Entity\Payment;
 use Eccube\Tests\EccubeTestCase;
-use Plugin\UnivaPay\PluginManager;
 use Plugin\UnivaPay\Entity\Config;
-use Plugin\UnivaPay\Entity\SubscriptionPeriod;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
+use Plugin\UnivaPay\Entity\SubscriptionPeriod;
+use Plugin\UnivaPay\PluginManager;
 use Plugin\UnivaPay\Service\Method\CreditCard;
 use Plugin\UnivaPay\Util\Constants;
 
@@ -61,8 +61,8 @@ class PluginManagerTest extends EccubeTestCase
             'id' => [
                 UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
                 UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL,
-                UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND
-            ]
+                UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND,
+            ],
         ]);
         $this->assertCount(3, $orderStatus);
 
@@ -71,8 +71,8 @@ class PluginManagerTest extends EccubeTestCase
             'id' => [
                 UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
                 UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL,
-                UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND
-            ]
+                UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND,
+            ],
         ]);
         $this->assertCount(3, $orderStatusColor);
 
@@ -81,8 +81,8 @@ class PluginManagerTest extends EccubeTestCase
             'id' => [
                 UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
                 UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_CANCEL,
-                UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND
-            ]
+                UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_SUSPEND,
+            ],
         ]);
         $this->assertCount(3, $customerOrderStatusColor);
 
@@ -90,8 +90,8 @@ class PluginManagerTest extends EccubeTestCase
         $mailTemplate = $mailTemplateRepository->findBy([
             'name' => [
                 Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_ACTIVE,
-                Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL
-            ]
+                Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL,
+            ],
         ]);
         $this->assertCount(2, $mailTemplate);
     }

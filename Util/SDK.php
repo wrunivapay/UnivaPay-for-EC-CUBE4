@@ -2,7 +2,7 @@
 
 namespace Plugin\UnivaPay\Util;
 
-require_once __DIR__ . '/../Resource/vendor/autoload.php';
+require_once __DIR__.'/../Resource/vendor/autoload.php';
 
 use Eccube\Application;
 use Plugin\UnivaPay\Entity\Config;
@@ -139,7 +139,7 @@ class SDK
                 true
             );
         });
-        
+
         switch ($refundResult->getStatus()) {
             case RefundStatus::SUCCESSFUL:
                 return $refundResult;
@@ -148,7 +148,7 @@ class SDK
                 throw new UnivaPayApiException(sprintf('Failed to create refund for charge ID : refund ID %s did not complete successfully (status: %s)', $charge->getId(), $refund->getId(), $refundResult->getStatus()));
         }
     }
-    
+
     public function createChargeCancel($order, Charge $charge)
     {
         $cancel = $this->execute('create cancel', $charge->getId(), function () use ($order, $charge) {
@@ -191,7 +191,7 @@ class SDK
             return $this->client->getSubscriptionsApi()->getSubscription($this->client->getCurrentStoreId(), $subscriptionId);
         });
     }
-    
+
     public function suspendSubscription(string $subscriptionId)
     {
         return $this->execute('suspend subscription', $subscriptionId, function () use ($subscriptionId) {
@@ -199,9 +199,9 @@ class SDK
                 $this->client->getCurrentStoreId(),
                 $subscriptionId
             );
-        });        
+        });
     }
-    
+
     public function unsuspendSubscription(string $subscriptionId)
     {
         return $this->execute('unsuspend subscription', $subscriptionId, function () use ($subscriptionId) {
@@ -209,9 +209,9 @@ class SDK
                 $this->client->getCurrentStoreId(),
                 $subscriptionId
             );
-        });        
+        });
     }
-    
+
     public function cancelSubscription(string $subscriptionId)
     {
         return $this->execute('cancel subscription', $subscriptionId, function () use ($subscriptionId) {

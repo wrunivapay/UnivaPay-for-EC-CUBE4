@@ -1,11 +1,12 @@
 <?php
+
 namespace Plugin\UnivaPay\Form\Type\Admin;
 
 use Plugin\UnivaPay\Entity\Config;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
-use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Validator\Constraints\NotBlank;
@@ -38,7 +39,7 @@ class ConfigType extends AbstractType
             ])
             ->add('capture', CheckboxType::class, [
                 'required' => false,
-                'label'    => false
+                'label' => false,
             ])
             ->add('webhook_auth', TextType::class, [
                 'required' => false,

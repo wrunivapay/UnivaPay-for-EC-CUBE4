@@ -1,4 +1,5 @@
 <?php
+
 namespace Plugin\UnivaPay;
 
 use Eccube\Event\TemplateEvent;
@@ -36,7 +37,7 @@ class UnivaPayEvent implements EventSubscriberInterface
             'Mypage/history.twig' => 'onMypageHistoryTwig',
             'Mypage/withdraw.twig' => 'onMyPageWithdrawTwig',
             'Shopping/confirm.twig' => 'onShoppingConfirmTwig',
-            'Shopping/login.twig' => 'onShoppingLoginTwig'
+            'Shopping/login.twig' => 'onShoppingLoginTwig',
         ];
     }
 

@@ -5,7 +5,6 @@ namespace Plugin\UnivaPay\Entity;
 use Doctrine\ORM\Mapping as ORM;
 use Eccube\Annotation as Eccube;
 use Eccube\Annotation\EntityExtension;
-use Plugin\UnivaPay\Entity\SubscriptionPeriod;
 
 /**
  * @EntityExtension("Eccube\Entity\ProductClass")
@@ -32,8 +31,6 @@ trait ProductClassTrait
 
     /**
      * Set subscriptionPeriod.
-     *
-     * @param SubscriptionPeriod|null $subscriptionPeriod
      *
      * @return ProductClass
      */

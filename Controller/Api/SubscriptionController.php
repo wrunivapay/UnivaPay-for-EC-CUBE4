@@ -27,29 +27,33 @@ use Univapay\Enums\WebhookEvent;
 
 class SubscriptionController extends AbstractController
 {
-    private $Config;
-    private $Order;
-    private $orderStatusRepository;
-    private $purchaseFlow;
-    private $orderHelper;
-    private $orderNoProcessor;
+    /** @var AddPointProcessor */
     private $addPointProcessor;
+
+    /** @var ConfigRepository */
+    private $Config;
+
+    /** @var OrderRepository */
+    private $Order;
+
+    /** @var OrderStatusRepository */
+    private $orderStatusRepository;
+
+    /** @var PurchaseFlow */
+    private $purchaseFlow;
+
+    /** @var OrderHelper */
+    private $orderHelper;
+
+    /** @var OrderNoProcessor */
+    private $orderNoProcessor;
+
+    /** @var MailService */
     private $mailService;
+
+    /** @var OrderStateMachine */
     private $orderStateMachine;
 
-    /**
-     * OrderController constructor.
-     *
-     * @param AddPointProcessor $addPointProcessor
-     * @param ConfigRepository $configRepository
-     * @param OrderRepository $orderRepository
-     * @param OrderStatusRepository $orderStatusRepository
-     * @param PurchaseFlow $shoppingPurchaseFlow
-     * @param OrderHelper $orderHelper
-     * @param OrderNoProcessor $orderNoProcessor
-     * @param MailService $mailService
-     * @param OrderStateMachine $orderStateMachine
-     */
     public function __construct(
         AddPointProcessor $addPointProcessor,
         ConfigRepository $configRepository,

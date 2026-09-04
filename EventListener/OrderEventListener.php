@@ -4,10 +4,10 @@ namespace Plugin\UnivaPay\EventListener;
 
 use Eccube\Entity\Order;
 use Eccube\Exception\ShoppingException;
+use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
 use Plugin\UnivaPay\Util\UnivaPayApiException;
-use Plugin\UnivaPay\Repository\ConfigRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Workflow\Event\Event;
@@ -36,8 +36,9 @@ class OrderEventListener implements EventSubscriberInterface
             'workflow.order.transition.cancel' => 'onCancelOrder',
         ];
     }
-    
-    private function isUnivapayPayment(Order $order) : bool {
+
+    private function isUnivapayPayment(Order $order): bool
+    {
         return $order->getPaymentMethod() === Constants::UNIVAPAY_PAYMENT_METHOD;
     }
 
@@ -55,7 +56,9 @@ class OrderEventListener implements EventSubscriberInterface
     public function onPayOrder(Event $event)
     {
         $order = $event->getSubject()->getOrder();
-        if (!$this->isUnivapayPayment($order)) return;
+        if (!$this->isUnivapayPayment($order)) {
+            return;
+        }
 
         $util = new SDK($this->configRepository->findOneById(1));
 
@@ -75,7 +78,9 @@ class OrderEventListener implements EventSubscriberInterface
     public function onCancelOrder(Event $event)
     {
         $order = $event->getSubject()->getOrder();
-        if (!$this->isUnivapayPayment($order)) return;
+        if (!$this->isUnivapayPayment($order)) {
+            return;
+        }
 
         $util = new SDK($this->configRepository->findOneById(1));
 
@@ -88,7 +93,9 @@ class OrderEventListener implements EventSubscriberInterface
                     break;
                 case ChargeStatus::SUCCESSFUL:
                     $refund = $util->getRefunds($charge->getId());
-                    if ($refund->getTotalHits() > 0) break;
+                    if ($refund->getTotalHits() > 0) {
+                        break;
+                    }
 
                     $util->createChargeRefund($charge);
                     break;

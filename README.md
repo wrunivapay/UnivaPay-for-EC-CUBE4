@@ -38,5 +38,15 @@ APP_ENV=test DATABASE_URL=mysql://root:@db:3306/eccubedb_test bin/console cache:
 APP_ENV=test DATABASE_URL=mysql://root:@db:3306/eccubedb_test vendor/bin/phpunit app/Plugin/UnivaPay/Tests
 ```
 
+#### コード整形 (PHP CS Fixer)
+プラグイン用の設定は `.php_cs.dist` です。EC-CUBEコアの `.php_cs.dist` と同じルールですが、EC-CUBEの著作権ヘッダーを挿入する `header_comment` は除いています。
+
+```bash
+# コード整形を実行する
+vendor/bin/php-cs-fixer fix ./app/Plugin/UnivaPay
+# 確認のみ (差分を表示するだけで書き換えない)
+vendor/bin/php-cs-fixer fix ./app/Plugin/UnivaPay --dry-run --diff
+```
+
 ### アクセス
 - **URL**: [http://localhost:1080](http://localhost:1080)

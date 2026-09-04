@@ -1,4 +1,5 @@
 <?php
+
 namespace Plugin\UnivaPay\Service\Method;
 
 use Eccube\Entity\Master\OrderStatus;
@@ -40,17 +41,13 @@ class CreditCard implements PaymentMethodInterface
      */
     private $purchaseFlow;
 
-    /** 
-     * @var ConfigRepository 
+    /**
+     * @var ConfigRepository
      */
     protected $Config;
 
     /**
      * CreditCard constructor.
-     *
-     * @param OrderStatusRepository $orderStatusRepository
-     * @param PurchaseFlow $shoppingPurchaseFlow
-     * @param ConfigRepository $configRepository
      */
     public function __construct(
         OrderStatusRepository $orderStatusRepository,
@@ -107,7 +104,7 @@ class CreditCard implements PaymentMethodInterface
     public function checkout()
     {
         // One Time Purchase
-        if ($this->Order->getUnivapayChargeId()) { 
+        if ($this->Order->getUnivapayChargeId()) {
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::NEW);
             $this->Order->setOrderStatus($OrderStatus);
 
@@ -127,7 +124,7 @@ class CreditCard implements PaymentMethodInterface
             $result->setSuccess(true);
         }
         // Subscription Purchase
-        else if($this->Order->getUnivapaySubscriptionId()) {
+        elseif ($this->Order->getUnivapaySubscriptionId()) {
             $OrderStatus = $this->orderStatusRepository->find(UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE);
             $this->Order->setOrderStatus($OrderStatus);
 
@@ -135,8 +132,7 @@ class CreditCard implements PaymentMethodInterface
 
             $result = new PaymentResult();
             $result->setSuccess(true);
-        }
-        else {
+        } else {
             $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PROCESSING);
             $this->Order->setOrderStatus($OrderStatus);
 

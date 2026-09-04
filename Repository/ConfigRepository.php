@@ -1,4 +1,5 @@
 <?php
+
 namespace Plugin\UnivaPay\Repository;
 
 use Eccube\Repository\AbstractRepository;

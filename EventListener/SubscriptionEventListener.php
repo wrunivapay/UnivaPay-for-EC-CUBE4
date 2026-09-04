@@ -8,14 +8,14 @@ use Eccube\Exception\ShoppingException;
 use Eccube\Repository\BaseInfoRepository;
 use Eccube\Repository\MailHistoryRepository;
 use Eccube\Repository\MailTemplateRepository;
-use Plugin\UnivaPay\Util\SDK;
-use Plugin\UnivaPay\Util\Constants;
-use Plugin\UnivaPay\Util\UnivaPayApiException;
 use Plugin\UnivaPay\Repository\ConfigRepository;
+use Plugin\UnivaPay\Util\Constants;
+use Plugin\UnivaPay\Util\SDK;
+use Plugin\UnivaPay\Util\UnivaPayApiException;
+use Swift_Mailer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Workflow\Event\Event;
-use Swift_Mailer;
 use Twig\Environment;
 use UnivaPay\Models\SubscriptionStatus;
 
@@ -88,7 +88,9 @@ class SubscriptionEventListener implements EventSubscriberInterface
     public function onSuspendSubscription(Event $event)
     {
         $order = $event->getSubject()->getOrder();
-        if (!$this->isUnivapayPayment($order)) return;
+        if (!$this->isUnivapayPayment($order)) {
+            return;
+        }
 
         $util = new SDK($this->configRepository->findOneById(1));
 
@@ -105,7 +107,9 @@ class SubscriptionEventListener implements EventSubscriberInterface
     public function onCancelSubscription(Event $event)
     {
         $order = $event->getSubject()->getOrder();
-        if (!$this->isUnivapayPayment($order)) return;
+        if (!$this->isUnivapayPayment($order)) {
+            return;
+        }
 
         log_info('サブスク停止処理開始', ['order' => $order->getId()]);
 
@@ -127,7 +131,9 @@ class SubscriptionEventListener implements EventSubscriberInterface
     public function onResumeSubscription(Event $event)
     {
         $order = $event->getSubject()->getOrder();
-        if (!$this->isUnivapayPayment($order)) return;
+        if (!$this->isUnivapayPayment($order)) {
+            return;
+        }
 
         $util = new SDK($this->configRepository->findOneById(1));
 
@@ -146,7 +152,7 @@ class SubscriptionEventListener implements EventSubscriberInterface
         log_info('サブスク停止メール送信開始');
 
         $MailTemplate = $this->mailTemplateRepository->findOneBy([
-            'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL
+            'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL,
         ]);
 
         $body = $this->twig->render($MailTemplate->getFileName(), [

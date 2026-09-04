@@ -2,10 +2,10 @@
 
 namespace Plugin\UnivaPay\EventListener;
 
-use Exception;
 use Eccube\Event\EccubeEvents;
 use Eccube\Event\EventArgs;
 use Eccube\Repository\OrderRepository;
+use Exception;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -31,7 +31,7 @@ class WithdrawEventListener implements EventSubscriberInterface
     {
         return [
             EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_INITIALIZE => 'onCustomerWithdrawInitialize',
-            EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_COMPLETE => 'onCustomerWithdraw'
+            EccubeEvents::FRONT_MYPAGE_WITHDRAW_INDEX_COMPLETE => 'onCustomerWithdraw',
         ];
     }
 

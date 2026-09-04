@@ -7,11 +7,11 @@ use Eccube\Tests\Web\Admin\AbstractAdminWebTestCase;
 use Plugin\UnivaPay\Util\Constants;
 
 /**
- * Test Admin Order Related Pages 
+ * Test Admin Order Related Pages
  */
 class OrderControllerTest extends AbstractAdminWebTestCase
 {
-    private $mockOrders; 
+    private $mockOrders;
 
     public function setUp()
     {

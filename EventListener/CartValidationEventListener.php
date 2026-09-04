@@ -84,7 +84,7 @@ class CartValidationEventListener implements EventSubscriberInterface
         if (!$token) {
             return null;
         }
-        
+
         $user = $token->getUser();
         if (!is_object($user)) {
             return null;
