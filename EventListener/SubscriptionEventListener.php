@@ -2,27 +2,44 @@
 
 namespace Plugin\UnivaPay\EventListener;
 
-use Exception;
 use Eccube\Entity\MailHistory;
+use Eccube\Entity\Order;
+use Eccube\Exception\ShoppingException;
 use Eccube\Repository\BaseInfoRepository;
 use Eccube\Repository\MailHistoryRepository;
 use Eccube\Repository\MailTemplateRepository;
 use Plugin\UnivaPay\Util\SDK;
 use Plugin\UnivaPay\Util\Constants;
+use Plugin\UnivaPay\Util\UnivaPayApiException;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\Workflow\Event\Event;
-use Univapay\Enums\SubscriptionStatus;
+use Swift_Mailer;
+use Twig\Environment;
+use UnivaPay\Models\SubscriptionStatus;
 
 class SubscriptionEventListener implements EventSubscriberInterface
 {
+    /** @var BaseInfoRepository */
     private $baseInfo;
+
+    /** @var ConfigRepository */
     private $configRepository;
-    private $mailer;
+
+    /** @var MailHistoryRepository */
     private $mailHistoryRepository;
+
+    /** @var MailTemplateRepository */
     private $mailTemplateRepository;
+
+    /** @var SessionInterface */
     private $session;
+
+    /** @var Swift_Mailer */
+    private $mailer;
+
+    /** @var Environment */
     private $twig;
 
     public function __construct(
@@ -31,8 +48,8 @@ class SubscriptionEventListener implements EventSubscriberInterface
         MailHistoryRepository $mailHistoryRepository,
         MailTemplateRepository $mailTemplateRepository,
         SessionInterface $session,
-        \Swift_Mailer $mailer,
-        \Twig\Environment $twig
+        Swift_Mailer $mailer,
+        Environment $twig
     ) {
         $this->baseInfo = $baseInfoRepository->get();
         $this->configRepository = $configRepository;
@@ -52,76 +69,76 @@ class SubscriptionEventListener implements EventSubscriberInterface
         ];
     }
 
+    private function isUnivapayPayment(Order $order): bool
+    {
+        return $order->getPaymentMethod() === Constants::UNIVAPAY_PAYMENT_METHOD;
+    }
+
+    private function guard(callable $fn)
+    {
+        try {
+            return $fn();
+        } catch (UnivaPayApiException $e) {
+            $message = trans('univa_pay.admin.order_edit.action_error', ['%message%' => $e->getMessage()]);
+            $this->session->getFlashBag()->add('eccube.admin.error', $message);
+            throw new ShoppingException($message);
+        }
+    }
+
     public function onSuspendSubscription(Event $event)
     {
         $order = $event->getSubject()->getOrder();
+        if (!$this->isUnivapayPayment($order)) return;
 
-        if ($order->getPaymentMethod() !== 'UnivaPay') {
-            return;
-        }
+        $util = new SDK($this->configRepository->findOneById(1));
 
-        try {
-            $util = new SDK($this->configRepository->findOneById(1));
+        $this->guard(function () use ($util, $order) {
             $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
-            $subscription->patch(
-                null,
-                null,
-                null,
-                null,
-                SubscriptionStatus::SUSPENDED()
-            );
-            $subscription->awaitResult(5);
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
-        }
+            if ($subscription->getStatus() === SubscriptionStatus::SUSPENDED) {
+                return;
+            }
+
+            $util->suspendSubscription($order->getUnivapaySubscriptionId());
+        });
     }
 
     public function onCancelSubscription(Event $event)
     {
         $order = $event->getSubject()->getOrder();
+        if (!$this->isUnivapayPayment($order)) return;
 
-        if ($order->getPaymentMethod() !== 'UnivaPay') {
-            return;
-        }
+        log_info('サブスク停止処理開始', ['order' => $order->getId()]);
 
-        try {
-            log_info('サブスク停止処理開始', ['order' => $order->getId()]);
+        $util = new SDK($this->configRepository->findOneById(1));
 
-            $util = new SDK($this->configRepository->findOneById(1));
+        $this->guard(function () use ($util, $order) {
             $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
-            $subscription->cancel();
-            $subscription = $subscription->awaitResult(5);
+            if ($subscription->getStatus() !== SubscriptionStatus::CANCELED) {
+                $util->cancelSubscription($order->getUnivapaySubscriptionId());
+                $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
+            }
 
-            if ($subscription->status === SubscriptionStatus::CANCELED()) {
+            if ($subscription->getStatus() === SubscriptionStatus::CANCELED) {
                 $this->sendEmailCancelSubscription($order);
             }
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
-        }
+        });
     }
 
     public function onResumeSubscription(Event $event)
     {
         $order = $event->getSubject()->getOrder();
+        if (!$this->isUnivapayPayment($order)) return;
 
-        if ($order->getPaymentMethod() !== 'UnivaPay') {
-            return;
-        }
+        $util = new SDK($this->configRepository->findOneById(1));
 
-        try {
-            $util = new SDK($this->configRepository->findOneById(1));
+        $this->guard(function () use ($util, $order) {
             $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
-            $subscription->patch(
-                null,
-                null,
-                null,
-                null,
-                SubscriptionStatus::UNPAID()
-            );
-            $subscription->awaitResult(5);
-        } catch (Exception $e) {
-            $this->handleError($e->getMessage());
-        }
+            if ($subscription->getStatus() === SubscriptionStatus::CURRENT) {
+                return;
+            }
+
+            $util->unsuspendSubscription($order->getUnivapaySubscriptionId());
+        });
     }
 
     private function sendEmailCancelSubscription($order)
@@ -163,15 +180,5 @@ class SubscriptionEventListener implements EventSubscriberInterface
         $this->mailHistoryRepository->save($MailHistory);
 
         log_info('サブスク停止メール送信完了', ['count' => $count]);
-    }
-
-    private function handleError($message)
-    {
-        log_error($message);
-        if ($this->session->has('_security_admin')) {
-            $this->session->getFlashBag()->add('eccube.admin.error', $message);
-        } else {
-            $this->session->getFlashBag()->add('eccube.front.error', $message);
-        }
     }
 }

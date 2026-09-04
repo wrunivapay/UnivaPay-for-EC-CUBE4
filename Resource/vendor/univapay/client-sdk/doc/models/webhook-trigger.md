@@ -1,0 +1,41 @@
+
+# Webhook Trigger
+
+Event type that triggers a webhook notification.
+
+## Enumeration
+
+`WebhookTrigger`
+
+## Fields
+
+| Name |
+|  --- |
+| `TOKEN_CREATED` |
+| `TOKEN_UPDATED` |
+| `TOKEN_THREE_D_S_UPDATED` |
+| `TOKEN_CVV_AUTH_UPDATED` |
+| `TOKEN_CVV_AUTH_CHECK_UPDATED` |
+| `TOKEN_REPLACED` |
+| `CHARGE_UPDATED` |
+| `CHARGE_FINISHED` |
+| `REFUND_FINISHED` |
+| `CANCEL_FINISHED` |
+| `CUSTOMS_DECLARATION_FINISHED` |
+| `RECURRING_TOKEN_DELETED` |
+| `BANK_TRANSFER_STATUS_UPDATED` |
+| `SUBSCRIPTION_CREATED` |
+| `SUBSCRIPTION_PAYMENT` |
+| `SUBSCRIPTION_COMPLETED` |
+| `SUBSCRIPTION_FAILURE` |
+| `SUBSCRIPTION_CANCELED` |
+| `SUBSCRIPTION_SUSPENDED` |
+
+## Example
+
+```php
+use UnivaPay\Models\WebhookTrigger;
+
+$webhookTrigger = WebhookTrigger::BANK_TRANSFER_STATUS_UPDATED;
+```
+
