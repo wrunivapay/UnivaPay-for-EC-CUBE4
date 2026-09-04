@@ -243,7 +243,7 @@ class Merchant implements \JsonSerializable
 
     /**
      * Returns Configuration.
-     * Merchant configuration snapshot serialized by gyron-payments-api.
+     * Merchant configuration snapshot as serialized by the backend.
      */
     public function getConfiguration(): ?MerchantWebhookConfiguration
     {
@@ -252,7 +252,7 @@ class Merchant implements \JsonSerializable
 
     /**
      * Sets Configuration.
-     * Merchant configuration snapshot serialized by gyron-payments-api.
+     * Merchant configuration snapshot as serialized by the backend.
      *
      * @maps configuration
      */

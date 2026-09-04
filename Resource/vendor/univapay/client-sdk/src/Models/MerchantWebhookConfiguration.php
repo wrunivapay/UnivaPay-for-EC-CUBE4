@@ -15,7 +15,7 @@ use UnivaPay\ApiHelper;
 use UnivaPay\Utils\NumberHelper;
 
 /**
- * Merchant configuration object serialized by gyron-payments-api.
+ * Merchant configuration object as serialized by the backend.
  */
 class MerchantWebhookConfiguration implements \JsonSerializable
 {

@@ -103,7 +103,7 @@ class Store implements \JsonSerializable
 
     /**
      * Returns Configuration.
-     * Store-scoped configuration snapshot serialized by gyron-payments-api. It uses the same flattened
+     * Store-scoped configuration snapshot as serialized by the backend. It uses the same flattened
      * serializer as merchant configuration, but omits `transfer_schedule`.
      */
     public function getConfiguration(): ?MerchantWebhookConfiguration
@@ -113,7 +113,7 @@ class Store implements \JsonSerializable
 
     /**
      * Sets Configuration.
-     * Store-scoped configuration snapshot serialized by gyron-payments-api. It uses the same flattened
+     * Store-scoped configuration snapshot as serialized by the backend. It uses the same flattened
      * serializer as merchant configuration, but omits `transfer_schedule`.
      *
      * @maps configuration

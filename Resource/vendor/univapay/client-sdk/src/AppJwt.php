@@ -103,4 +103,35 @@ final class AppJwt
 
         return $value;
     }
+
+    /**
+     * Asserts that a store id was resolvable from the configured app token.
+     *
+     * Used by the store-scoped convenience calls on the client, which take no
+     * $storeId argument. It lives here, beside the claim reader, so the message
+     * stays in a file APIMATIC never regenerates.
+     *
+     * The message deliberately says nothing about the token itself: the
+     * credential and its claims must never reach an error message or a log. A
+     * merchant-level token arriving here is not a broken token -- it is simply
+     * not scoped to a store.
+     *
+     * @param string|null $storeId The store id read from the token, or null.
+     *
+     * @return string $storeId, when it is present.
+     *
+     * @throws \RuntimeException When $storeId is null.
+     */
+    public static function requireStoreId(?string $storeId): string
+    {
+        if ($storeId === null) {
+            throw new \RuntimeException(
+                'getCharge(chargeId) requires a store-level App Token: the configured token '
+                . 'carries no usable "store_id" claim. Use a store-level App Token, or call '
+                . 'getCharge(storeId, chargeId) on ChargesApi with an explicit store id.'
+            );
+        }
+
+        return $storeId;
+    }
 }

@@ -1,7 +1,7 @@
 
 # Merchant Webhook Configuration
 
-Merchant configuration object serialized by gyron-payments-api.
+Merchant configuration object as serialized by the backend.
 
 *This model accepts additional fields of type array.*
 

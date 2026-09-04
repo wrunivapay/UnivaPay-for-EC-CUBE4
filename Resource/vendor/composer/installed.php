@@ -11,9 +11,9 @@
     ),
     'versions' => array(
         'apimatic/core' => array(
-            'pretty_version' => '0.3.17',
-            'version' => '0.3.17.0',
-            'reference' => 'a48a583f686ee3786432b976c795a2817ec095b3',
+            'pretty_version' => '0.3.18',
+            'version' => '0.3.18.0',
+            'reference' => '7e3d2de97de6df8aa1c66293c92573b6984e3f50',
             'type' => 'library',
             'install_path' => __DIR__ . '/../apimatic/core',
             'aliases' => array(),
@@ -38,9 +38,9 @@
             'dev_requirement' => false,
         ),
         'apimatic/unirest-php' => array(
-            'pretty_version' => '4.0.7',
-            'version' => '4.0.7.0',
-            'reference' => 'bdfd5f27c105772682c88ed671683f1bd93f4a3c',
+            'pretty_version' => '4.0.8',
+            'version' => '4.0.8.0',
+            'reference' => 'e1828d2f5fa53528b2576775eb1dce824176bf73',
             'type' => 'library',
             'install_path' => __DIR__ . '/../apimatic/unirest-php',
             'aliases' => array(),
@@ -80,9 +80,9 @@
             ),
         ),
         'univapay/client-sdk' => array(
-            'pretty_version' => '1.2.0',
-            'version' => '1.2.0.0',
-            'reference' => '3673a3b65b421ff7620a6d47a512ffb6ef11d850',
+            'pretty_version' => '1.2.2',
+            'version' => '1.2.2.0',
+            'reference' => '1f39e9ddc350f9885ee072760f765ced32805250',
             'type' => 'library',
             'install_path' => __DIR__ . '/../univapay/client-sdk',
             'aliases' => array(),

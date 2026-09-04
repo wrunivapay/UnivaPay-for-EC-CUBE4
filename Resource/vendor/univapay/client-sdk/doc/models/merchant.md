@@ -20,7 +20,7 @@ Merchant resource returned by the backend `FullMerchantWithGroupRoles` formatter
 | `notificationEmail` | `?string` | Optional | Merchant notification email address. | getNotificationEmail(): ?string | setNotificationEmail(?string notificationEmail): void |
 | `financeNotificationEmail` | `?string` | Optional | Merchant finance notification email address. | getFinanceNotificationEmail(): ?string | setFinanceNotificationEmail(?string financeNotificationEmail): void |
 | `verified` | `?bool` | Optional | Whether the merchant has completed verification. | getVerified(): ?bool | setVerified(?bool verified): void |
-| `configuration` | [`?MerchantWebhookConfiguration`](../../doc/models/merchant-webhook-configuration.md) | Optional | Merchant configuration snapshot serialized by gyron-payments-api. | getConfiguration(): ?MerchantWebhookConfiguration | setConfiguration(?MerchantWebhookConfiguration configuration): void |
+| `configuration` | [`?MerchantWebhookConfiguration`](../../doc/models/merchant-webhook-configuration.md) | Optional | Merchant configuration snapshot as serialized by the backend. | getConfiguration(): ?MerchantWebhookConfiguration | setConfiguration(?MerchantWebhookConfiguration configuration): void |
 | `createdOn` | `?DateTime` | Optional | Timestamp when the merchant was created. | getCreatedOn(): ?\DateTime | setCreatedOn(?\DateTime createdOn): void |
 | `additionalProperties` | `array<string, array>` | Optional | - | findAdditionalProperty(string key): array | additionalProperty(string key, array value): void |
 

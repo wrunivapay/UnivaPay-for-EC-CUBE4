@@ -28,6 +28,7 @@ use UnivaPay\Apis\TransactionTokensApi;
 use UnivaPay\Apis\WebhooksApi;
 use UnivaPay\Authentication\BearerAuthCredentialsBuilder;
 use UnivaPay\Authentication\BearerAuthManager;
+use UnivaPay\Http\ApiResponse;
 use UnivaPay\Logging\LoggingConfigurationBuilder;
 use UnivaPay\Logging\RequestLoggingConfigurationBuilder;
 use UnivaPay\Logging\ResponseLoggingConfigurationBuilder;
@@ -179,7 +180,7 @@ class UnivapayClientSdkClient implements ConfigurationInterface
             ->converter(new CompatibilityConverter())
             ->jsonHelper(ApiHelper::getJsonHelper())
             ->apiCallback($this->config['httpCallback'] ?? null)
-            ->userAgent('PHP-SDK/1.2.0 (OS: {os-info}, Engine: {engine}/{engine-version})')
+            ->userAgent('PHP-SDK/1.2.2 (OS: {os-info}, Engine: {engine}/{engine-version})')
             ->globalConfig($this->getGlobalConfiguration())
             ->serverUrls(self::ENVIRONMENT_MAP[$this->getEnvironment()], Server::DEFAULT_)
             ->authManagers(['JWT_TOKEN' => $this->bearerAuthManager])
@@ -326,6 +327,35 @@ class UnivapayClientSdkClient implements ConfigurationInterface
     public function getCurrentStoreId(): ?string
     {
         return AppJwt::readUuidClaim($this->bearerAuthManager->getJwtToken(), 'store_id');
+    }
+
+    /**
+     * Retrieves a charge without being given a store id.
+     *
+     * `/stores/{storeId}/charges/{id}` needs a store, which callers would
+     * otherwise have to persist alongside every charge id -- but a store-level
+     * app token already carries one, so this reads it from the configured token
+     * and then behaves exactly like ChargesApi::getCharge().
+     *
+     * @param string    $chargeId The unique identifier of the charge.
+     * @param bool|null $polling  If true, instructs the API to internally poll
+     *                            the charge status until it leaves 'pending'.
+     *
+     * @return ApiResponse The controller's response, untouched.
+     *
+     * @throws \RuntimeException When the configured token carries no `store_id`
+     *                           claim -- a merchant-level token, or none at all.
+     *                           Thrown before any request is built. Resolve the
+     *                           store yourself (see getStoresApi()) and use
+     *                           ChargesApi::getCharge() instead.
+     */
+    public function getCharge(string $chargeId, ?bool $polling = null): ApiResponse
+    {
+        // Guard first, controller second: PHP evaluates the object expression
+        // before the arguments, so calling getChargesApi() inline would build a
+        // controller even on the failure path.
+        $storeId = AppJwt::requireStoreId($this->getCurrentStoreId());
+        return $this->getChargesApi()->getCharge($storeId, $chargeId, $polling);
     }
 
     public function getLoggingConfigurationBuilder(): ?LoggingConfigurationBuilder
