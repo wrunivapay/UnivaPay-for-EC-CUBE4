@@ -2,6 +2,8 @@
 
 namespace Plugin\UnivaPay;
 
+require_once __DIR__ . '/Resource/vendor/autoload.php';
+
 use Eccube\Entity\MailTemplate;
 use Eccube\Entity\Master\CustomerOrderStatus;
 use Eccube\Entity\Master\OrderStatus;

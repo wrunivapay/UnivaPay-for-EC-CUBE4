@@ -2,6 +2,8 @@
 
 namespace Plugin\UnivaPay\Util;
 
+require_once __DIR__ . '/../Resource/vendor/autoload.php';
+
 use Eccube\Application;
 use Plugin\UnivaPay\Entity\Config;
 use Psr\Log\LoggerInterface;
@@ -12,6 +14,7 @@ use UnivaPay\Logging\ResponseLoggingConfigurationBuilder;
 use UnivaPay\Models\Charge;
 use UnivaPay\Models\ChargeCaptureRequest;
 use UnivaPay\Models\RefundCreateRequest;
+use UnivaPay\Models\RefundStatus;
 use UnivaPay\UnivapayClientSdkClient;
 use UnivaPay\UnivapayClientSdkClientBuilder;
 
@@ -19,13 +22,14 @@ class SDK
 {
     /** @var univapayclientsdkclient */
     private $client;
+
     /** @var LoggerInterface */
     private $logger;
 
-    public function __construct(Config $config)
+    public function __construct(Config $config, ?UnivapayClientSdkClient $client = null, ?LoggerInterface $logger = null)
     {
-        $this->logger = Application::getInstance()['eccube.logger'];
-        $this->client = UnivapayClientSdkClientBuilder::init()
+        $this->logger = $logger ?? Application::getInstance()['eccube.logger'];
+        $this->client = $client ?? UnivapayClientSdkClientBuilder::init()
             ->bearerAuthCredentials(
                 BearerAuthCredentialsBuilder::init(
                     $config->getAppSecret(),
@@ -68,6 +72,7 @@ class SDK
         $result = $resp->getResult();
         $detail = is_array($result) ? json_encode($result) : $resp->getBody();
 
+        $this->logger->error(sprintf('UnivaPay request failed: %s %s - HTTP %d %s - %s', $resource, $id, $resp->getStatusCode(), $resp->getReasonPhrase(), $detail));
         throw new UnivaPayApiException(sprintf('Failed to %s %s: HTTP %d %s - %s', $resource, $id, $resp->getStatusCode(), $resp->getReasonPhrase(), $detail));
     }
 
@@ -81,13 +86,23 @@ class SDK
         });
     }
 
-    public function captureCharge(Charge $charge)
+    public function getTransactionToken(string $tokenId)
     {
-        return $this->execute('capture charge', $charge->getId(), function () use ($charge) {
+        return $this->execute('get transaction token', $tokenId, function () use ($tokenId) {
+            return $this->client->getTransactionTokensApi()->getTransactionToken(
+                $this->client->getCurrentStoreId(),
+                $tokenId
+            );
+        });
+    }
+
+    public function captureCharge($order, Charge $charge)
+    {
+        return $this->execute('capture charge', $charge->getId(), function () use ($order, $charge) {
             return $this->client->getChargesApi()->captureCharge(
                 $this->client->getCurrentStoreId(),
                 $charge->getId(),
-                null,
+                $order->getId(),
                 new ChargeCaptureRequest(
                     $charge->getChargedAmount(),
                     $charge->getChargedCurrency()
@@ -116,7 +131,7 @@ class SDK
             );
         });
 
-        return $this->execute('poll refund', $refund->getId(), function () use ($charge, $refund) {
+        $refundResult = $this->execute('poll refund', $refund->getId(), function () use ($charge, $refund) {
             return $this->client->getRefundsApi()->getRefund(
                 $this->client->getCurrentStoreId(),
                 $charge->getId(),
@@ -124,14 +139,23 @@ class SDK
                 true
             );
         });
+        
+        switch ($refundResult->getStatus()) {
+            case RefundStatus::SUCCESSFUL:
+                return $refundResult;
+            default:
+                $this->logger->error(sprintf('UnivaPay request failed: create refund for charge ID %s - refund ID %s did not complete successfully (status: %s)', $charge->getId(), $refund->getId(), $refundResult->getStatus()));
+                throw new UnivaPayApiException(sprintf('Failed to create refund for charge ID : refund ID %s did not complete successfully (status: %s)', $charge->getId(), $refund->getId(), $refundResult->getStatus()));
+        }
     }
     
-    public function createChargeCancel(Charge $charge)
+    public function createChargeCancel($order, Charge $charge)
     {
-        $cancel = $this->execute('create cancel', $charge->getId(), function () use ($charge) {
+        $cancel = $this->execute('create cancel', $charge->getId(), function () use ($order, $charge) {
             return $this->client->getCancelsApi()->createCancel(
                 $this->client->getCurrentStoreId(),
-                $charge->getId()
+                $charge->getId(),
+                $order->getId(),
             );
         });
 
@@ -154,7 +178,7 @@ class SDK
         return current($result);
     }
 
-    public function getSubscriptionByChargeId($chargeId)
+    public function getSubscriptionByChargeId(string $chargeId)
     {
         return $this->execute('get subscription by charge', $chargeId, function () use ($chargeId) {
             return $this->client->getChargesApi()->getCharge($this->client->getCurrentStoreId(), $chargeId);

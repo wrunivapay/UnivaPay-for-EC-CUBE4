@@ -7,17 +7,25 @@ use Eccube\Event\EventArgs;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
+use Plugin\UnivaPay\Util\UnivaPayApiException;
+use UnivaPay\Models\SubscriptionStatus;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Session\SessionInterface;
 
 class OrderEventListener implements EventSubscriberInterface
 {
     /** @var ConfigRepository */
     private $configRepository;
 
+    /** @var SessionInterface */
+    private $session;
+
     public function __construct(
-        ConfigRepository $configRepository
+        ConfigRepository $configRepository,
+        SessionInterface $session
     ) {
         $this->configRepository = $configRepository;
+        $this->session = $session;
     }
 
     public static function getSubscribedEvents()
@@ -37,45 +45,62 @@ class OrderEventListener implements EventSubscriberInterface
 
         $subscriptionId = $order->getUnivapaySubscriptionId();
         if ($subscriptionId) {
-            $order = $this->handleSubscription($order, $subscriptionId);
+            $order = $this->fetchSubscription($order, $subscriptionId);
         }
 
         $chargeId = $order->getUnivapayChargeId();
         if ($chargeId) {
-            $order = $this->handleCharge($order, $chargeId);
+            $order = $this->fetchCharge($order, $chargeId);
         }
 
         $event->setArgument('TargetOrder', $order);
     }
 
-    private function handleSubscription($order, $subscriptionId): object
+    private function guard(callable $fn)
+    {
+        try {
+            return $fn();
+        } catch (UnivaPayApiException $e) {
+            $this->session->getFlashBag()->add('eccube.admin.error', trans('univa_pay.admin.order_edit.fetch_error', ['%message%' => $e->getMessage()]));
+
+            return null;
+        }
+    }
+
+
+    private function fetchSubscription($order, string $subscriptionId): object
     {
         $util = new SDK($this->configRepository->findAll()[0]);
-        $subscription = $util->getSubscription($subscriptionId);
+
+        $subscription = $this->guard(function () use ($util, $subscriptionId) {
+            return $util->getSubscription($subscriptionId);
+        });
+
+        if ($subscription === null) {
+            return $order;
+        }
+
         $order->univapaySubscription = $subscription;
         switch ($subscription->getStatus()) {
-            case 'unverified':
+            case SubscriptionStatus::UNVERIFIED:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unverified');
                 break;
-            case 'unconfirmed':
+            case SubscriptionStatus::UNCONFIRMED:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unconfirmed');
                 break;
-            case 'unpaid':
+            case SubscriptionStatus::UNPAID:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unpaid');
                 break;
-            case 'authorized':
-                $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.unauthorized');
-                break;
-            case 'current':
+            case SubscriptionStatus::CURRENT:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.current');
                 break;
-            case 'suspended':
+            case SubscriptionStatus::SUSPENDED:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.suspended');
                 break;
-            case 'canceled':
+            case SubscriptionStatus::CANCELED:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.canceled');
                 break;
-            case 'completed':
+            case SubscriptionStatus::COMPLETED:
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.completed');
                 break;
             default:
@@ -85,12 +110,14 @@ class OrderEventListener implements EventSubscriberInterface
         return $order;
     }
 
-    private function handleCharge($order, string $chargeId): object
+    private function fetchCharge($order, string $chargeId): object
     {
         $util = new SDK($this->configRepository->findAll()[0]);
-        $charge = $util->getCharge($chargeId);
-        $order->univapayCharge = $charge;
-        $order->univapayRefund = $util->getRefunds($chargeId);
+
+        $this->guard(function () use ($util, $order, $chargeId) {
+            $order->univapayCharge = $util->getCharge($chargeId);
+            $order->univapayRefund = $util->getRefunds($chargeId);
+        });
 
         return $order;
     }

@@ -10,9 +10,10 @@ use Eccube\Service\Payment\PaymentResult;
 use Eccube\Service\PurchaseFlow\PurchaseContext;
 use Eccube\Service\PurchaseFlow\PurchaseFlow;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
-use Symfony\Component\Form\FormInterface;
 use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\SDK;
+use Symfony\Component\Form\FormInterface;
+use UnivaPay\Models\ChargeStatus;
 
 /**
  * クレジットカード(トークン決済)の決済処理を行う.
@@ -39,7 +40,9 @@ class CreditCard implements PaymentMethodInterface
      */
     private $purchaseFlow;
 
-    /** @var ConfigRepository */
+    /** 
+     * @var ConfigRepository 
+     */
     protected $Config;
 
     /**
@@ -113,7 +116,8 @@ class CreditCard implements PaymentMethodInterface
             $util = new SDK($this->Config->findOneById(1));
             $charge = $util->getCharge($this->Order->getUnivapayChargeId());
 
-            if($charge->getStatus() === "successful") {
+            // TODO: check payment type, some payment type only do auto capture
+            if ($charge->getStatus() === ChargeStatus::SUCCESSFUL) {
                 $OrderStatus = $this->orderStatusRepository->find(OrderStatus::PAID);
                 $this->Order->setOrderStatus($OrderStatus);
                 $this->Order->setPaymentDate(new \DateTime());

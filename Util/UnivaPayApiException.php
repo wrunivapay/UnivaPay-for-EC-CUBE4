@@ -2,6 +2,8 @@
 
 namespace Plugin\UnivaPay\Util;
 
-class UnivaPayApiException extends \Exception
+use Exception;
+
+class UnivaPayApiException extends Exception
 {
 }
