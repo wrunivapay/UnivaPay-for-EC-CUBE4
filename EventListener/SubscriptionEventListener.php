@@ -12,6 +12,7 @@ use Plugin\UnivaPay\Repository\ConfigRepository;
 use Plugin\UnivaPay\Util\Constants;
 use Plugin\UnivaPay\Util\SDK;
 use Plugin\UnivaPay\Util\UnivaPayApiException;
+use Plugin\UnivaPay\Util\UnivaPayLogger;
 use Swift_Mailer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Session\SessionInterface;
@@ -95,12 +96,12 @@ class SubscriptionEventListener implements EventSubscriberInterface
         $util = new SDK($this->configRepository->findOneById(1));
 
         $this->guard(function () use ($util, $order) {
-            $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
+            $subscription = $util->getSubscription($order->getUnivapayParentSubscriptionId());
             if ($subscription->getStatus() === SubscriptionStatus::SUSPENDED) {
                 return;
             }
 
-            $util->suspendSubscription($order->getUnivapaySubscriptionId());
+            $util->suspendSubscription($order->getUnivapayParentSubscriptionId());
         });
     }
 
@@ -111,15 +112,15 @@ class SubscriptionEventListener implements EventSubscriberInterface
             return;
         }
 
-        log_info('サブスク停止処理開始', ['order' => $order->getId()]);
+        UnivaPayLogger::get()->info('サブスク停止処理開始', ['order' => $order->getId()]);
 
         $util = new SDK($this->configRepository->findOneById(1));
 
         $this->guard(function () use ($util, $order) {
-            $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
+            $subscription = $util->getSubscription($order->getUnivapayParentSubscriptionId());
             if ($subscription->getStatus() !== SubscriptionStatus::CANCELED) {
-                $util->cancelSubscription($order->getUnivapaySubscriptionId());
-                $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
+                $util->cancelSubscription($order->getUnivapayParentSubscriptionId());
+                $subscription = $util->getSubscription($order->getUnivapayParentSubscriptionId());
             }
 
             if ($subscription->getStatus() === SubscriptionStatus::CANCELED) {
@@ -138,18 +139,18 @@ class SubscriptionEventListener implements EventSubscriberInterface
         $util = new SDK($this->configRepository->findOneById(1));
 
         $this->guard(function () use ($util, $order) {
-            $subscription = $util->getSubscription($order->getUnivapaySubscriptionId());
+            $subscription = $util->getSubscription($order->getUnivapayParentSubscriptionId());
             if ($subscription->getStatus() === SubscriptionStatus::CURRENT) {
                 return;
             }
 
-            $util->unsuspendSubscription($order->getUnivapaySubscriptionId());
+            $util->unsuspendSubscription($order->getUnivapayParentSubscriptionId());
         });
     }
 
     private function sendEmailCancelSubscription($order)
     {
-        log_info('サブスク停止メール送信開始');
+        UnivaPayLogger::get()->info('サブスク停止メール送信開始');
 
         $MailTemplate = $this->mailTemplateRepository->findOneBy([
             'name' => Constants::MAIL_TEMPLATE_UNIVAPAY_SUBSCRIPTION_CANCEL,
@@ -185,6 +186,6 @@ class SubscriptionEventListener implements EventSubscriberInterface
         }
         $this->mailHistoryRepository->save($MailHistory);
 
-        log_info('サブスク停止メール送信完了', ['count' => $count]);
+        UnivaPayLogger::get()->info('サブスク停止メール送信完了', ['count' => $count]);
     }
 }

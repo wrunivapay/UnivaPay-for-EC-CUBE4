@@ -43,9 +43,8 @@ class OrderEventListener implements EventSubscriberInterface
             return;
         }
 
-        $subscriptionId = $order->getUnivapaySubscriptionId();
-        if ($subscriptionId) {
-            $order = $this->fetchSubscription($order, $subscriptionId);
+        if ($order->isUnivapaySubscriptionParent()) {
+            $order = $this->fetchSubscription($order, $order->getUnivapayParentSubscriptionId());
         }
 
         $chargeId = $order->getUnivapayChargeId();
@@ -103,7 +102,7 @@ class OrderEventListener implements EventSubscriberInterface
                 $order->univapaySubscriptionStatus = trans('univa_pay.admin.subscription.status.completed');
                 break;
             default:
-                $order->univapaySubscriptionStatus = '';
+                $order->univapaySubscriptionStatus = null;
         }
 
         return $order;

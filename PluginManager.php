@@ -4,22 +4,38 @@ namespace Plugin\UnivaPay;
 
 require_once __DIR__.'/Resource/vendor/autoload.php';
 
+use Eccube\Common\EccubeConfig;
 use Eccube\Entity\MailTemplate;
 use Eccube\Entity\Master\CustomerOrderStatus;
 use Eccube\Entity\Master\OrderStatus;
 use Eccube\Entity\Master\OrderStatusColor;
+use Eccube\Entity\Order;
 use Eccube\Entity\Payment;
 use Eccube\Plugin\AbstractPluginManager;
+use Eccube\Service\PurchaseFlow\Processor\OrderNoProcessor;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Plugin\UnivaPay\Entity\SubscriptionPeriod;
 use Plugin\UnivaPay\Service\Method\CreditCard;
 use Plugin\UnivaPay\Util\Constants;
+use Plugin\UnivaPay\Util\LegacySubscriptionMigration;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 class PluginManager extends AbstractPluginManager
 {
     public function enable(array $meta, ContainerInterface $container)
+    {
+        $this->seedMasterData($container);
+    }
+
+    public function update(array $meta, ContainerInterface $container)
+    {
+        $entityManager = $container->get('doctrine')->getManager();
+        $this->migration($entityManager->getConnection(), $meta['code']);
+        $this->migrateFrom150($container);
+    }
+
+    private function seedMasterData(ContainerInterface $container)
     {
         $this->createTokenPayment($container);
         $this->createConfig($container);
@@ -28,6 +44,20 @@ class PluginManager extends AbstractPluginManager
         $this->addMasterOrderStatusColor($container);
         $this->addMasterCustomerOrderStatus($container);
         $this->addSubscriptionMailTemplate($container);
+    }
+
+    public function migrateFrom150(ContainerInterface $container)
+    {
+        $entityManager = $container->get('doctrine')->getManager();
+        if (!LegacySubscriptionMigration::isRequired($entityManager)) {
+            return;
+        }
+
+        $this->seedMasterData($container);
+        LegacySubscriptionMigration::run(
+            $entityManager,
+            new OrderNoProcessor($container->get(EccubeConfig::class), $entityManager->getRepository(Order::class))
+        );
     }
 
     private function addMasterOrderStatus(ContainerInterface $container)
@@ -157,8 +187,9 @@ class PluginManager extends AbstractPluginManager
 
     private function createSubscriptionPeriod(ContainerInterface $container)
     {
+        // Literal 0: update() runs with the 1.5.0 SubscriptionPeriod class loaded, which lacks NON_SUBSCRIPTION.
         $statuses = [
-            SubscriptionPeriod::NON_SUBSCRIPTION => '非定期',
+            0 => '非定期',
             SubscriptionPeriod::DAILY => '毎日',
             SubscriptionPeriod::WEEKLY => '毎週',
             SubscriptionPeriod::BIWEEKLY => '隔週',

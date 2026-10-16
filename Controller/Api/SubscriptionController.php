@@ -18,12 +18,13 @@ use Exception;
 use Plugin\UnivaPay\Entity\Config;
 use Plugin\UnivaPay\Entity\Master\UnivaPayOrderStatus;
 use Plugin\UnivaPay\Repository\ConfigRepository;
+use Plugin\UnivaPay\Util\OrderCopier;
 use Plugin\UnivaPay\Util\SDK;
+use Plugin\UnivaPay\Util\UnivaPayLogger;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
-use Univapay\Enums\WebhookEvent;
 
 class SubscriptionController extends AbstractController
 {
@@ -92,17 +93,17 @@ class SubscriptionController extends AbstractController
         $data = json_decode($request->getContent());
         $util = new SDK($config);
 
-        $charge = $util->getChargeBySubscriptionId($data->data->id);
+        $charge = $util->getLatestChargeBySubscriptionId($data->data->id);
         if (is_null($charge)) {
             return new Response('Charge not found', 404);
         }
 
-        if ($this->Order->findOneBy(['univa_pay_charge_id' => $charge->id])) {
+        if ($this->Order->findOneBy(['univa_pay_charge_id' => $charge->getId()])) {
             return new Response('Order already created', 200);
         }
 
         $subscriptionOrder = $this->Order->findOneBy([
-            'univa_pay_subscription_id' => $data->data->id,
+            'univa_pay_parent_subscription_id' => $data->data->id,
             'OrderStatus' => UnivaPayOrderStatus::UNIVAPAY_SUBSCRIPTION_ACTIVE,
         ]);
 
@@ -110,15 +111,15 @@ class SubscriptionController extends AbstractController
             return new Response(trans('univa_pay.error.webhook.subscription.not_found'), 404);
         }
 
-        switch (WebhookEvent::fromValue($data->event)) {
-            case WebhookEvent::SUBSCRIPTION_PAYMENT():
-                $order = $this->createOrder($subscriptionOrder, $data, $charge, WebhookEvent::SUBSCRIPTION_PAYMENT());
-                $charge->patch(['orderNo' => $order->getId()]);
+        switch ($data->event) {
+            case 'subscription_payment':
+                $order = $this->createOrder($subscriptionOrder, $data, $charge, 'subscription_payment');
+                $util->updateChargeMetaData($order, $charge);
 
                 return new Response('successfully accepted', 201);
-            case WebhookEvent::SUBSCRIPTION_FAILURE():
-                $order = $this->createOrder($subscriptionOrder, $data, $charge, WebhookEvent::SUBSCRIPTION_FAILURE());
-                $charge->patch(['orderNo' => $order->getId()]);
+            case 'subscription_failure':
+                $order = $this->createOrder($subscriptionOrder, $data, $charge, 'subscription_failure');
+                $util->updateChargeMetaData($order, $charge);
 
                 return new Response('successfully accepted', 201);
             default:
@@ -136,7 +137,7 @@ class SubscriptionController extends AbstractController
         $authHeader = $request->headers->get('Authorization') || $request->headers->get('authorization');
 
         if ($config->getWebhookAuth() !== $authHeader) {
-            log_info('Invalid webhook authorization attempt', ['provided' => $authHeader]);
+            UnivaPayLogger::get()->info('Invalid webhook authorization attempt', ['provided' => $authHeader]);
 
             return false;
         }
@@ -146,80 +147,20 @@ class SubscriptionController extends AbstractController
 
     private function createOrder($existOrder, $data, $charge, $event)
     {
-        // cloneで注文を複製してもidが変更できないため一から作成
-        $newOrder = new Order();
+        $newOrder = OrderCopier::copy($existOrder);
         // 今回での決済の課金ID取得
         $newOrder->setUnivapayChargeId($charge->id);
-        $newOrder->setUnivapaySubscriptionId($existOrder->getUnivapaySubscriptionId());
-        $newOrder->setMessage($existOrder->getMessage());
-        $newOrder->setName01($existOrder->getName01());
-        $newOrder->setName02($existOrder->getName02());
-        $newOrder->setKana01($existOrder->getKana01());
-        $newOrder->setKana02($existOrder->getKana02());
-        $newOrder->setCompanyName($existOrder->getCompanyName());
-        $newOrder->setEmail($existOrder->getEmail());
-        $newOrder->setPhoneNumber($existOrder->getPhoneNumber());
-        $newOrder->setPostalCode($existOrder->getPostalCode());
-        $newOrder->setAddr01($existOrder->getAddr01());
-        $newOrder->setAddr02($existOrder->getAddr02());
-        $newOrder->setBirth($existOrder->getBirth());
         // 今回決済金額から小計を逆算
         $newSubtotal = $existOrder->getSubtotal() - $existOrder->getTotal() + $data->data->amount - $existOrder->getDiscount();
         $newOrder->setSubtotal($newSubtotal);
         // 割引無効化
         $newOrder->setDiscount(0);
-        $newOrder->setDeliveryFeeTotal($existOrder->getDeliveryFeeTotal());
-        $newOrder->setCharge($existOrder->getCharge());
-        $newOrder->setTax($existOrder->getTax());
         // 二回目以降の決済金額が違う場合があるため変更
         $newOrder->setTotal($data->data->amount);
         $newOrder->setPaymentTotal($data->data->amount);
-        $newOrder->setPaymentMethod($existOrder->getPaymentMethod());
-        $newOrder->setNote($existOrder->getNote());
-        $newOrder->setCurrencyCode($existOrder->getCurrencyCode());
-        $newOrder->setCompleteMessage($existOrder->getCompleteMessage());
-        $newOrder->setCompleteMailMessage($existOrder->getCompleteMailMessage());
         // 決済日を今日に変更
         $newOrder->setPaymentDate(new \DateTime());
-        $newOrder->setCustomer($existOrder->getCustomer());
-        $newOrder->setCountry($existOrder->getCountry());
-        $newOrder->setPref($existOrder->getPref());
-        $newOrder->setSex($existOrder->getSex());
-        $newOrder->setJob($existOrder->getJob());
-        $newOrder->setPayment($existOrder->getPayment());
-        $newOrder->setDeviceType($existOrder->getDeviceType());
-        $newOrder->setCustomerOrderStatus($existOrder->getCustomerOrderStatus());
-        $newOrder->setOrderStatusColor($existOrder->getOrderStatusColor());
 
-        foreach ($existOrder->getOrderItems() as $value) {
-            $newOrderItem = clone $value;
-            // 値引きは引き継がない
-            if ($newOrderItem->isDiscount() || $newOrderItem->isPoint()) {
-                continue;
-            }
-            $newOrderItem->setOrder($newOrder);
-            $newOrder->addOrderItem($newOrderItem);
-        }
-        foreach ($existOrder->getShippings() as $value) {
-            $newShipping = clone $value;
-            $newShipping->setShippingDeliveryDate(null);
-            $newShipping->setShippingDeliveryTime(null);
-            $newShipping->setTimeId(null);
-            $newShipping->setShippingDate(null);
-            $newShipping->setTrackingNumber(null);
-            $newShipping->setOrder($newOrder);
-            // 循環参照してしまい正常に発送データがセットできないため
-            foreach ($newShipping->getOrderItems() as $v) {
-                $newShipping->removeOrderItem($v);
-            }
-            foreach ($newOrder->getOrderItems() as $v) {
-                if ($v->getShipping() && $v->getShipping()->getId() == $value->getId()) {
-                    $v->setShipping($newShipping);
-                    $newShipping->addOrderItem($v);
-                }
-            }
-            $newOrder->addShipping($newShipping);
-        }
         $purchaseContext = new PurchaseContext($newOrder, $newOrder->getCustomer());
         // ポイントを再計算4.0以前のバージョンの場合、先にポイントを再計算を行わないと正常に動かない
         $this->addPointProcessor->validate($newOrder, $purchaseContext);
@@ -235,9 +176,9 @@ class SubscriptionController extends AbstractController
         $this->orderNoProcessor->process($newOrder, $purchaseContext);
         $this->entityManager->flush();
         // 定期課金に失敗した場合はキャンセル済み注文に変更
-        $OrderStatus = $this->orderStatusRepository->find($event === WebhookEvent::SUBSCRIPTION_PAYMENT() ? OrderStatus::PAID : OrderStatus::CANCEL);
+        $OrderStatus = $this->orderStatusRepository->find($event === 'subscription_payment' ? OrderStatus::PAID : OrderStatus::CANCEL);
         $newOrder->setOrderStatus($OrderStatus);
-        if ($event === WebhookEvent::SUBSCRIPTION_PAYMENT()) {
+        if ($event === 'subscription_payment') {
             $this->mailService->sendOrderMail($newOrder);
         }
         $this->entityManager->flush();
@@ -259,7 +200,7 @@ class SubscriptionController extends AbstractController
                 $this->entityManager->persist($order);
                 $this->entityManager->flush();
             } catch (Exception $e) {
-                log_info('Failed to cancel subscription', [
+                UnivaPayLogger::get()->info('Failed to cancel subscription', [
                     'order_id' => $order->getId(),
                     'error' => $e->getMessage(),
                 ]);
